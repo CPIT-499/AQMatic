@@ -1,4 +1,4 @@
-# Smart Air Quality Monitoring System in Saudi Arabia
+# Smart Air Quality Monitoring System in Saudi Arabia.
 
 ## Introduction
 
