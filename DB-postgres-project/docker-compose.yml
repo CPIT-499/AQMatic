@@ -5,7 +5,14 @@ services:
     env_file: .env
     volumes:
       - my_postgres_data:/var/lib/postgresql/data
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql  # Bind mount
+      - ./command.sql:/docker-entrypoint-initdb.d/command.sql  # Bind mount
     ports:
       - "5432:5432"
+    container_name: db-postgres-project
+
 volumes:
   my_postgres_data:
+
+# to run it
+# docker-compose -f docker-compose.yml up -d
