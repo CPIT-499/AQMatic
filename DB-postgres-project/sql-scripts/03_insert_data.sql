@@ -2,7 +2,12 @@
 INSERT INTO organizations (organization_name, contact_email, contact_phone, address, website)
 VALUES 
     ('Org A', 'orga@example.com', '123-456-7890', '123 Main St, City A', 'www.orga.com'),
-    ('Org B', 'orgb@example.com', '987-654-3210', '456 Elm St, City B', 'www.orgb.com');
+    ('Org B', 'orgb@example.com', '987-654-3210', '456 Elm St, City B', 'www.orgb.com'),
+    ('Org C', 'orgc@example.com', '555-123-4567', '789 Oak St, City C', 'www.orgc.com'),
+    ('Org D', 'orgd@example.com', '555-987-6543', '101 Pine St, City D', 'www.orgd.com'),
+    ('Org E', 'orge@example.com', '555-654-3210', '202 Maple St, City E', 'www.orge.com'),
+    ('Org F', 'orgf@example.com', '555-321-0987', '303 Birch St, City F', 'www.orgf.com'),
+    ('Org G', 'orgg@example.com', '555-876-5432', '404 Cedar St, City G', 'www.orgg.com');
 
 -- Insert into users
 INSERT INTO users (organization_id, username, api_key, password_hash, email, role)
