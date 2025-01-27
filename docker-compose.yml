@@ -3,13 +3,40 @@ version: '3.9'
 services:
   db:
     image: postgres:latest
-    env_file: .env 
+    env_file: .env
     volumes:
       - my_postgres_data:/var/lib/postgresql/data  # Persistent volume for PostgreSQL data
       - ./docker/postgres/initdb.d:/docker-entrypoint-initdb.d  # Mount the directory containing SQL scripts
     ports:
       - "5432:5432"
-    container_name: db-postgres
+    container_name: postgres
+
+  airflow-webserver:
+    image: apache/airflow:latest
+    env_file: .env
+    volumes:
+      - ./dags:/opt/airflow/dags  # Mount your DAGs directory
+      - ./logs:/opt/airflow/logs  # Mount logs directory
+      - ./plugins:/opt/airflow/plugins  # Mount plugins directory
+    ports:
+      - "8080:8080"
+    container_name: airflow-webserver
+    depends_on: #This ensures that the db and airflow-scheduler services are started before the airflow-webserver service.
+      - db
+      - airflow-scheduler
+    command: webserver
+
+  airflow-scheduler:
+    image: apache/airflow:latest
+    env_file: .env
+    volumes:
+      - ./dags:/opt/airflow/dags  # Mount your DAGs directory
+      - ./logs:/opt/airflow/logs  # Mount logs directory
+      - ./plugins:/opt/airflow/plugins  # Mount plugins directory
+    container_name: airflow-scheduler
+    depends_on:
+      - db
+    command: scheduler
 
 volumes:
   my_postgres_data:
