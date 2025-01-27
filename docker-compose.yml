@@ -1,16 +1,16 @@
 version: '3.9'
+
 services:
   db:
     image: postgres:latest
-    env_file: .env
+    env_file: .env 
     volumes:
-      - my_postgres_data:/var/lib/postgresql/data
-      - ./sql-scripts/01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql  # Bind mount
-      - ./sql-scripts/02_command.sql:/docker-entrypoint-initdb.d/02_command.sql  # Bind mount
-      - ./sql-scripts/03_insert_data.sql:/docker-entrypoint-initdb.d/03_insert_data.sql  # Bind mount
+      - my_postgres_data:/var/lib/postgresql/data  # Persistent volume for PostgreSQL data
+      - ./docker/postgres/initdb.d:/docker-entrypoint-initdb.d  # Mount the directory containing SQL scripts
     ports:
       - "5432:5432"
-    container_name: db-postgres-project-db-1
+    container_name: db-postgres
+
 volumes:
   my_postgres_data:
 
