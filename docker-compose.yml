@@ -1,5 +1,6 @@
 version: '3'
 services:
+
   db:
     image: postgres:latest
     container_name: postgres
@@ -27,8 +28,8 @@ services:
     depends_on:
       - db
       - airflow-scheduler
-    command: >
-      bash -c "airflow db init && airflow webserver"
+    command: bash -c "airflow db init && airflow users create --username $AIRFLOW_ADMIN_USER --firstname Admin --lastname User --role Admin --email admin@example.com --password $AIRFLOW_ADMIN_PASSWORD && airflow webserver"
+
 
   airflow-scheduler:
     image: apache/airflow:latest
@@ -50,4 +51,4 @@ volumes:
 
 networks:
   my_network:
-    external: true
+    driver: bridge
