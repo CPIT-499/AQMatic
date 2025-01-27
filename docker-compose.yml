@@ -1,45 +1,53 @@
-version: '3.9'
-
+version: '3'
 services:
   db:
     image: postgres:latest
-    env_file: .env
+    container_name: postgres
+    env_file: .env  # Load variables from .env
     volumes:
-      - my_postgres_data:/var/lib/postgresql/data  # Persistent volume for PostgreSQL data
-      - ./docker/postgres/initdb.d:/docker-entrypoint-initdb.d  # Mount the directory containing SQL scripts
+      - my_postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/initdb.d:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
-    container_name: postgres
+    networks:
+      - my_network
 
   airflow-webserver:
     image: apache/airflow:latest
-    env_file: .env
+    container_name: airflow-webserver
+    env_file: .env  # Share the same .env variables
     volumes:
-      - ./dags:/opt/airflow/dags  # Mount your DAGs directory
-      - ./logs:/opt/airflow/logs  # Mount logs directory
-      - ./plugins:/opt/airflow/plugins  # Mount plugins directory
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
     ports:
       - "8080:8080"
-    container_name: airflow-webserver
-    depends_on: #This ensures that the db and airflow-scheduler services are started before the airflow-webserver service.
+    networks:
+      - my_network
+    depends_on:
       - db
       - airflow-scheduler
-    command: webserver
+    command: >
+      bash -c "airflow db init && airflow webserver"
 
   airflow-scheduler:
     image: apache/airflow:latest
-    env_file: .env
-    volumes:
-      - ./dags:/opt/airflow/dags  # Mount your DAGs directory
-      - ./logs:/opt/airflow/logs  # Mount logs directory
-      - ./plugins:/opt/airflow/plugins  # Mount plugins directory
     container_name: airflow-scheduler
+    env_file: .env  # Share the same .env variables
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    networks:
+      - my_network
     depends_on:
       - db
-    command: scheduler
+    command: >
+      bash -c "airflow db init && airflow scheduler"
 
 volumes:
   my_postgres_data:
 
-# to run it
-# docker-compose -f docker-compose.yml up -d
+networks:
+  my_network:
+    external: true
