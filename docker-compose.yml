@@ -1,6 +1,4 @@
-version: '3'
 services:
-
   db:
     image: postgres:latest
     container_name: postgres
@@ -30,7 +28,6 @@ services:
       - airflow-scheduler
     command: bash -c "airflow db init && airflow users create --username $AIRFLOW_ADMIN_USER --firstname Admin --lastname User --role Admin --email admin@example.com --password $AIRFLOW_ADMIN_PASSWORD && airflow webserver"
 
-
   airflow-scheduler:
     image: apache/airflow:latest
     container_name: airflow-scheduler
@@ -45,6 +42,19 @@ services:
       - db
     command: >
       bash -c "airflow db init && airflow scheduler"
+  
+  python-app:
+    build:
+      context: .
+      dockerfile: ./docker/python/Dockerfile
+    container_name: python-app
+    env_file: .env
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    networks:
+      - my_network  
 
 volumes:
   my_postgres_data:
