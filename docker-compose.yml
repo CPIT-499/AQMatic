@@ -1,4 +1,5 @@
 services:
+#this is for the database service postgres
   db:
     image: postgres:latest
     container_name: postgres
@@ -11,6 +12,8 @@ services:
     networks:
       - my_network
 
+#======================================================================================================
+#this is for the airflow webserver service the webserver is the UI of the airflow
   airflow-webserver:
     image: apache/airflow:latest
     container_name: airflow-webserver
@@ -28,6 +31,8 @@ services:
       - airflow-scheduler
     command: bash -c "airflow db init && airflow users create --username $AIRFLOW_ADMIN_USER --firstname Admin --lastname User --role Admin --email admin@example.com --password $AIRFLOW_ADMIN_PASSWORD && airflow webserver"
 
+#======================================================================================================
+#this is for the airflow scheduler service
   airflow-scheduler:
     image: apache/airflow:latest
     container_name: airflow-scheduler
@@ -42,7 +47,9 @@ services:
       - db
     command: >
       bash -c "airflow db init && airflow scheduler"
-  
+
+#======================================================================================================
+#this is for the python app service 
   python-app:
     build:
       context: .

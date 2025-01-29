@@ -16,5 +16,10 @@ test_task = EmptyOperator(
     dag=dag,
 )
 
+test_task2 = EmptyOperator(
+    task_id='test_task2',
+    dag=dag,
+)
+
 # Set the task in the DAG
-test_task
+test_task >> test_task2
