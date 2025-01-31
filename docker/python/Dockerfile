@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Set the command to run your testdag.py file
-CMD ["python", "dags/operators/testdag.py"]
+CMD ["dags/operators/testdag.py"]

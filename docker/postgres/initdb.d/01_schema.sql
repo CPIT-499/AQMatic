@@ -1,5 +1,4 @@
 -- Table: organizations
-DROP TABLE IF EXISTS organizations CASCADE;
 CREATE TABLE organizations (
     organization_id SERIAL PRIMARY KEY,
     organization_name VARCHAR NOT NULL,
@@ -10,7 +9,6 @@ CREATE TABLE organizations (
 );
 
 -- Table: users
-DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     organization_id INTEGER NOT NULL REFERENCES organizations(organization_id),
@@ -22,7 +20,6 @@ CREATE TABLE users (
 );
 
 -- Table: locations
-DROP TABLE IF EXISTS locations CASCADE;
 CREATE TABLE locations (
     location_id SERIAL PRIMARY KEY,
     latitude DECIMAL NOT NULL,
@@ -34,7 +31,6 @@ CREATE TABLE locations (
 );
 
 -- Table: sensors
-DROP TABLE IF EXISTS sensors CASCADE;
 CREATE TABLE sensors (
     sensor_id SERIAL PRIMARY KEY,
     organization_id INTEGER NOT NULL REFERENCES organizations(organization_id),
@@ -49,22 +45,29 @@ CREATE TABLE sensors (
     additional_info TEXT
 );
 
--- Table: measurements
-DROP TABLE IF EXISTS measurements CASCADE;
+-- Table: attributes
+CREATE TABLE measurement_attributes (
+    attribute_id SERIAL PRIMARY KEY, -- Unique ID for each attribute
+    attribute_name VARCHAR NOT NULL UNIQUE, -- Name of the attribute (e.g., "co2_ppm")
+    unit VARCHAR NOT NULL -- Unit of measurement (e.g., "ppm", "°C")
+);
+
+
+
 CREATE TABLE measurements (
-    measurement_id SERIAL PRIMARY KEY,
-    sensor_id INTEGER NOT NULL REFERENCES sensors(sensor_id),
-    measurement_time TIMESTAMP NOT NULL,
-    location_id INTEGER NOT NULL REFERENCES locations(location_id),
-    co2_ppm REAL,
-    no2_ppm REAL,
-    so2_ppm REAL,
-    pm2_5 REAL,
-    pm10 REAL,
-    o3_ppm REAL,
-    temperature REAL,
-    humidity REAL,
-    wind_speed REAL,
-    wind_direction REAL,
-    additional_params TEXT
+    measurement_id SERIAL PRIMARY KEY, -- Unique ID for each measurement
+    sensor_id INTEGER NOT NULL REFERENCES sensors(sensor_id), -- Which sensor
+    measurement_time TIMESTAMP NOT NULL, -- When the measurement was taken
+    location_id INTEGER NOT NULL REFERENCES locations(location_id), -- Where
+    attribute_id INTEGER NOT NULL REFERENCES measurement_attributes(attribute_id), -- What parameter
+    value NUMERIC NOT NULL -- The measured value
+);
+
+
+CREATE TABLE log (
+    id SERIAL PRIMARY KEY,
+    dttm TIMESTAMPTZ NOT NULL,
+    event TEXT NOT NULL,
+    owner TEXT NOT NULL,
+    extra JSONB
 );
