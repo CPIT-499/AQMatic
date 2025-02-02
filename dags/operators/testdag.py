@@ -1,11 +1,13 @@
 from airflow import DAG
 from airflow.operators.empty import EmptyOperator
-import pendulum
-from airflow import DAG
 from airflow.operators.python import PythonOperator
 import pendulum
+
+# Import the function to get air quality data
 from src.api_client.openweathermap_API import get_all_cities_air_quality
 import os
+
+
 
 # Define the DAG
 dag = DAG(
@@ -14,17 +16,6 @@ dag = DAG(
     schedule='@daily',
     catchup=False,
 )
-
-# Define a function to print air quality data
-def print_air_quality_data():
-    results = get_all_cities_air_quality()
-    for city, data in results.items():
-        print(f"\n=== Air Quality Data for {city} ===")
-        print(f"Time: {data['timestamp']}")
-        print(f"AQI: {data['aqi']}")
-        print("Pollutants (μg/m³):")
-        for gas, value in data['components'].items():
-            print(f"{gas.upper()}: {value}")
 
 # Define the tasks
 test_task = EmptyOperator(
@@ -47,12 +38,8 @@ test_task4 = EmptyOperator(
     dag=dag,
 )
 
-# Task to print air quality data
-air_quality_task = PythonOperator(
-    task_id='print_air_quality_data',
-    python_callable=print_air_quality_data,
-    dag=dag,
-)
 
 # Set the task order
-test_task >> test_task2 >> test_task3 >> test_task4 >> air_quality_task
+test_task >> test_task2 >> test_task3
+
+test_task3 << test_task4 
