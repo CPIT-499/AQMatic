@@ -64,12 +64,3 @@ CREATE TABLE measurements (
 );
 
 
-CREATE TABLE log (
-    id SERIAL PRIMARY KEY,          -- Unique identifier for each log entry
-    dag_id VARCHAR,                 -- ID of the Directed Acyclic Graph (DAG) associated with the event
-    task_id VARCHAR,                -- ID of the task associated with the event
-    dttm TIMESTAMPTZ NOT NULL,      -- Date and time of the event, including time zone
-    event TEXT NOT NULL,            -- Description of the event
-    owner TEXT NOT NULL,            -- Owner or source of the event
-    extra JSONB                     -- Additional information about the event in JSONB format
-);

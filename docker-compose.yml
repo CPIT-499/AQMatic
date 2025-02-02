@@ -15,13 +15,19 @@ services:
 #======================================================================================================
 #this is for the airflow webserver service the webserver is the UI of the airflow
   airflow-webserver:
-    image: apache/airflow:latest
+    build:
+      context: .
+      dockerfile: ./docker/airflow/Dockerfile
     container_name: airflow-webserver
     env_file: .env  # Share the same .env variables
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - PYTHONPATH=/opt/airflow
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
+      - ./src:/opt/airflow/src  # Mount the src directory
     ports:
       - "8080:8080"
     networks:
@@ -34,19 +40,23 @@ services:
 #======================================================================================================
 #this is for the airflow scheduler service
   airflow-scheduler:
-    image: apache/airflow:latest
+    build:
+      context: .
+      dockerfile: ./docker/airflow/Dockerfile
     container_name: airflow-scheduler
     env_file: .env  # Share the same .env variables
+    environment:
+      - PYTHONPATH=/opt/airflow
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
+      - ./src:/opt/airflow/src  # Mount the src directory here as well
     networks:
       - my_network
     depends_on:
       - db
-    command: >
-      bash -c "airflow db init && airflow scheduler"
+    command: bash -c "airflow db init && airflow scheduler"
 
 #======================================================================================================
 #this is for the python app service 

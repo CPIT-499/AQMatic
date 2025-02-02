@@ -46,11 +46,3 @@ VALUES
   (2, '2024-01-01 13:15:00', 2, 3, 415.0),
   (3, '2024-01-01 14:30:00', 3, 4, 12.3),
   (4, '2024-01-01 15:45:00', 4, 5, 5.8);
-
-  INSERT INTO log (dag_id, task_id, dttm, event, owner, extra)
-VALUES 
-  ('sensor_ingestion', 'load_sensor_data', '2024-01-01 12:00:00 UTC', 'Task started', 'Airflow', '{"sensor_id": 1}'),
-  ('sensor_ingestion', 'load_sensor_data', '2024-01-01 12:05:00 UTC', 'Task succeeded', 'Airflow', '{"rows_processed": 100}'),
-  ('data_export', 'export_to_s3', '2024-01-01 13:00:00 UTC', 'Export failed', 'Airflow', '{"error": "Connection timeout"}'),
-  ('alerting', 'check_co2', '2024-01-01 14:00:00 UTC', 'CO2 threshold exceeded', 'John', '{"value": 415, "threshold": 400}'),
-  ('maintenance', 'update_sensors', '2024-01-01 15:00:00 UTC', 'Firmware updated', 'Sarah', '{"version": "v2.1.0"}');
