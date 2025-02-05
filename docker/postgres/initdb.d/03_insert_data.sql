@@ -31,13 +31,21 @@ VALUES
   (4, 'Marine Sensor', 'MS-DeepBlue', '2023-07-01', 4, NULL, NULL, 'Miami Coastal Station', 'Mike Marine'),
   (5, 'Alpine Climate', 'AC-1000', '2023-09-12', 5, NULL, NULL, 'Zurich Alpine Station', 'Anna Alpine');
 
-  INSERT INTO measurement_attributes (attribute_name, unit)
+  INSERT INTO measurement_attributes (id, attribute_name, unit)
 VALUES 
-  ('temperature', '°C'),
-  ('humidity', '%'),
-  ('co2', 'ppm'),
-  ('pm2.5', 'µg/m³'),
-  ('wind_speed', 'm/s');
+  (1, 'temperature', '°C'),
+  (2, 'humidity', '%'),
+  (3, 'co2', 'ppm'),
+  (4, 'pm2.5', 'µg/m³'),
+  (5, 'wind_speed', 'm/s'),
+  (6, 'pm10', 'µg/m³'),
+  (7, 'no2', 'ppb'),
+  (8, 'so2', 'ppb'),
+  (9, 'co', 'ppm'),
+  (10, 'o3', 'ppb'),
+  (11, 'methane', 'ppb'),
+  (12, 'nitrous_oxide', 'ppb'),
+  (13, 'fluorinated_gases', 'ppt');
 
   INSERT INTO measurements (sensor_id, measurement_time, location_id, attribute_id, value)
 VALUES 

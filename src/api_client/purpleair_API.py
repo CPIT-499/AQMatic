@@ -32,6 +32,9 @@ def get_sensor_data(sensor_index):
         print(json.dumps(data, indent=4))
         
         return data
+    
+    
+
         
     except requests.exceptions.RequestException as e:
         print(f"Error fetching data: {e}")
