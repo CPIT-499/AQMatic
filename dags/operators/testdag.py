@@ -3,6 +3,7 @@ from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
 import pendulum
 from src.api_client.test import send_dic
+from src.api_client.M_api import run_test
 
 # Define the DAG
 dag = DAG(
@@ -22,7 +23,7 @@ test_task4 = EmptyOperator(
 # Add a PythonOperator to invoke run_test
 test_python_task = PythonOperator(
     task_id='run_test',
-    python_callable=send_dic,
+    python_callable=run_test,
     dag=dag,
 )
 
