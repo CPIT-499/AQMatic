@@ -1,7 +1,0 @@
-apache-airflow
-requests
-pandas
-openmeteo_requests
-psycopg2-binary
-requests_cache
-retry_requests
