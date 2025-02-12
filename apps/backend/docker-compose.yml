@@ -1,0 +1,81 @@
+services:
+#this is for the database service postgres
+  db:
+    image: postgres:latest
+    container_name: postgres
+    env_file: .env  # Load variables from .env
+    volumes:
+      - my_postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - my_network
+
+#======================================================================================================
+#this is for the airflow webserver service the webserver is the UI of the airflow
+  airflow-webserver:
+    build:
+      context: .
+      dockerfile: ./docker/airflow/Dockerfile
+    container_name: airflow-webserver
+    env_file: .env  # Share the same .env variables
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - PYTHONPATH=/opt/airflow
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+      - ./src:/opt/airflow/src  # Mount the src directory
+    ports:
+      - "8080:8080"
+    networks:
+      - my_network
+    depends_on:
+      - db
+      - airflow-scheduler
+    command: bash -c "airflow db init && airflow users create --username $AIRFLOW_ADMIN_USER --firstname Admin --lastname User --role Admin --email admin@example.com --password $AIRFLOW_ADMIN_PASSWORD && airflow webserver"
+
+#======================================================================================================
+#this is for the airflow scheduler service
+  airflow-scheduler:
+    build:
+      context: .
+      dockerfile: ./docker/airflow/Dockerfile
+    container_name: airflow-scheduler
+    env_file: .env  # Share the same .env variables
+    environment:
+      - PYTHONPATH=/opt/airflow
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+      - ./src:/opt/airflow/src  # Mount the src directory here as well
+    networks:
+      - my_network
+    depends_on:
+      - db
+    command: bash -c "airflow db init && airflow scheduler"
+
+#======================================================================================================
+#this is for the python app service 
+  python-app:
+    build:
+      context: .
+      dockerfile: ./docker/python/Dockerfile
+    container_name: python-app
+    env_file: .env
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    networks:
+      - my_network  
+
+volumes:
+  my_postgres_data:
+
+networks:
+  my_network:
+    driver: bridge
