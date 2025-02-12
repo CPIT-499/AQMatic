@@ -1,0 +1,23 @@
+[2025-02-12T14:20:02.515+0000] {local_task_job_runner.py:123} INFO - ::group::Pre task execution logs
+[2025-02-12T14:20:02.585+0000] {taskinstance.py:2613} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: test_dag.run_test scheduled__2025-02-11T00:00:00+00:00 [queued]>
+[2025-02-12T14:20:02.590+0000] {taskinstance.py:2613} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: test_dag.run_test scheduled__2025-02-11T00:00:00+00:00 [queued]>
+[2025-02-12T14:20:02.590+0000] {taskinstance.py:2866} INFO - Starting attempt 1 of 1
+[2025-02-12T14:20:02.597+0000] {taskinstance.py:2889} INFO - Executing <Task(PythonOperator): run_test> on 2025-02-11 00:00:00+00:00
+[2025-02-12T14:20:02.602+0000] {standard_task_runner.py:104} INFO - Running: ['airflow', 'tasks', 'run', 'test_dag', 'run_test', 'scheduled__2025-02-11T00:00:00+00:00', '--job-id', '2', '--raw', '--subdir', 'DAGS_FOLDER/operators/testdag.py', '--cfg-path', '/tmp/tmpgbb0y0sv']
+[2025-02-12T14:20:02.604+0000] {standard_task_runner.py:105} INFO - Job 2: Subtask run_test
+[2025-02-12T14:20:02.604+0000] {logging_mixin.py:190} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:70 DeprecationWarning: This process (pid=163) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-02-12T14:20:02.605+0000] {standard_task_runner.py:72} INFO - Started process 185 to run task
+[2025-02-12T14:20:02.637+0000] {task_command.py:467} INFO - Running <TaskInstance: test_dag.run_test scheduled__2025-02-11T00:00:00+00:00 [running]> on host 193465fc06e5
+[2025-02-12T14:20:02.694+0000] {taskinstance.py:3132} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='test_dag' AIRFLOW_CTX_TASK_ID='run_test' AIRFLOW_CTX_EXECUTION_DATE='2025-02-11T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-02-11T00:00:00+00:00'
+[2025-02-12T14:20:02.695+0000] {taskinstance.py:731} INFO - ::endgroup::
+[2025-02-12T14:20:03.419+0000] {logging_mixin.py:190} INFO - Combined measurement at 2025-02-12 00:00:00+00:00:
+[2025-02-12T14:20:03.419+0000] {logging_mixin.py:190} INFO - Temp: 21.573501586914062°C | Humidity: 61.0%
+[2025-02-12T14:20:03.419+0000] {logging_mixin.py:190} INFO - Wind: 11.090103149414062 m/s | PM2.5: 69.80000305175781 µg/m³
+[2025-02-12T14:20:03.420+0000] {logging_mixin.py:190} INFO - CO: 169.0 µg/m³
+[2025-02-12T14:20:03.433+0000] {logging_mixin.py:190} INFO - Successfully inserted combined measurement
+[2025-02-12T14:20:03.434+0000] {python.py:240} INFO - Done. Returned value was: None
+[2025-02-12T14:20:03.441+0000] {taskinstance.py:340} INFO - ::group::Post task execution logs
+[2025-02-12T14:20:03.442+0000] {taskinstance.py:352} INFO - Marking task as SUCCESS. dag_id=test_dag, task_id=run_test, run_id=scheduled__2025-02-11T00:00:00+00:00, execution_date=20250211T000000, start_date=20250212T142002, end_date=20250212T142003
+[2025-02-12T14:20:03.461+0000] {local_task_job_runner.py:266} INFO - Task exited with return code 0
+[2025-02-12T14:20:03.471+0000] {taskinstance.py:3895} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-02-12T14:20:03.473+0000] {local_task_job_runner.py:245} INFO - ::endgroup::
