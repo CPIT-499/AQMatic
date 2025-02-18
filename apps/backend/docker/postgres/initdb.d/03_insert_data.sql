@@ -14,13 +14,15 @@ VALUES
   (3, 'sarah_sky', 'jkl012', 'hash4', 'sarah@urbanair.io', 'admin'),
   (4, 'mike_marine', 'mno345', 'hash5', 'mike@oceanwatch.org', 'viewer');
 
-  INSERT INTO locations (latitude, longitude, altitude, city, region, country)
-VALUES 
-  (45.5231, -122.6765, 50.5, 'Portland', 'Oregon', 'USA'),
-  (51.5074, -0.1278, 35.0, 'London', 'England', 'UK'),
-  (-33.8688, 151.2093, 3.0, 'Sydney', 'New South Wales', 'Australia'),
-  (25.7617, -80.1918, 2.0, 'Miami', 'Florida', 'USA'),
-  (47.3769, 8.5417, 408.0, 'Zurich', 'Zurich', 'Switzerland');
+INSERT INTO locations (latitude, longitude, city, country, region)
+VALUES
+    (24.5247, 39.5692, 'Medina', 'Saudi Arabia', 'Al Madinah Region'),
+    (21.5433, 39.1728, 'Jeddah', 'Saudi Arabia', 'Makkah Region'),
+    (21.3891, 39.8579, 'Mecca', 'Saudi Arabia', 'Makkah Region'),
+    (26.4207, 50.0888, 'Dammam', 'Saudi Arabia', 'Eastern Province'),
+    (21.4267, 40.4833, 'Taif', 'Saudi Arabia', 'Makkah Region'),
+    (21.4901, 39.1862, 'Jeddah', 'Saudi Arabia', 'Makkah Region'),
+    (24.7136, 46.6753, 'Riyadh', 'Saudi Arabia', 'Riyadh Region');
 
 
   INSERT INTO sensors (organization_id, sensor_type, model, deployment_date, default_location_id, vehicle_id, drone_model, station_name, operator_name)
@@ -47,10 +49,3 @@ VALUES
   (12, 'nitrous_oxide', 'ppb'),
   (13, 'fluorinated_gases', 'ppt');
 
-  INSERT INTO measurements (sensor_id, measurement_time, location_id, attribute_id, value)
-VALUES 
-  (1, '2024-01-01 12:00:00', 1, 1, 22.5),
-  (1, '2024-01-01 12:00:00', 1, 2, 65.0),
-  (2, '2024-01-01 13:15:00', 2, 3, 415.0),
-  (3, '2024-01-01 14:30:00', 3, 4, 12.3),
-  (4, '2024-01-01 15:45:00', 4, 5, 5.8);

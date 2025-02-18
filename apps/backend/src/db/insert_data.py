@@ -1,22 +1,15 @@
-import sqlite3
+from src.db.map import get_attribute_id
 
-def get_attribute_id_map(conn):
-    """
-    Selects all attributes from measurement_attributes and returns a dictionary mapping
-    attribute_name to id.
-    """
-    cursor = conn.cursor()
-    cursor.execute("SELECT attribute_id, attribute_name FROM measurement_attributes;")
-    rows = cursor.fetchall()
-    # Build mapping: key=attribute_name, value=attribute_id
-    return {name: id_ for id_, name in rows}
 
 def insert_measurements(conn, sensor_id, measurement_time, location_id, attributes):
     """
     Inserts measurements into the database.
     Looks up each attribute's id from the current database.
     """
-    attribute_id_map = get_attribute_id_map(conn)
+    attribute_id = "attribute_id" # attribute_id column name
+    attribute_name = "attribute_name" # attribute_name column name
+    measurement_attributes = "measurement_attributes" # table name
+    attribute_id_map = get_attribute_id(conn, attribute_id, attribute_name , measurement_attributes)
     cursor = conn.cursor()
     for attr, value in attributes.items():
         attribute_id = attribute_id_map.get(attr)
@@ -28,6 +21,21 @@ def insert_measurements(conn, sensor_id, measurement_time, location_id, attribut
         else:
             print(f"Attribute '{attr}' not found in database.")
     conn.commit()
+
+    
+# this method only going to use it if the insert was coming from the user on the website however we are not going to use it we are going to insert it manually in the database
+# def insert_location(conn, latitude, longitude, altitude=None, city=None, region=None, country=None):
+#     """
+#     Inserts a new location into the locations table.
+#     """
+#
+#     cursor = conn.cursor()
+#     cursor.execute(
+#         "INSERT INTO locations (latitude, longitude, altitude, city, region, country) VALUES (?, ?, ?, ?, ?, ?)",
+#         (latitude, longitude, altitude, city, region, country)
+#     )
+#     conn.commit()
+#     return cursor.lastrowid
 
 def insert_organization(conn, organization_name, contact_email=None, contact_phone=None, address=None, website=None):
     """
@@ -53,17 +61,7 @@ def insert_user(conn, organization_id, username, password_hash, api_key=None, em
     conn.commit()
     return cursor.lastrowid
 
-def insert_location(conn, latitude, longitude, altitude=None, city=None, region=None, country=None):
-    """
-    Inserts a new location into the locations table.
-    """
-    cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO locations (latitude, longitude, altitude, city, region, country) VALUES (?, ?, ?, ?, ?, ?)",
-        (latitude, longitude, altitude, city, region, country)
-    )
-    conn.commit()
-    return cursor.lastrowid
+
 
 def insert_sensor(conn, organization_id, sensor_type, model=None, deployment_date=None, default_location_id=None,
                   vehicle_id=None, drone_model=None, station_name=None, operator_name=None, additional_info=None):
