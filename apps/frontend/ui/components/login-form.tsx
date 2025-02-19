@@ -27,21 +27,21 @@ export function LoginForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={cn("flex flex-col gap-6", className)} {...props}>
-      <div className="flex flex-col items-center gap-2 text-center">
-        <h1 className="text-2xl font-bold">Login to your account</h1>
-        <p className="text-balance text-sm text-muted-foreground">
+    <form onSubmit={handleSubmit(onSubmit)} className={cn("flex flex-col gap-6 transition-all duration-300 ease-in-out", className)} {...props}>
+      <div className="flex flex-col items-center gap-2 text-center transition-all duration-300 ease-in-out">
+        <h1 className="text-2xl font-bold transition-all duration-300 ease-in-out hover:scale-[1.02]">Login to your account</h1>
+        <p className="text-balance text-sm text-muted-foreground transition-all duration-300 ease-in-out">
           Enter your email below to login to your account
         </p>
       </div>
       {error && (
-        <div className="text-sm text-red-500 text-center">
+        <div className="text-sm text-red-500 text-center transition-all duration-300 ease-in-out">
           {error}
         </div>
       )}
       <div className="grid gap-6">
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
+        <div className="grid gap-2 transition-all duration-300 ease-in-out">
+          <Label htmlFor="email" className="transition-all duration-300 ease-in-out hover:text-primary">Email</Label>
           <Input
             id="email"
             type="email"
@@ -54,14 +54,15 @@ export function LoginForm({
               }
             })}
             disabled={isSubmitting}
+            className="transition-all duration-300 ease-in-out focus:scale-[1.01] hover:border-primary/50"
           />
         </div>
-        <div className="grid gap-2">
+        <div className="grid gap-2 transition-all duration-300 ease-in-out">
           <div className="flex items-center">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="transition-all duration-300 ease-in-out hover:text-primary">Password</Label>
             <a
               href="#"
-              className="ml-auto text-sm underline-offset-4 hover:underline"
+              className="ml-auto text-sm transition-all duration-300 ease-in-out underline-offset-4 hover:underline hover:text-primary hover:scale-105"
             >
               Forgot your password?
             </a>
@@ -71,15 +72,16 @@ export function LoginForm({
             type="password"
             {...register('password', { required: true })}
             disabled={isSubmitting}
+            className="transition-all duration-300 ease-in-out focus:scale-[1.01] hover:border-primary/50"
           />
         </div>
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
+        <Button type="submit" className="w-full transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-lg" disabled={isSubmitting}>
           {isSubmitting ? 'Logging in...' : 'Login'}
         </Button>
       </div>
-      <div className="text-center text-sm">
+      <div className="text-center text-sm transition-all duration-300 ease-in-out">
         Don&apos;t have an account?{" "}
-        <a href="#" className="underline underline-offset-4">
+        <a href="#" className="transition-all duration-300 ease-in-out underline underline-offset-4 hover:text-primary hover:scale-105 inline-block">
           Sign up
         </a>
       </div>
