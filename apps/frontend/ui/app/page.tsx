@@ -4,11 +4,13 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 const MapComponent = dynamic(() => import('../components/MapComponent'), { ssr: false });
 
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
+import { Toolbar } from 'primereact/toolbar';
 import { Button } from "../components/ui/button";
 import { useRouter } from 'next/navigation';
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
 
 export default function Home() {
   const router = useRouter();
@@ -25,41 +27,45 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const startContent = (
+    <h1 className="text-2xl font-bold text-primary">AQMatic</h1>
+  );
+
+  const endContent = (
+    <div className="flex items-center gap-4">
+      <Button variant="ghost" className="text-sm" onClick={() => router.push('/about')}>About</Button>
+      <Button variant="ghost" className="text-sm">Contact</Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+      >
+        {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
+      </Button>
+    </div>
+  );
+
   return (
-    <main className="min-h-screen bg-background relative">
+    <main className="min-h-screen bg-background relative bg-gradient-to-b from-background via-background/95 to-background/90">
       {/* Navbar */}
-      <nav className="fixed top-0 w-full bg-background/80 backdrop-blur-sm border-b z-50 py-2">
-        <div className="container mx-auto px-6 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-primary">AQMatic</h1>
-          <div className="flex items-center gap-4">
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="text-sm">About</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <div className="p-4 w-[200px]">
-                      <p className="text-sm">Air Quality Monitoring System</p>
-                    </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Button variant="ghost" className="text-sm">Contact</Button>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-            >
-              {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
-            </Button>
-          </div>
+      <nav className="fixed top-0 w-full bg-background/80 backdrop-blur-sm border-b z-50">
+        <div className="container mx-auto px-4">
+          <Toolbar 
+            start={startContent} 
+            end={endContent} 
+            className="border-none bg-transparent py-4" 
+            style={{
+              '--toolbar-bg': 'transparent',
+              '--toolbar-border': 'none',
+              '--toolbar-padding': '1rem',
+              '--toolbar-content-spacing': '1.5rem'
+            }}
+          />
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="h-screen flex items-center justify-center text-center px-4">
+      <section className="h-screen flex items-center justify-center text-center px-4 bg-gradient-to-b from-primary/5 via-transparent to-transparent">
         <div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">Welcome to AQMatic</h1>
           <p className="text-lg sm:text-xl text-muted-foreground mb-8">Monitor air quality in real-time with our advanced tracking system</p>
@@ -70,12 +76,11 @@ export default function Home() {
       </section>
 
       {/* Map Section */}
-      <section className="h-screen relative">
-        <div className="absolute top-0 left-0 right-0 h-42 bg-gradient-to-b from-background to-transparent z-10"></div>
-        <div className="container mx-auto px-6 py-8 h-full">
-          <div className="relative w-full h-full">
+      <section className="min-h-screen pt-16 pb-16 relative bg-gradient-to-t from-primary/5 via-transparent to-transparent">
+        <div className="container mx-auto px-6 py-8 h-[calc(100vh-8rem)] z-0">
+          <div className="relative w-full h-full bg-card rounded-lg shadow-lg overflow-hidden">
             <div className="absolute inset-0 transition-opacity duration-600" style={{ opacity: showMap ? 1 : 0, pointerEvents: showMap ? 'auto' : 'none' }}>
-              <MapComponent className="w-full h-full rounded-lg shadow-lg" />
+              <MapComponent className="w-full h-full" />
             </div>
           </div>
         </div>
