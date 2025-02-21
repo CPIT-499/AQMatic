@@ -16,43 +16,75 @@ const MapComponent = ({ className }: MapComponentProps) => {
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
 
-    // Initialize the map
-    const map = L.map(mapRef.current).setView([21.5433, 39.1728], 12);
+    // Define Saudi Arabia bounds [south-west, north-east]
+    const saudiBounds = L.latLngBounds(
+      [16.3478, 34.6206], // South West
+      [32.1480, 55.6666]  // North East
+    );
+
+    // Initialize the map with custom options
+    const map = L.map(mapRef.current, {
+      center: [23.8859, 45.0792],
+      zoom: 6,
+      zoomControl: false, // We'll add it in a different position
+      scrollWheelZoom: true,
+      fadeAnimation: true,
+      maxBounds: saudiBounds,        // Restrict panning to these bounds
+      maxBoundsViscosity: 1.0,       // Make the bounds completely solid
+      minZoom: 5,                    // Restrict zoom out level
+      maxZoom: 19
+    });
+    
     mapInstanceRef.current = map;
 
-    // Add OpenStreetMap tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
+    // Ensure the map stays within bounds when zooming
+    map.fitBounds(saudiBounds);
+
+    // Add zoom control to top-right
+    L.control.zoom({
+      position: 'topright'
     }).addTo(map);
 
-    // Sample data for heatmap - Jeddah districts air quality data
+    // Add a modern-looking tile layer (you can choose different styles)
+    L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+      attribution: '©OpenStreetMap, ©StadiaMaps',
+      maxZoom: 20,
+      minZoom: 5
+    }).addTo(map);
+    
+    
+
+    // Enhanced heatmap configuration
     const heatmapData = [
-      [21.5433, 39.1728, 0.7], // Jeddah City Center
-      [21.4858, 39.1925, 0.4], // Al Balad
-      [21.6325, 39.1104, 0.9], // Obhur
-      [21.5169, 39.2192, 0.6], // Al Safa
-      [21.4225, 39.2492, 0.8], // Al Hamdaniyah
-      [21.5656, 39.1250, 0.5], // Al Shati
-      [21.4989, 39.1691, 0.3], // Al Andalus
-      [21.5850, 39.1562, 0.7], // Al Zahra
-      [21.4806, 39.2439, 0.6], // Al Faisaliyah
-      [21.5478, 39.2121, 0.8]  // Al Rawdah
+      [24.7136, 46.6753, 0.8], // Riyadh
+      [21.5433, 39.1728, 0.7], // Jeddah
+      [21.3891, 39.8579, 0.7], // Mecca
+      [24.5247, 39.5692, 0.6], // Medina
+      [26.4207, 50.0888, 0.5], // Dammam
+      [21.4267, 40.4833, 0.9]  // Taif
     ];
 
-    // Add heatmap layer
     // @ts-ignore - leaflet.heat type definitions
     L.heatLayer(heatmapData, {
-      radius: 25,
-      blur: 15,
+      radius: 30,
+      blur: 20,
       maxZoom: 15,
       max: 1.0,
       minOpacity: 0.4,
       gradient: {
-        0.4: '#3388ff', // Good air quality
-        0.6: '#98c13d', // Moderate air quality
-        0.8: '#f9a825', // Poor air quality
-        1.0: '#d32f2f'  // Very poor air quality
+        0.2: '#00e400', // Good
+        0.4: '#ffff00', // Moderate
+        0.6: '#ff7e00', // Unhealthy for Sensitive Groups
+        0.8: '#ff0000', // Unhealthy
+        0.9: '#99004c', // Very Unhealthy
+        1.0: '#7e0023'  // Hazardous
       }
+    }).addTo(map);
+
+    // Add a scale control
+    L.control.scale({
+      imperial: false,
+      position: 'bottomright'
     }).addTo(map);
 
     // Cleanup on unmount
