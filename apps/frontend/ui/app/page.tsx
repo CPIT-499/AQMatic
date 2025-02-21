@@ -62,7 +62,9 @@ export default function Home() {
         className="transition-all duration-300 ease-in-out hover:scale-105 hover:bg-primary/10"
         onClick={() => setTheme(theme === "light" ? "dark" : "light")}
       >
-        {mounted && (theme === "light" ? <Moon size={20} /> : <Sun size={20} />)}
+        <span suppressHydrationWarning>
+          {mounted ? (theme === "light" ? <Moon size={20} /> : <Sun size={20} />) : null}
+        </span>
       </Button>
     </div>
   );
@@ -99,7 +101,14 @@ export default function Home() {
       <section className="min-h-screen pt-16 pb-16 relative bg-gradient-to-t from-background/5 via-background/5 to-transparent backdrop-blur-md transition-all duration-700 ease-in-out">
         <div className="container mx-auto px-6 py-8 h-[calc(100vh-8rem)] z-0">
           <div className="relative w-full h-full bg-card/50 rounded-lg shadow-lg overflow-hidden border border-border/10 transition-all duration-500 ease-in-out hover:shadow-xl hover:border-border/20">
-            <div className="absolute inset-0 transition-all duration-700 ease-in-out" style={{ opacity: showMap ? 1 : 0, pointerEvents: showMap ? 'auto' : 'none' }}>
+            <div
+              className="absolute inset-0 transition-all duration-700 ease-in-out"
+              style={{
+                opacity: showMap ? 1 : 0,
+                pointerEvents: showMap ? 'auto' : 'none',
+                transform: showMap ? 'scale(1.1)' : 'scale(1)'
+              }}
+            >
               <MapComponent className="w-full h-full" />
             </div>
           </div>

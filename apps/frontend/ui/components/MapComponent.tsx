@@ -37,8 +37,8 @@ const MapComponent = ({ className }: MapComponentProps) => {
     
     mapInstanceRef.current = map;
 
-    // Ensure the map stays within bounds when zooming
-    map.fitBounds(saudiBounds);
+    // Ensure the map stays within bounds when zooming, and zoom a little bit closer
+    map.fitBounds(saudiBounds, { maxZoom: 200 });
 
     // Add zoom control to top-right
     L.control.zoom({
