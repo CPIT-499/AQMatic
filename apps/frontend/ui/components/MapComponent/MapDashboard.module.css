@@ -1,0 +1,36 @@
+.mapSection {
+  @apply pt-8 pb-8 relative bg-gradient-to-t from-background/10 via-background/10 to-transparent backdrop-blur-sm transition-all duration-500 ease-in-out;
+  width: 40vw; /* Change width here (25% of viewport width) */
+  height: 70vh; /* Set a new height (90% of viewport height) */
+}
+
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  height: 100%; /* Container fills the .mapSection height */
+  z-index: 0;
+}
+
+.mapCard {
+  @apply relative w-full h-full bg-card/40 rounded-lg shadow overflow-hidden border border-border/20 transition-all duration-300 ease-in-out hover:shadow-md hover:border-border/30;
+}
+
+.mapWrapper {
+  @apply absolute inset-0 transition-all duration-500 ease-in-out;
+}
+
+.mapVisible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1.05);
+}
+
+.mapHidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1);
+}

@@ -1,0 +1,35 @@
+.mapSection {
+  @apply min-h-screen pt-16 pb-16 relative bg-gradient-to-t from-background/5 via-background/5 to-transparent backdrop-blur-md transition-all duration-700 ease-in-out;
+}
+
+/* Replace @apply container with manual styles */
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem; /* Tailwind's px-6 */
+  padding-right: 1.5rem;
+  padding-top: 2rem;    /* Tailwind's py-8 */
+  padding-bottom: 2rem;
+  height: calc(100vh - 8rem);
+  z-index: 0;
+}
+
+.mapCard {
+  @apply relative w-full h-full bg-card/50 rounded-lg shadow-lg overflow-hidden border border-border/10 transition-all duration-500 ease-in-out hover:shadow-xl hover:border-border/20;
+}
+
+.mapWrapper {
+  @apply absolute inset-0 transition-all duration-700 ease-in-out;
+}
+
+.mapVisible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1.1);
+}
+
+.mapHidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1);
+}

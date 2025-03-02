@@ -15,7 +15,7 @@ SAUDI_CITIES = {
     "Taif": {"lat": 21.4267, "lon": 40.4833}
 }
 
-API_KEY = "*******************************"  # Replace with your OpenWeatherMap API key
+API_KEY = "f63b209dc710559a30df1d507a4f4432"  # Replace with your OpenWeatherMap API key
 
 def get_city_measurements(city, coords):
     """Collect measurements for a single city from APIs"""
