@@ -41,6 +41,7 @@ import { DashboardHeader } from "@/components/DashboardHeader/DashboardHeader";
 import { SummaryStats, StatCardProps } from "@/components/Dashboard/SummaryStats"
 import { AlertsSection } from "@/components/Alerts/AlertsSection";
 import { AirQualityMap } from "@/components/AirQualityMap/AirQualityMap"
+import { GasFilter } from "@/components/GasFilter/GasFilter";
 const chartData = [
   { date: "2024-04-01", desktop: 222, mobile: 150 },
   { date: "2024-04-02", desktop: 97, mobile: 180 },
@@ -310,13 +311,17 @@ export default function DashboardPage() {
           />
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <div className="col-span-2">
-          <AreaChartComponent
-            data={filteredData}
-            timeRange={timeRange}
-            setTimeRange={setTimeRange}
-            chartConfig={chartConfig}
-            activeFilter={activeFilter}
-          />
+  <GasFilter
+    activeFilter={activeFilter}
+    onFilterChange={setActiveFilter}
+  />
+  <AreaChartComponent
+    data={filteredData}
+    timeRange={timeRange}
+    setTimeRange={setTimeRange}
+    chartConfig={chartConfig}
+    activeFilter={activeFilter}
+  />
           </div>
           
           <div className="col-span-1">
