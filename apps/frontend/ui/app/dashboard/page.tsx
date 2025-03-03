@@ -4,11 +4,18 @@ import * as React from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import MapDashboardStyles from '@/components/MapComponent/MapDashboard.module.css'; // adjust import as needed
 import MapComponent from '@/components/MapComponent/MapComponent'; // adjust import as needed
+import { MainNav } from "@/components/main-nav"
+import { Bell, Settings, User, BarChart2, Map, Home, Filter, Download } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -27,6 +34,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useRouter } from "next/navigation";
+import AreaChartComponent from "@/components/Charts/AreaChartComponent";
+import { SideNav } from "@/components/Nav/SideNav"
+import { DashboardHeader } from "@/components/DashboardHeader/DashboardHeader";
+import { SummaryStats, StatCardProps } from "@/components/Dashboard/SummaryStats"
+import { AlertsSection } from "@/components/Alerts/AlertsSection";
+import { AirQualityMap } from "@/components/AirQualityMap/AirQualityMap"
 const chartData = [
   { date: "2024-04-01", desktop: 222, mobile: 150 },
   { date: "2024-04-02", desktop: 97, mobile: 180 },
@@ -121,25 +135,51 @@ const chartData = [
   { date: "2024-06-30", desktop: 446, mobile: 400 },
 ]
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  desktop: {
-    label: "Desktop",
-    color: "hsl(var(--chart-1))",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "hsl(var(--chart-2))",
-  },
-} satisfies ChartConfig
-
 export default function DashboardPage() {
   const [timeRange, setTimeRange] = React.useState("90d")
   const [showMap, setShowMap] = React.useState(true)
+  const [showNotifications, setShowNotifications] = React.useState(false)
+  const [activeFilter, setActiveFilter] = React.useState("all")
 
+  const chartConfig = {
+    description: "Showing air quality measurements over time",
+    "90d": { label: "3-Month Air Quality Trend" },
+    "30d": { label: "Monthly Air Quality Trend" },
+    "7d": { label: "Weekly Air Quality Trend" },
+    desktop: {
+      label: activeFilter === "all" ? "Primary Reading" :
+             activeFilter === "pm25" ? "PM2.5 Primary" :
+             activeFilter === "pm10" ? "PM10 Primary" :
+             activeFilter === "o3" ? "Ozone Primary" :
+             activeFilter === "no2" ? "NO₂ Primary" : "Primary Reading",
+      color: activeFilter === "all" ? "hsl(var(--chart-1))" :
+             activeFilter === "pm25" ? "hsl(152, 76%, 36%)" :
+             activeFilter === "pm10" ? "hsl(200, 95%, 39%)" :
+             activeFilter === "o3" ? "hsl(271, 81%, 56%)" :
+             activeFilter === "no2" ? "hsl(349, 89%, 43%)" : "hsl(var(--chart-1))",
+    },
+    mobile: {
+      label: activeFilter === "all" ? "Secondary Reading" :
+             activeFilter === "pm25" ? "PM2.5 Secondary" :
+             activeFilter === "pm10" ? "PM10 Secondary" :
+             activeFilter === "o3" ? "Ozone Secondary" :
+             activeFilter === "no2" ? "NO₂ Secondary" : "Secondary Reading",
+      color: activeFilter === "all" ? "hsl(var(--chart-2))" :
+             activeFilter === "pm25" ? "hsl(152, 76%, 46%)" :
+             activeFilter === "pm10" ? "hsl(200, 95%, 49%)" :
+             activeFilter === "o3" ? "hsl(271, 81%, 66%)" :
+             activeFilter === "no2" ? "hsl(349, 89%, 53%)" : "hsl(var(--chart-2))",
+    },
+    all: { label: "Showing combined air quality measurements" },
+    pm25: { label: "Monitoring PM2.5 particulate matter levels (μg/m³)" },
+    pm10: { label: "Tracking PM10 particulate matter concentrations (μg/m³)" },
+    o3: { label: "Measuring Ozone (O₃) levels in the atmosphere (ppb)" },
+    no2: { label: "Analyzing Nitrogen Dioxide (NO₂) concentrations (ppb)" }
+  } satisfies ChartConfig
+
+  // Filter data based on both time range and active filter
   const filteredData = chartData.filter((item) => {
+    // Time range filtering
     const date = new Date(item.date)
     const referenceDate = new Date("2024-06-30")
     let daysToSubtract = 90
@@ -150,121 +190,174 @@ export default function DashboardPage() {
     }
     const startDate = new Date(referenceDate)
     startDate.setDate(startDate.getDate() - daysToSubtract)
+    
+    // Only apply time filter if date is within range
     return date >= startDate
+  }).map(item => {
+    // Apply data transformations based on active filter
+    // This simulates different data views based on filter selection
+    let transformedItem = {...item}
+    
+    if (activeFilter === "pm25") {
+      transformedItem.desktop = Math.round(item.desktop * 0.8)
+      transformedItem.mobile = Math.round(item.mobile * 0.7)
+    } else if (activeFilter === "pm10") {
+      transformedItem.desktop = Math.round(item.desktop * 1.2)
+      transformedItem.mobile = Math.round(item.mobile * 1.1)
+    } else if (activeFilter === "o3") {
+      transformedItem.desktop = Math.round(item.desktop * 0.6)
+      transformedItem.mobile = Math.round(item.mobile * 0.9)
+    } else if (activeFilter === "no2") {
+      transformedItem.desktop = Math.round(item.desktop * 0.5)
+      transformedItem.mobile = Math.round(item.mobile * 0.4)
+    }
+    
+    return transformedItem
   })
 
+  const [activeSection, setActiveSection] = React.useState('dashboard');
+  const router = useRouter();
+
+  const handleNavigation = (section: string, path: string) => {
+    setActiveSection(section);
+    router.push(path);
+  };
+
   return (
-    <div>
-      <section>
-        <Card>
-          <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
-            <div className="grid flex-1 gap-1 text-center sm:text-left">
-              <CardTitle>Area Chart - Interactive</CardTitle>
-              <CardDescription>
-                Showing total visitors for the last 3 months
-              </CardDescription>
-            </div>
-            <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger
-                className="w-[160px] rounded-lg sm:ml-auto"
-                aria-label="Select a value"
-              >
-                <SelectValue placeholder="Last 3 months" />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl">
-                <SelectItem value="90d" className="rounded-lg">
-                  Last 3 months
-                </SelectItem>
-                <SelectItem value="30d" className="rounded-lg">
-                  Last 30 days
-                </SelectItem>
-                <SelectItem value="7d" className="rounded-lg">
-                  Last 7 days
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </CardHeader>
-          <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-            <ChartContainer
-              config={chartConfig}
-              className="aspect-auto h-[250px] w-full"
-            >
-              <AreaChart data={filteredData}>
-                <defs>
-                  <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--color-desktop)" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="var(--color-desktop)" stopOpacity={0.1} />
-                  </linearGradient>
-                  <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--color-mobile)" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="var(--color-mobile)" stopOpacity={0.1} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="date"
-                  tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                  minTickGap={32}
-                  tickFormatter={(value) => {
-                    const date = new Date(value)
-                    return date.toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    })
-                  }}
-                />
-                <ChartTooltip
-                  cursor={false}
-                  content={
-                    <ChartTooltipContent
-                      labelFormatter={(value) => {
-                        const date = new Date(value)
-                        return date.toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })
-                      }}
-                      indicator="dot"
-                    />
+    <div className="flex min-h-screen bg-background">
+      {/* Sidebar */}
+      <SideNav />
+
+      {/* Main Content */}
+      <div className="flex-1 md:ml-64">
+        {/* Dashboard Header */}
+        <DashboardHeader 
+          notificationCount={3}
+          onNotificationClick={() => setShowNotifications(!showNotifications)}
+          onProfileClick={() => router.push('/profile')}
+        />
+
+        {/* Dashboard Content */}
+        <main className="p-6">
+          {/* Summary Stats */}
+          <SummaryStats
+            stats={[
+              {
+                title: "Current AQI",
+                value: 87,
+                status: {
+                  label: "Moderate",
+                  color: {
+                    bg: "bg-yellow-100",
+                    text: "text-yellow-800",
+                    border: "border-yellow-200"
                   }
-                />
-                <Area
-                  dataKey="mobile"
-                  type="natural"
-                  fill="url(#fillMobile)"
-                  stroke="var(--color-mobile)"
-                  stackId="a"
-                />
-                <Area
-                  dataKey="desktop"
-                  type="natural"
-                  fill="url(#fillDesktop)"
-                  stroke="var(--color-desktop)"
-                  stackId="a"
-                />
-                <ChartLegend content={<ChartLegendContent />} />
-              </AreaChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-      </section>
-      <section>
-        {/* Map Section */}
-      <section className={MapDashboardStyles.mapSection}>
-        <div className={MapDashboardStyles.container}>
-          <div className={MapDashboardStyles.mapCard}>
-            <div
-              className={`${MapDashboardStyles.mapWrapper} ${showMap ? MapDashboardStyles.mapVisible : MapDashboardStyles.mapHidden}`}
-            >
-              <MapComponent className="w-full h-full" />
-            </div>
+                },
+                trend: {
+                  value: "+5%",
+                  label: "from yesterday"
+                }
+              },
+              {
+                title: "PM2.5 Level",
+                value: 24.3,
+                status: {
+                  label: "Unhealthy",
+                  color: {
+                    bg: "bg-orange-100",
+                    text: "text-orange-800",
+                    border: "border-orange-200"
+                  }
+                },
+                trend: {
+                  value: "-2%",
+                  label: "from yesterday"
+                }
+              },
+              {
+                title: "Monitoring Stations",
+                value: 6,
+                status: {
+                  label: "All Online",
+                  color: {
+                    bg: "bg-green-100",
+                    text: "text-green-800",
+                    border: "border-green-200"
+                  }
+                },
+                trend: {
+                  value: "100%",
+                  label: "uptime"
+                }
+              },
+              {
+                title: "Alerts Today",
+                value: 3,
+                status: {
+                  label: "Attention Needed",
+                  color: {
+                    bg: "bg-red-100",
+                    text: "text-red-800",
+                    border: "border-red-200"
+                  }
+                },
+                trend: {
+                  value: "",
+                  label: "View details"
+                }
+              }
+            ]}
+          />
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="col-span-2">
+          <AreaChartComponent
+            data={filteredData}
+            timeRange={timeRange}
+            setTimeRange={setTimeRange}
+            chartConfig={chartConfig}
+            activeFilter={activeFilter}
+          />
+          </div>
+          
+          <div className="col-span-1">
+            <AirQualityMap
+              showMap={showMap}
+              onToggleMap={() => setShowMap(!showMap)}
+            />
           </div>
         </div>
-      </section>
-      </section>
-    </div>
 
+        {/* Alerts Section */}
+        <AlertsSection
+          alerts={[
+            {
+              id: "1",
+              severity: "destructive",
+              title: "High PM2.5 levels detected in Riyadh",
+              description: "Levels exceeded 35μg/m³ for over 2 hours",
+              timestamp: "2 hours ago"
+            },
+            {
+              id: "2",
+              severity: "warning",
+              title: "Ozone levels rising in Jeddah",
+              description: "Approaching unhealthy levels for sensitive groups",
+              timestamp: "5 hours ago",
+              color: "bg-yellow-500"
+            },
+            {
+              id: "3",
+              severity: "outline",
+              title: "New monitoring station online",
+              description: "Station #7 is now operational in Dammam",
+              timestamp: "1 day ago",
+              color: "bg-green-500"
+            }
+          ]}
+          onViewAllClick={() => router.push('/alerts')}
+        />
+        </main>
+      </div>
+    </div>
   )
 }
