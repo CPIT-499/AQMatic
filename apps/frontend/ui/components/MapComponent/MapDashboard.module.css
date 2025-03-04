@@ -1,17 +1,16 @@
 .mapSection {
-  @apply pt-8 pb-8 relative bg-gradient-to-t from-background/10 via-background/10 to-transparent backdrop-blur-sm transition-all duration-500 ease-in-out;
-  width: 40vw; /* Change width here (25% of viewport width) */
-  height: 70vh; /* Set a new height (90% of viewport height) */
+  @apply pt-4 pb-4 relative bg-gradient-to-t from-background/10 via-background/10 to-transparent backdrop-blur-sm transition-all duration-500 ease-in-out;
+  width: 100%; /* Full width within its container */
+  height: 100%; /* Full height within its container */
+  min-height: 400px; /* Minimum height to ensure visibility */
+  max-height: calc(100vh - 200px); /* Maximum height with space for header/footer */
 }
 
 .container {
   margin-left: auto;
   margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
-  height: 100%; /* Container fills the .mapSection height */
+  padding: 0.1rem;
+  height: 103.69%; /* Container fills the .mapSection height */
   z-index: 0;
 }
 
@@ -26,11 +25,11 @@
 .mapVisible {
   opacity: 1;
   pointer-events: auto;
-  transform: scale(1.05);
+  transform: scale(1); /* Removed the scale to fit better in dashboard */
 }
 
 .mapHidden {
   opacity: 0;
   pointer-events: none;
-  transform: scale(1);
+  transform: scale(0.95);
 }

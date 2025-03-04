@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import MapHomeStyles from '@/components/MapComponent/MapHome.module.css'; // adjust import as needed
 import navStyles from '@/components/Nav/Nav.module.css';
+import Navbar from "@/components/Navbar/navbar"
 
 const MapComponent = dynamic(() => import('../components/MapComponent/MapComponent'), { ssr: false });
 
@@ -83,32 +84,49 @@ export default function Home() {
   );
 
   return (
-    <main className="min-h-screen relative bg-gradient-to-b from-background via-background/80 to-background/60 backdrop-blur-[100px]">
+    <main className="min-h-screen relative bg-gradient-to-b from-background via-background/80 to-background/60 backdrop-blur-[100px] dark:bg-black">
       {/* Navbar */}
-      <nav className={navStyles.navbar}>
-        <div className={navStyles.container}>
-          <Toolbar start={startContent} end={endContent} className={navStyles.toolbar} style={toolbarStyle} />
-        </div>
-      </nav>
-
+      <Navbar />
+      
       {/* Hero Section */}
-      <section className="h-screen flex items-center justify-center text-center px-4 bg-gradient-to-b from-background/5 via-background/5 to-transparent backdrop-blur-md transition-all duration-700 ease-in-out">
-        <div className="transition-all duration-500 ease-in-out">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 transition-all duration-500 ease-in-out">
-            Welcome to <span className="transition-all duration-500 ease-in-out hover:text-primary/90">AQMatic</span>
-          </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground mb-8 transition-all duration-500 ease-in-out hover:text-foreground">
-            Monitor air quality in real-time with our advanced tracking system
-          </p>
+      <main className="container mx-auto px-4 pt-16 pb-24 text-center dark:text-white">
+        <div className="mx-auto mb-10 flex justify-center">
+          <div className="h-16 w-16 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+            <div className="h-8 w-8 relative inset-0">
+              
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="grid grid-cols-3 gap-1">
+                  {[...Array(9)].map((_, i) => (
+                    <div key={i} className="h-1.5 w-1.5 rounded-full bg-gray-800 dark:bg-gray-300"></div>
+                  ))}
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+
+        <h1 className="text-6xl md:text-7xl font-bold tracking-tight text-gray-900 dark:text-gray-100 mb-6">
+          Monitor air quality insights
+          <br />
+          in real-time.
+        </h1>
+
+        <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-10">
+          Supporting Saudi Vision 2030 sustainability goals with comprehensive air monitoring.
+          Connect sensors, track emissions, and access real-time environmental insights.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button className="px-6 py-2 rounded-full hover:backdrop-blur-md transition-colors duration-300">Join for free</Button>
           <Button
-            size="lg"
-            className="transition-all duration-500 ease-in-out hover:scale-105 hover:shadow-lg hover:bg-primary/90"
-            onClick={() => router.push('/login')}
+            variant="outline"
+            className="px-6 py-2 rounded-full hover:backdrop-blur-md transition-colors duration-300"
           >
-            Get Started
+            See our plans <span className="ml-2">→</span>
           </Button>
         </div>
-      </section>
+      </main>
 
       {/* Map Section */}
       <section className={MapHomeStyles.mapSection}>

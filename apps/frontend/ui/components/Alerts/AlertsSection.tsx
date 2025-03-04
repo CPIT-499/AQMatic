@@ -42,7 +42,7 @@ export function AlertsSection({ alerts, onViewAllClick, className = '' }: Alerts
             {alerts.map((alert) => (
               <div key={alert.id} className="flex items-center gap-4 p-4 hover:bg-muted/50 transition-colors">
                 <Badge 
-                  variant={alert.severity} 
+                  variant={alert.severity === "warning" ? "secondary" : alert.severity} 
                   className={`h-2 w-2 rounded-full p-0 ${alert.color || ''}`} 
                 />
                 <div className="flex-1">
