@@ -11,6 +11,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { setTheme, theme } = useTheme();
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -34,9 +35,10 @@ if (scrolled) {
     navClasses = "bg-background/40 backdrop-blur-md border border-border/50";
 } else if (theme === "dark") {
     navClasses = "bg-[#2d2d2d] hover:bg-[#424242] backdrop-blur-md border border-border";
-}  else {
-    navClasses = "bg-background/40 backdrop-blur-md border border-border/50";
+} else {
+    navClasses = "bg-[#eaeaea] hover:bg-[#ffffff] backdrop-blur-md border border-border";
 }
+
   return (
     <div className="w-full flex justify-center p-6 sticky top-0 z-20">
       <nav 
