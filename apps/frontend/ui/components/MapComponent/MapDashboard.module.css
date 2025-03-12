@@ -1,8 +1,8 @@
 .mapSection {
-  @apply pt-4 pb-9 relative bg-gradient-to-t from-background/10 via-background/10 to-transparent backdrop-blur-sm transition-all duration-500 ease-in-out;
+  @apply pt-4 pb-4 relative bg-gradient-to-t from-background/10 via-background/10 to-transparent backdrop-blur-sm transition-all duration-500 ease-in-out;
   width: 100%; /* Full width within its container */
-  height: 111.2%; /* Full height within its container */
-  min-height: 480px; /* Minimum height to ensure visibility */
+  height: 107.4%; /* Full height within its container */
+  min-height: 100px; /* Minimum height to ensure visibility */
   max-height: calc(100vh - 200px); /* Maximum height with space for header/footer */
   margin-top: -18px; /* Add space from the top */
 }
