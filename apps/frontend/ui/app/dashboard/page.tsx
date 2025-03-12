@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import MapHomeStyles from '@/components/MapComponent/MapDashboard.module.css'; // adjust import as needed
-import dynamic from 'next/dynamic';
+import MapHomeStyles from '@/components/MapComponent/MapDashboard.module.css'
+import dynamic from 'next/dynamic'
 
 // UI Component imports
 import { Button } from "@/components/ui/button"
@@ -40,7 +40,7 @@ import { DashboardHeader } from "@/components/DashboardHeader/DashboardHeader"
 import { SummaryStats } from "@/components/Dashboard/SummaryStats"
 import { AlertsSection } from "@/components/Alerts/AlertsSection"
 import { AirQualityMap } from "@/components/AirQualityMap/AirQualityMap"
-import { GasFilter } from "@/components/GasFilter/GasFilter"
+import { GasFilter, GasFilterOption, TimeRangeOption } from "@/components/GasFilter/GasFilter"
 import AreaChartComponent from "@/components/Charts/AreaChartComponent"
 import MapComponent from '@/components/MapComponent/MapComponent'
 import Navbar from "@/components/Navbar/navbar"
@@ -71,11 +71,12 @@ interface Alert {
  */
 export default function DashboardPage() {
   // State management
-  const [timeRange, setTimeRange] = React.useState("90d")
+  const [timeRange, setTimeRange] = React.useState<TimeRangeOption>("90d")
   const [showMap, setShowMap] = React.useState(true)
   const [showNotifications, setShowNotifications] = React.useState(false)
-  const [activeFilter, setActiveFilter] = React.useState("all")
+  const [activeFilter, setActiveFilter] = React.useState<GasFilterOption>("all")
   const [activeSection, setActiveSection] = React.useState('dashboard')
+  const [filteredData, setFilteredData] = React.useState([])
 
   const router = useRouter()
 
@@ -133,46 +134,6 @@ export default function DashboardPage() {
     o3: { label: "Measuring Ozone (O₃) levels in the atmosphere (ppb)" },
     no2: { label: "Analyzing Nitrogen Dioxide (NO₂) concentrations (ppb)" }
   } satisfies ChartConfig
-
-  /**
-   * Filter and transform chart data based on selected time range and pollutant
-   */
-  const filteredData = React.useMemo(() => {
-    // First filter by time range
-    return chartData.filter((item) => {
-      const date = new Date(item.date)
-      const referenceDate = new Date("2024-06-30")
-      const daysToSubtract = timeRange === "30d" ? 30 : timeRange === "7d" ? 7 : 90
-      const startDate = new Date(referenceDate)
-      startDate.setDate(startDate.getDate() - daysToSubtract)
-
-      return date >= startDate
-    }).map(item => {
-      // Then transform data based on active pollutant filter
-      let transformedItem = { ...item }
-
-      switch (activeFilter) {
-        case "pm25":
-          transformedItem.desktop = Math.round(item.desktop * 0.8)
-          transformedItem.mobile = Math.round(item.mobile * 0.7)
-          break
-        case "pm10":
-          transformedItem.desktop = Math.round(item.desktop * 1.2)
-          transformedItem.mobile = Math.round(item.mobile * 1.1)
-          break
-        case "o3":
-          transformedItem.desktop = Math.round(item.desktop * 0.6)
-          transformedItem.mobile = Math.round(item.mobile * 0.9)
-          break
-        case "no2":
-          transformedItem.desktop = Math.round(item.desktop * 0.5)
-          transformedItem.mobile = Math.round(item.mobile * 0.4)
-          break
-      }
-
-      return transformedItem
-    })
-  }, [timeRange, activeFilter])
 
   /**
    * Summary statistics for the dashboard
@@ -275,8 +236,6 @@ export default function DashboardPage() {
 
   return (
     <div className="flex min-h-screen bg-background">
-      
-
       {/* Main content area */}
       <div className="flex-1 md">
         {/* Navigation bar*/}
@@ -290,19 +249,14 @@ export default function DashboardPage() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Charts section - spans 2 columns */}
             <div className="col-span-2">
-              {/* Gas filter controls */}
-              <GasFilter
-                activeFilter={activeFilter}
-                onFilterChange={setActiveFilter}
-              />
-
-              {/* Area chart component */}
+              {/* Area chart component - now handles data loading internally */}
               <AreaChartComponent
-                data={filteredData}
                 timeRange={timeRange}
                 setTimeRange={setTimeRange}
                 chartConfig={chartConfig}
                 activeFilter={activeFilter}
+                setActiveFilter={setActiveFilter}
+                onDataFiltered={setFilteredData}
               />
             </div>
 
