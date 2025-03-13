@@ -6,11 +6,12 @@ import { useRouter } from 'next/navigation';
 import { useTheme } from "next-themes";
 import { Moon, Sun } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils"; // Make sure this is imported
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { setTheme, theme } = useTheme();
+  const { setTheme, theme, resolvedTheme } = useTheme();
   const router = useRouter();
 
   useEffect(() => {
@@ -29,20 +30,29 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [scrolled]);
 
-// Define the nav background based on scroll and theme
-let navClasses = "";
-if (scrolled) {
-    navClasses = "bg-background/40 backdrop-blur-md border border-border/50";
-} else if (theme === "dark") {
-    navClasses = "bg-[#2d2d2d] hover:bg-[#424242] backdrop-blur-md border border-border";
-} else {
-    navClasses = "bg-[#eaeaea] hover:bg-[#ffffff] backdrop-blur-md border border-border";
-}
+  // Ensure dark mode class is applied on page load
+  useEffect(() => {
+    if (resolvedTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [resolvedTheme]);
+
+  // Only compute nav classes on the client after mounting
+  const navClasses = mounted ? 
+    scrolled ? "bg-background/40 backdrop-blur-md border border-border/50" :
+    resolvedTheme === "dark" ? "bg-[#2d2d2d] hover:bg-[#424242] backdrop-blur-md border border-border" :
+    "bg-[#eaeaea] hover:bg-[#ffffff] backdrop-blur-md border border-border" 
+    : "bg-transparent"; // Default during server rendering
 
   return (
-    <div className="w-full flex justify-center p-6 sticky top-0 z-20">
+    <div className="w-full flex justify-center p-9 sticky top-0% z-20">
       <nav 
-        className={`w-full max-w-4xl rounded-full px-8 py-4 flex items-center justify-between transition-all duration-300 ${navClasses}`}
+        className={cn(
+          "w-full max-w-4xl rounded-full px-10 py-4 flex items-center justify-between transition-all duration-300",
+          navClasses
+        )}
       >
         <div className="flex items-center">
           <Link href="/" className="flex items-center gap-2">
