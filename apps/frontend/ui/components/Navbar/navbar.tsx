@@ -50,12 +50,12 @@ export default function Navbar() {
     <div className="w-full flex justify-center p-9 sticky top-0% z-20">
       <nav 
         className={cn(
-          "w-full max-w-4xl rounded-full px-10 py-4 flex items-center justify-between transition-all duration-300",
+          "w-full max-w-3xl rounded-full px-7 py-2 flex items-center justify-between transition-all duration-300",
           navClasses
         )}
       >
-        <div className="flex items-center">
-          <Link href="/" className="flex items-center gap-2">
+        <div className="flex items-center grid-flow-row gap-3">
+          <Link href="/" className="flex items-center gap-3">
             <span className="text-xl">AQMatic</span>
           </Link>
         </div>

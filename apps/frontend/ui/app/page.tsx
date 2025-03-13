@@ -85,6 +85,9 @@ export default function Home() {
 
   return (
     <main className="min-h-screen relative bg-gradient-to-b from-background via-background/80 to-background/60 backdrop-blur-[100px] dark:bg-black">
+      {/* green Blure background */}
+      <div className="absolute top-60 left-1/4 w-1/2 h-64 bg-green-300/20 blur-[100px] rounded-full pointer-events-none" />
+  
       {/* Navbar */}
       <Navbar />
       
