@@ -27,9 +27,10 @@ export interface AlertsSectionProps {
   className?: string
 }
 
-export function AlertsSection({ alerts, onViewAllClick, className = '' }: AlertsSectionProps) {
+export function AlertsSection({ alerts, onViewAllClick, className }: AlertsSectionProps) {
+  const classNameValue = className || '';
   return (
-    <div className={`mt-6 ${className}`}>
+    <div className={`mt-6 ${classNameValue}`}>
       <Card className="shadow-lg hover:shadow-xl transition-all duration-300 border-primary/10">
         <CardHeader className="border-b py-4">
           <CardTitle className="text-xl font-bold">Recent Alerts</CardTitle>
