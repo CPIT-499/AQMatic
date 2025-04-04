@@ -995,3 +995,10 @@ ModuleNotFoundError: No module named 'src.api_client.M_api'
 [2025-04-04T11:47:01.972+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:47:01.972+0000] {dag.py:3239} INFO - Sync 1 DAGs
 [2025-04-04T11:47:01.991+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:47:01.991+0000] {dag.py:4180} INFO - Setting next_dagrun for weather_data_pipeline to 2025-04-04 00:00:00+00:00, run_after=2025-04-05 00:00:00+00:00
 [2025-04-04T11:47:02.007+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/operators/testdag.py took 0.852 seconds
+[2025-04-04T11:47:32.127+0000] {processor.py:186} INFO - Started process (PID=226) to work on /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:47:32.128+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/operators/testdag.py for tasks to queue
+[2025-04-04T11:47:32.129+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:47:32.129+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:47:32.917+0000] {processor.py:925} INFO - DAG(s) 'weather_data_pipeline' retrieved from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:47:32.942+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:47:32.942+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-04-04T11:47:32.965+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:47:32.965+0000] {dag.py:4180} INFO - Setting next_dagrun for weather_data_pipeline to 2025-04-04 00:00:00+00:00, run_after=2025-04-05 00:00:00+00:00
+[2025-04-04T11:47:32.986+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/operators/testdag.py took 0.864 seconds
