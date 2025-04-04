@@ -3,7 +3,7 @@ from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
 from airflow.utils.task_group import TaskGroup
 import pendulum
-from src.api_client.M_api import get_weather_and_air_quality, insert_measurements_meto
+from src.api_client.openmeteo import get_weather_and_air_quality, insert_measurements_meto
 from src.api_client.openweathermap_API import collect_measurements, insert_measurements_openweathermap
 
 # Define default arguments

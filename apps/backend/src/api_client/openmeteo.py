@@ -6,6 +6,8 @@ from datetime import datetime
 from src.db.connect import connect_to_db
 from src.db.insert_data import insert_measurements
 from src.db.map import get_location_id
+from src.db.map import get_organization_id
+
 
 # Initialize API client
 session = requests_cache.CachedSession('.cache', expire_after=3600)
@@ -85,7 +87,8 @@ def insert_measurements_meto(**context):
         longitude = data['longitude']
         location_id = "location_id"
         location_id = get_location_id(conn, location_id, latitude, longitude, "locations")
-
+        # Get organization ID for OpenWeatherMap
+        organization_id = get_or_create_organization(conn, "Open-Meteo", "https://openweathermap.org")
         if not conn:
             raise ConnectionError("Failed to connect to database")
             
@@ -94,6 +97,7 @@ def insert_measurements_meto(**context):
             sensor_id=1,
             measurement_time=data['timestamp'],
             location_id=location_id,
+            organization_id=organization_id,
             attributes={
                 "temperature": float(data['temperature']),
                 "humidity": float(data['humidity']),
@@ -112,3 +116,25 @@ def insert_measurements_meto(**context):
     finally:
         if conn:
             conn.close()
+def get_or_create_organization(conn, org_name, website):
+            """Get organization ID or create a new organization if it doesn't exist"""
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT organization_id FROM organizations WHERE organization_name = %s",
+                (org_name,)
+            )
+            org_result = cursor.fetchone()
+            
+            if not org_result:
+                print(f"Creating {org_name} organization record")
+                cursor.execute(
+                    "INSERT INTO organizations (organization_name, contact_email, contact_phone, address, website) " +
+                    "VALUES (%s, %s, %s, %s, %s) RETURNING organization_id",
+                    (org_name, "Null", "Null", "Null", website)
+                )
+                organization_id = cursor.fetchone()[0]
+                conn.commit()
+            else:
+                organization_id = org_result[0]
+            
+            return organization_id

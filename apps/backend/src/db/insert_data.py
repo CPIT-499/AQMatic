@@ -1,7 +1,6 @@
 from src.db.map import get_attribute_id
 
-
-def insert_measurements(conn, sensor_id, measurement_time, location_id, attributes):
+def insert_measurements(conn, sensor_id, organization_id, measurement_time, location_id, attributes):
     """
     Inserts measurements into the database.
     Looks up each attribute's id from the current database.
@@ -15,8 +14,8 @@ def insert_measurements(conn, sensor_id, measurement_time, location_id, attribut
         attribute_id = attribute_id_map.get(attr)
         if attribute_id:
             cursor.execute(
-                "INSERT INTO measurements (sensor_id, measurement_time, location_id, attribute_id, value) VALUES (%s, %s, %s, %s, %s)",
-                (sensor_id, measurement_time, location_id, attribute_id, value)
+                "INSERT INTO measurements (sensor_id, organization_id, measurement_time, location_id, attribute_id, value) VALUES (%s, %s, %s, %s, %s, %s)",
+                (sensor_id, organization_id, measurement_time, location_id, attribute_id, value)
             )
         else:
             print(f"Attribute '{attr}' not found in database.")

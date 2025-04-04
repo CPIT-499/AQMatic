@@ -54,13 +54,15 @@ CREATE TABLE measurement_attributes (
 
 
 
+-- Table: measurements
 CREATE TABLE measurements (
-    measurement_id SERIAL PRIMARY KEY, -- Unique ID for each measurement
-    sensor_id INTEGER NOT NULL REFERENCES sensors(sensor_id), -- Which sensor
-    measurement_time TIMESTAMP NOT NULL, -- When the measurement was taken
-    location_id INTEGER NOT NULL REFERENCES locations(location_id), -- Where
-    attribute_id INTEGER NOT NULL REFERENCES measurement_attributes(attribute_id), -- What parameter
-    value NUMERIC NOT NULL -- The measured value
+    measurement_id SERIAL PRIMARY KEY,
+    sensor_id INTEGER NOT NULL REFERENCES sensors(sensor_id),
+    organization_id INTEGER NOT NULL REFERENCES organizations(organization_id),
+    measurement_time TIMESTAMP NOT NULL,
+    location_id INTEGER NOT NULL REFERENCES locations(location_id),
+    attribute_id INTEGER NOT NULL REFERENCES measurement_attributes(attribute_id),
+    value NUMERIC NOT NULL
 );
 
 

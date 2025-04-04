@@ -87,9 +87,12 @@ def insert_measurements_openweathermap(**context):
         # Convert to list if it's a single record
         records = data if isinstance(data, list) else [data]
         
-        conn = connect_to_db()  # Ensure connect_to_db is defined or imported
+        conn = connect_to_db()
         if not conn:
             raise ConnectionError("Failed to connect to database")
+        
+        # IMPORTANT: Use get_or_create_organization instead of get_organization_id
+        organization_id = get_or_create_organization(conn, "OpenWeatherMap", "https://openweathermap.org")
         
         for record in records:
             location_id = get_location_id(conn, "location_id", record['lat'], record['lon'], "locations")
@@ -98,6 +101,7 @@ def insert_measurements_openweathermap(**context):
                 sensor_id=2,
                 measurement_time=record['timestamp'],
                 location_id=location_id,
+                organization_id=organization_id,
                 attributes={
                     "temperature": float(record['temperature']),
                     "humidity": float(record['humidity']),
@@ -128,8 +132,28 @@ def insert_measurements_openweathermap(**context):
         if conn:
             conn.close()
 
-
-
+def get_or_create_organization(conn, org_name, website):
+    """Get organization ID or create a new organization if it doesn't exist"""
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT organization_id FROM organizations WHERE organization_name = %s",
+        (org_name,)
+    )
+    org_result = cursor.fetchone()
+    
+    if not org_result:
+        print(f"Creating {org_name} organization record")
+        cursor.execute(
+            "INSERT INTO organizations (organization_name, contact_email, contact_phone, address, website) " +
+            "VALUES (%s, %s, %s, %s, %s) RETURNING organization_id",
+            (org_name, "Null", "Null", "Null", website)
+        )
+        organization_id = cursor.fetchone()[0]
+        conn.commit()
+    else:
+        organization_id = org_result[0]
+    
+    return organization_id
 
 if __name__ == "__main__":
     measurements_df = collect_measurements()
