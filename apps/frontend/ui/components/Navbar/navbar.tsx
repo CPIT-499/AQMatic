@@ -42,7 +42,7 @@ export default function Navbar() {
   // Only compute nav classes on the client after mounting
   const navClasses = mounted ? 
     scrolled ? "bg-background/40 backdrop-blur-md border border-border/50" :
-    resolvedTheme === "dark" ? "bg-[#2d2d2d] hover:bg-[#424242] backdrop-blur-md border border-border" :
+    resolvedTheme === "dark" ? "bg-background/40 backdrop-blur-md border border-border/50" :
     "bg-[#eaeaea] hover:bg-[#ffffff] backdrop-blur-md border border-border" 
     : "bg-transparent"; // Default during server rendering
 

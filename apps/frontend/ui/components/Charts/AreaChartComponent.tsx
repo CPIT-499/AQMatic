@@ -24,7 +24,7 @@ import {
   SelectValue 
 } from "@/components/ui/select"
 import { GasFilterOption, TimeRangeOption } from "@/components/GasFilter/GasFilter"
-import { chartData } from "@/data/chartData"
+import { chartData } from "@/data/dashboardData"
 
 interface DataItem {
   date: string;

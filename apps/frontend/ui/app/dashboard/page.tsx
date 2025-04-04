@@ -1,286 +1,129 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useRouter } from "next/navigation"
-import MapHomeStyles from '@/components/MapComponent/MapDashboard.module.css'
-import dynamic from 'next/dynamic'
+import * as React from "react";
+import { useRouter } from "next/navigation";
 
-// UI Component imports
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+// Data and Types
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  CHART_DATA,
+  CHART_DATA_ORG,
+  GAS_CONFIG,
+  SUMMARY_STATS,
+  SUMMARY_STATS_ORG,
+  ALERTS,
+  ALERTS_ORG,
+  TimeRangeOption
+} from "@/data/dashboardData"; // Adjust path
 
-// Custom component imports
-import { SideNav } from "@/components/Nav/SideNav"
-import { DashboardHeader } from "@/components/DashboardHeader/DashboardHeader"
-import { SummaryStats } from "@/components/Dashboard/SummaryStats"
-import { AlertsSection } from "@/components/Alerts/AlertsSection"
-import { AirQualityMap } from "@/components/AirQualityMap/AirQualityMap"
-import { GasFilter, GasFilterOption, TimeRangeOption } from "@/components/GasFilter/GasFilter"
-import AreaChartComponent from "@/components/Charts/AreaChartComponent"
-import MapComponent from '@/components/MapComponent/MapComponent'
-import Navbar from "@/components/Navbar/navbar"
-
-// Icons
-import { Bell, Settings, User, BarChart2, Map, Home, Filter, Download } from "lucide-react"
-
-// Data imports
-import { chartData } from "@/data/chartData" // Move chartData to a separate file
-
-const MapComponentNoSSR = dynamic(
-  () => import('@/components/MapComponent/MapComponent'),
-  { ssr: false }
-);
-
-interface Alert {
-  id: string,
-  severity: "destructive" | "warning" | "outline",
-  title: string,
-  description: string,
-  timestamp: string,
-  color?: string
+// UI Components
+import Navbar from "@/components/Navbar/navbar";
+import { SummaryStats } from "@/components/Dashboard/SummaryStats";
+import { AlertsSection } from "@/components/Alerts/AlertsSection";
+import { ModeSelector } from "@/components/Dashboard/ModeSelector"; // New component
+import { ChartSection } from "@/components/Dashboard/ChartSection"; // New component
+import { MapSection } from "@/components/Dashboard/MapSection";     // New component
+export interface Alert {
+  id: string;
+  title: string;
+  description: string;
+  severity: "destructive" | "warning" | "outline";
+  timestamp?: string; // Added optional timestamp
 }
-
-/**
- * Main Dashboard Page Component
- * Displays air quality monitoring data, statistics, and alerts
- */
 export default function DashboardPage() {
-  // State management
-  const [timeRange, setTimeRange] = React.useState<TimeRangeOption>("90d")
-  const [showMap, setShowMap] = React.useState(true)
-  const [showNotifications, setShowNotifications] = React.useState(false)
-  const [activeFilter, setActiveFilter] = React.useState<GasFilterOption>("all")
-  const [activeSection, setActiveSection] = React.useState('dashboard')
-  const [filteredData, setFilteredData] = React.useState([])
+  const router = useRouter();
 
-  const router = useRouter()
+  // --- State ---
+  const [selectedMode, setSelectedMode] = React.useState<"public" | "organization">("public");
+  const [selectedGases, setSelectedGases] = React.useState<string[]>(["pm25"]); // Default selection
+  const [timeRange, setTimeRange] = React.useState<TimeRangeOption>("90d");
 
-  /**
-   * Navigation handler
-   * @param section - The section to navigate to
-   * @param path - The URL path
-   */
-  const handleNavigation = (section: string, path: string) => {
-    setActiveSection(section)
-    router.push(path)
-  }
-
-  /**
-   * Chart configuration based on active filter and time range
-   */
-  const chartConfig = {
-    // Time range labels
-    "90d": { label: "3-Month Air Quality Trend" },
-    "30d": { label: "Monthly Air Quality Trend" },
-    "7d": { label: "Weekly Air Quality Trend" },
-
-    // Primary reading configuration
-    desktop: {
-      label: activeFilter === "all" ? "Primary Reading" :
-        activeFilter === "pm25" ? "PM2.5 Primary" :
-          activeFilter === "pm10" ? "PM10 Primary" :
-            activeFilter === "o3" ? "Ozone Primary" :
-              activeFilter === "no2" ? "NO₂ Primary" : "Primary Reading",
-      color: activeFilter === "all" ? "hsl(var(--chart-1))" :
-        activeFilter === "pm25" ? "hsl(152, 76%, 36%)" :
-          activeFilter === "pm10" ? "hsl(200, 95%, 39%)" :
-            activeFilter === "o3" ? "hsl(271, 81%, 56%)" :
-              activeFilter === "no2" ? "hsl(349, 89%, 43%)" : "hsl(var(--chart-1))",
-    },
-
-    // Secondary reading configuration
-    mobile: {
-      label: activeFilter === "all" ? "Secondary Reading" :
-        activeFilter === "pm25" ? "PM2.5 Secondary" :
-          activeFilter === "pm10" ? "PM10 Secondary" :
-            activeFilter === "o3" ? "Ozone Secondary" :
-              activeFilter === "no2" ? "NO₂ Secondary" : "Secondary Reading",
-      color: activeFilter === "all" ? "hsl(var(--chart-2))" :
-        activeFilter === "pm25" ? "hsl(152, 76%, 46%)" :
-          activeFilter === "pm10" ? "hsl(200, 95%, 49%)" :
-            activeFilter === "o3" ? "hsl(271, 81%, 66%)" :
-              activeFilter === "no2" ? "hsl(349, 89%, 53%)" : "hsl(var(--chart-2))",
-    },
-
-    // Filter descriptions
-    all: { label: "Showing combined air quality measurements" },
-    pm25: { label: "Monitoring PM2.5 particulate matter levels (μg/m³)" },
-    pm10: { label: "Tracking PM10 particulate matter concentrations (μg/m³)" },
-    o3: { label: "Measuring Ozone (O₃) levels in the atmosphere (ppb)" },
-    no2: { label: "Analyzing Nitrogen Dioxide (NO₂) concentrations (ppb)" }
-  } satisfies ChartConfig
-
-  /**
-   * Summary statistics for the dashboard
-   */
-  const summaryStats = [
-    {
-      title: "Current AQI",
-      value: 87,
-      status: {
-        label: "Moderate",
-        color: {
-          bg: "bg-yellow-100",
-          text: "text-yellow-800",
-          border: "border-yellow-200"
-        }
-      },
-      trend: {
-        value: "+5%",
-        label: "from yesterday"
-      }
-    },
-    {
-      title: "PM2.5 Level",
-      value: 24.3,
-      status: {
-        label: "Unhealthy",
-        color: {
-          bg: "bg-orange-100",
-          text: "text-orange-800",
-          border: "border-orange-200"
-        }
-      },
-      trend: {
-        value: "-2%",
-        label: "from yesterday"
-      }
-    },
-    {
-      title: "Monitoring Stations",
-      value: 6,
-      status: {
-        label: "All Online",
-        color: {
-          bg: "bg-green-100",
-          text: "text-green-800",
-          border: "border-green-200"
-        }
-      },
-      trend: {
-        value: "100%",
-        label: "uptime"
-      }
-    },
-    {
-      title: "Alerts Today",
-      value: 3,
-      status: {
-        label: "Attention Needed",
-        color: {
-          bg: "bg-red-100",
-          text: "text-red-800",
-          border: "border-red-200"
-        }
-      },
-      trend: {
-        value: "",
-        label: "View details"
-      }
+  // --- Memoized Data Filtering ---
+  const filteredData = React.useMemo(() => {
+    const data = selectedMode === "public" ? CHART_DATA : CHART_DATA_ORG;
+    
+    switch (timeRange) {
+      case "7d":
+        return data.slice(-3); // Placeholder: last 3 entries
+      case "30d":
+        return data.slice(-7); // Placeholder: last 7 entries
+      case "90d":
+      default:
+        return data; // Full data
     }
-  ]
+  }, [timeRange, selectedMode]);
 
-  /**
-   * Alert data for the alerts section
-   */
-  const alerts: Alert[] = [
-    {
-      id: "1",
-      severity: "destructive" as "destructive",
-      title: "High PM2.5 levels detected in Riyadh",
-      description: "Levels exceeded 35μg/m³ for over 2 hours",
-      timestamp: "2 hours ago"
-    },
-    {
-      id: "2",
-      severity: "warning" as "warning",
-      title: "Ozone levels rising in Jeddah",
-      description: "Approaching unhealthy levels for sensitive groups",
-      timestamp: "5 hours ago",
-      color: "bg-yellow-500"
-    },
-    {
-      id: "3",
-      severity: "outline" as "outline",
-      title: "New monitoring station online",
-      description: "Station #7 is now operational in Dammam",
-      timestamp: "1 day ago",
-      color: "bg-green-500"
+  // --- Memoized Stats Filtering ---
+  const filteredSummaryStats = React.useMemo(() => {
+    return selectedMode === "public" ? SUMMARY_STATS : SUMMARY_STATS_ORG;
+  }, [selectedMode]);
+
+  // --- Memoized Alerts Filtering ---
+  const filteredAlerts = React.useMemo(() => {
+    return selectedMode === "public" ? ALERTS : ALERTS_ORG;
+  }, [selectedMode]);
+
+  // --- Event Handlers ---
+  const handleToggleGas = React.useCallback((gas: string) => {
+    const allGasKeys = Object.keys(GAS_CONFIG);
+    if (gas === "All") {
+      // If "All" is clicked, toggle between all gases and the default single gas ('pm25')
+      setSelectedGases(
+        selectedGases.length === allGasKeys.length ? ["pm25"] : allGasKeys
+      );
+    } else {
+      // Toggle individual gas selection
+      setSelectedGases((prev) => {
+        const newSelection = prev.includes(gas)
+          ? prev.filter((g) => g !== gas)
+          : [...prev, gas];
+        // Ensure at least one gas is always selected (optional, adjust as needed)
+        return newSelection.length === 0 ? ["pm25"] : newSelection;
+      });
     }
-  ]
+  }, [selectedGases.length]); // Dependency ensures callback updates if selection count logic changes implicitly
 
+  const handleSetTimeRange = React.useCallback((newTimeRange: TimeRangeOption) => {
+    setTimeRange(newTimeRange);
+  }, []);
+
+  const handleNavigateToAlerts = React.useCallback(() => {
+    router.push('/alerts');
+  }, [router]);
+
+  // --- Render ---
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Main content area */}
-      <div className="flex-1 md">
-        {/* Navigation bar*/}
+      <div className="flex-1"> {/* Assuming Navbar might be part of a Sidebar layout later */}
         <Navbar />
 
-        {/* Main dashboard content */}
-        <main className="p-6">
-          {/* Summary statistics section */}
-          <SummaryStats stats={summaryStats} />
+        <main className="p-6 space-y-6"> {/* Added space-y for consistent spacing */}
+          {/* Removed redundant section wrappers */}
+          <ModeSelector
+            selectedMode={selectedMode}
+            onSelectMode={setSelectedMode}
+          />
+
+          <SummaryStats stats={filteredSummaryStats} />
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {/* Charts section - spans 2 columns */}
-            <div className="col-span-2">
-              {/* Area chart component - now handles data loading internally */}
-              <AreaChartComponent
-                timeRange={timeRange}
-                setTimeRange={setTimeRange}
-                chartConfig={chartConfig}
-                activeFilter={activeFilter}
-                setActiveFilter={setActiveFilter}
-                onDataFiltered={setFilteredData}
-              />
-            </div>
+            <ChartSection
+              selectedGases={selectedGases}
+              timeRange={timeRange}
+              filteredData={filteredData}
+              gasConfig={GAS_CONFIG}
+              onToggleGas={handleToggleGas}
+              onSetTimeRange={handleSetTimeRange}
+            />
 
-            {/* Map section - spans 1 column */}
-            <div className="col-span-1">
-              <section className={MapHomeStyles.mapSection}>
-                <div className={MapHomeStyles.container}>
-                  <div className={MapHomeStyles.mapCard}>
-                    <div className={`${MapHomeStyles.mapWrapper} ${showMap ? MapHomeStyles.mapVisible : MapHomeStyles.mapHidden}`}>
-                      <MapComponentNoSSR className="w-full h-full" />
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </div>
+            <MapSection />
           </div>
 
-          {/* Alerts section */}
           <AlertsSection
-            alerts={alerts}
-            onViewAllClick={() => router.push('/alerts')}
+            alerts={filteredAlerts}
+            onViewAllClick={handleNavigateToAlerts}
           />
         </main>
       </div>
     </div>
-  )
+  );
 }
