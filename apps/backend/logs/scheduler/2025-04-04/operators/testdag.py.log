@@ -939,3 +939,59 @@ ModuleNotFoundError: No module named 'src.api_client.M_api'
 [2025-04-04T11:42:54.568+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:42:54.568+0000] {dag.py:3239} INFO - Sync 1 DAGs
 [2025-04-04T11:42:54.591+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:42:54.590+0000] {dag.py:4180} INFO - Setting next_dagrun for weather_data_pipeline to 2025-04-04 00:00:00+00:00, run_after=2025-04-05 00:00:00+00:00
 [2025-04-04T11:42:54.609+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/operators/testdag.py took 0.737 seconds
+[2025-04-04T11:43:24.718+0000] {processor.py:186} INFO - Started process (PID=210) to work on /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:43:24.719+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/operators/testdag.py for tasks to queue
+[2025-04-04T11:43:24.720+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:43:24.719+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:43:25.419+0000] {processor.py:925} INFO - DAG(s) 'weather_data_pipeline' retrieved from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:43:25.442+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:43:25.442+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-04-04T11:43:25.463+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:43:25.462+0000] {dag.py:4180} INFO - Setting next_dagrun for weather_data_pipeline to 2025-04-04 00:00:00+00:00, run_after=2025-04-05 00:00:00+00:00
+[2025-04-04T11:43:25.479+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/operators/testdag.py took 0.767 seconds
+[2025-04-04T11:43:55.603+0000] {processor.py:186} INFO - Started process (PID=212) to work on /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:43:55.603+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/operators/testdag.py for tasks to queue
+[2025-04-04T11:43:55.604+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:43:55.604+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:43:56.268+0000] {processor.py:925} INFO - DAG(s) 'weather_data_pipeline' retrieved from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:43:56.292+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:43:56.292+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-04-04T11:43:56.313+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:43:56.312+0000] {dag.py:4180} INFO - Setting next_dagrun for weather_data_pipeline to 2025-04-04 00:00:00+00:00, run_after=2025-04-05 00:00:00+00:00
+[2025-04-04T11:43:56.337+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/operators/testdag.py took 0.739 seconds
+[2025-04-04T11:44:26.468+0000] {processor.py:186} INFO - Started process (PID=214) to work on /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:44:26.469+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/operators/testdag.py for tasks to queue
+[2025-04-04T11:44:26.470+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:44:26.470+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:44:27.147+0000] {processor.py:925} INFO - DAG(s) 'weather_data_pipeline' retrieved from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:44:27.180+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:44:27.179+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-04-04T11:44:27.206+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:44:27.206+0000] {dag.py:4180} INFO - Setting next_dagrun for weather_data_pipeline to 2025-04-04 00:00:00+00:00, run_after=2025-04-05 00:00:00+00:00
+[2025-04-04T11:44:27.232+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/operators/testdag.py took 0.769 seconds
+[2025-04-04T11:44:57.409+0000] {processor.py:186} INFO - Started process (PID=216) to work on /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:44:57.410+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/operators/testdag.py for tasks to queue
+[2025-04-04T11:44:57.411+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:44:57.410+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:44:58.131+0000] {processor.py:925} INFO - DAG(s) 'weather_data_pipeline' retrieved from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:44:58.157+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:44:58.156+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-04-04T11:44:58.180+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:44:58.180+0000] {dag.py:4180} INFO - Setting next_dagrun for weather_data_pipeline to 2025-04-04 00:00:00+00:00, run_after=2025-04-05 00:00:00+00:00
+[2025-04-04T11:44:58.199+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/operators/testdag.py took 0.796 seconds
+[2025-04-04T11:45:28.309+0000] {processor.py:186} INFO - Started process (PID=218) to work on /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:45:28.310+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/operators/testdag.py for tasks to queue
+[2025-04-04T11:45:28.312+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:45:28.311+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:45:29.020+0000] {processor.py:925} INFO - DAG(s) 'weather_data_pipeline' retrieved from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:45:29.045+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:45:29.044+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-04-04T11:45:29.066+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:45:29.066+0000] {dag.py:4180} INFO - Setting next_dagrun for weather_data_pipeline to 2025-04-04 00:00:00+00:00, run_after=2025-04-05 00:00:00+00:00
+[2025-04-04T11:45:29.086+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/operators/testdag.py took 0.782 seconds
+[2025-04-04T11:45:59.252+0000] {processor.py:186} INFO - Started process (PID=220) to work on /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:45:59.253+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/operators/testdag.py for tasks to queue
+[2025-04-04T11:45:59.254+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:45:59.254+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:46:00.009+0000] {processor.py:925} INFO - DAG(s) 'weather_data_pipeline' retrieved from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:46:00.036+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:46:00.035+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-04-04T11:46:00.055+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:46:00.055+0000] {dag.py:4180} INFO - Setting next_dagrun for weather_data_pipeline to 2025-04-04 00:00:00+00:00, run_after=2025-04-05 00:00:00+00:00
+[2025-04-04T11:46:00.073+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/operators/testdag.py took 0.827 seconds
+[2025-04-04T11:46:30.219+0000] {processor.py:186} INFO - Started process (PID=222) to work on /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:46:30.219+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/operators/testdag.py for tasks to queue
+[2025-04-04T11:46:30.221+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:46:30.220+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:46:30.945+0000] {processor.py:925} INFO - DAG(s) 'weather_data_pipeline' retrieved from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:46:30.970+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:46:30.970+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-04-04T11:46:30.996+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:46:30.995+0000] {dag.py:4180} INFO - Setting next_dagrun for weather_data_pipeline to 2025-04-04 00:00:00+00:00, run_after=2025-04-05 00:00:00+00:00
+[2025-04-04T11:46:31.017+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/operators/testdag.py took 0.803 seconds
+[2025-04-04T11:47:01.161+0000] {processor.py:186} INFO - Started process (PID=224) to work on /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:47:01.162+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/operators/testdag.py for tasks to queue
+[2025-04-04T11:47:01.163+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:47:01.163+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:47:01.946+0000] {processor.py:925} INFO - DAG(s) 'weather_data_pipeline' retrieved from /opt/airflow/dags/operators/testdag.py
+[2025-04-04T11:47:01.972+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:47:01.972+0000] {dag.py:3239} INFO - Sync 1 DAGs
+[2025-04-04T11:47:01.991+0000] {logging_mixin.py:190} INFO - [2025-04-04T11:47:01.991+0000] {dag.py:4180} INFO - Setting next_dagrun for weather_data_pipeline to 2025-04-04 00:00:00+00:00, run_after=2025-04-05 00:00:00+00:00
+[2025-04-04T11:47:02.007+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/operators/testdag.py took 0.852 seconds
