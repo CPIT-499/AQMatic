@@ -20,7 +20,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const isScrolled = window.scrollY > 10;
+      const isScrolled = window.scrollY > 0;
       if (isScrolled !== scrolled) {
         setScrolled(isScrolled);
       }
@@ -41,17 +41,23 @@ export default function Navbar() {
 
   // Only compute nav classes on the client after mounting
   const navClasses = mounted ? 
-    scrolled ? "bg-background/40 backdrop-blur-md border border-border/50" :
-    resolvedTheme === "dark" ? "bg-background/40 backdrop-blur-md border border-border/50" :
-    "bg-[#eaeaea] hover:bg-[#ffffff] backdrop-blur-md border border-border" 
-    : "bg-transparent"; // Default during server rendering
+    scrolled ? 
+      "bg-background/40 backdrop-blur-md border border-border/50" : 
+      "bg-background/40 backdrop-blur-md border border-border/50"
+    : "bg-background/40 backdrop-blur-md border border-border/50"; // Use consistent styling for unmounted state too
+
+  // Create theme-specific hover effects
+  const hoverClasses = resolvedTheme === "dark"
+    ? "hover:bg-accent/80 hover:shadow-md" // Dark mode hover effect
+    : "hover:bg-accent/80 hover:shadow-md"; // Light mode hover effect with shadow
 
   return (
     <div className="w-full flex justify-center p-9 sticky top-0% z-20">
       <nav 
         className={cn(
           "w-full max-w-3xl rounded-full px-7 py-2 flex items-center justify-between transition-all duration-300",
-          navClasses
+          navClasses,
+          hoverClasses // Apply theme-specific hover effects
         )}
       >
         <div className="flex items-center grid-flow-row gap-3">
