@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useTheme } from "next-themes";
 import { Moon, Sun } from 'lucide-react';
@@ -61,7 +62,23 @@ export default function Navbar() {
         )}
       >
         <div className="flex items-center grid-flow-row gap-3">
-          <Link href="/" className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-2">
+            {/* Light mode logo */}
+            <Image
+            src="/PNG_version.png"
+            alt="AQMatic Logo"
+            width={33}
+            height={33}
+            className="dark:hidden"
+            />
+            {/* Dark mode logo */}
+            <Image
+            src="/PNG_version_dark.png"
+            alt="AQMatic Logo"
+            width={33}
+            height={33}
+            className="hidden dark:block"
+            />
             <span className="text-xl">AQMatic</span>
           </Link>
         </div>

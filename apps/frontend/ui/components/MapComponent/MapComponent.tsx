@@ -64,7 +64,7 @@ const MapComponent = ({ className }: MapComponentProps) => {
       [21.4267, 40.4833, 0.9]  // Taif
     ];
 
-    // @ts-ignore - leaflet.heat type definitions
+    // @ts-expect-error - leaflet.heat type definitions
     L.heatLayer(heatmapData, {
       radius: 30,
       blur: 20,
