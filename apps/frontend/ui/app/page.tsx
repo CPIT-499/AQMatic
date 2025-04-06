@@ -2,10 +2,7 @@
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import MapHomeStyles from "@/components/MapComponent/MapHome.module.css";
 import Navbar from "@/components/Navbar/navbar";
-import { Logo } from "@/components/logo";
-import Link from "next/link";
 import Image from "next/image";
 
 const MapComponent = dynamic(
@@ -19,12 +16,7 @@ import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Menu, X, Moon, Sun, Cpu, Lock, Sparkles, Zap } from "lucide-react";
 
-const menuItems = [
-  { name: "Features", href: "#features" },
-  { name: "Dashboard", href: "/dashboard" },
-  { name: "About", href: "/about" },
-  { name: "Contact", href: "#contact" },
-];
+
 
 export default function Home() {
   const router = useRouter();
@@ -52,9 +44,9 @@ export default function Home() {
       <Button
         variant="ghost"
         className="text-sm transition-all duration-300 ease-in-out hover:scale-105 hover:bg-primary/10"
-        onClick={() => router.push("/about")}
+        onClick={() => router.push("/")}
       >
-        About
+        Home
       </Button>
       <Button
         variant="ghost"
@@ -244,11 +236,11 @@ export default function Home() {
         </p>
           </div>
 
-          <div className="rounded-xl overflow-hidden border border-border/80 shadow-xl bg-card/50 backdrop-blur-sm" style={{ height: '500px', width: '80%', margin: '0 auto' }}>
+        <div className="rounded-xl overflow-hidden border border-border/80 shadow-xl bg-card/50 backdrop-blur-sm" style={{ height: '750px', width: '70%', margin: '0 auto' }}>
         
 
-        <div>
-          <MapComponent className="w-half h-half" />
+        <div style={{ width: '100%', height: '100%' }}>
+          <MapComponent className="w-full h-full" />
         </div>
           </div>
 
@@ -263,50 +255,43 @@ export default function Home() {
           </div>
       </section>
 
-      {/* Testimonials Section */}
+      {/* Company Supporters Section */}
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            Trusted by Environmental Leaders
-          </h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+          Supported by
+            </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                quote:
-                  "AQMatic has revolutionized how we monitor air quality in our industrial zones.",
-                author: "Dr. Mohammed Al-Farsi",
-                title: "Environmental Director, Ministry of Environment",
-              },
-              {
-                quote:
-                  "The real-time data helps us make immediate decisions to protect public health.",
-                author: "Sarah Al-Qahtani",
-                title: "Urban Planning Director, Riyadh Municipality",
-              },
-              {
-                quote:
-                  "Integrating with our existing sensors was seamless. Impressive platform.",
-                author: "Ahmed Al-Otaibi",
-                title: "CTO, Saudi Green Initiative",
-              },
-            ].map((testimonial, i) => (
-              <Card
-                key={i}
-                className="p-8 bg-background border border-border/50 hover:border-primary/30 transition-all"
-              >
-                <div className="text-4xl text-primary/20 mb-4"></div>
-                <p className="italic mb-6 text-foreground/80">
-                  {testimonial.quote}
-                </p>
-                <div>
-                  <p className="font-semibold">{testimonial.author}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {testimonial.title}
-                  </p>
-                </div>
-              </Card>
-            ))}
+        {[
+          {
+            name: "APSCO",
+            image: "/APSCO_logo.png",
+          },
+          {
+            name: "faculty of computing and information technology",
+            image: "/FCIT.png",
+          },
+          {
+            name: "Center Of Excellence In Intelligent Engineering Systems",
+            image: "/CEIES.png",
+          },
+          
+        ].map((company, i) => (
+          <Card
+            key={i}
+            className="p-8 flex flex-col items-center justify-center bg-background border border-border/50 hover:border-primary/30 transition-all h-60"
+          >
+            <Image
+          src={company.image}
+          alt={company.name}
+          width={160}
+          height={80}
+          className="mb-6 object-contain"
+            />
+            <p className="font-semibold text-lg text-center">{company.name}</p>
+          </Card>
+        ))}
           </div>
         </div>
       </section>
