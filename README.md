@@ -2,9 +2,9 @@
 
 ## Introduction
 
-This project aims to develop a **Smart Air Quality Monitoring System** for Saudi Arabia, addressing the growing challenges of greenhouse gas (GHG) emissions and air pollution. With rapid urbanization, increased vehicle emissions, and industrial expansion, Saudi Arabia faces significant environmental and public health concerns. Current monitoring systems are often limited in coverage and lack real-time, actionable insights.
+This project aims to develop a **Smart Air Quality Monitoring System** for Saudi Arabia, addressing the growing challenges of greenhouse gas (GHG) emissions and air pollution. With rapid urbanization, increased vehicle emissions, and industrial expansion, Saudi Arabia faces significant environmental and public health concerns.
 
-Our solution integrates **fixed monitoring stations**, **mobile sensors** on vehicles, and **drone-based monitoring** to collect real-time air quality data across the country. Leveraging **Artificial Intelligence (AI)** and **Machine Learning (ML)**, the system predicts future trends, identifies pollution hotspots, and provides actionable insights for environmental management.
+Our solution integrates **fixed monitoring stations**, **mobile sensors** on vehicles to collect real-time air quality data across the country. Leveraging **Artificial Intelligence (AI)** and **Machine Learning (ML)**, the system predicts future trends, identifies pollution hotspots, and provides actionable insights for environmental management.
 
 Aligned with **Saudi Arabia’s Vision 2030**, this project promotes environmental sustainability by increasing public awareness, supporting policymakers, and fostering a cleaner, healthier environment.
 
