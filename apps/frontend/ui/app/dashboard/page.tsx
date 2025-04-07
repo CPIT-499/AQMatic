@@ -116,7 +116,7 @@ export default function DashboardPage() {
             />
 
             <MapSection />
-          </div>
+            </div>
 
           <AlertsSection
             alerts={filteredAlerts}
