@@ -1,2 +1,2 @@
-import { handlers } from "@/auth" // Referring to the auth.ts we just created
+import { handlers } from "../../../auth" // Correct path to auth.ts in the root
 export const { GET, POST } = handlers

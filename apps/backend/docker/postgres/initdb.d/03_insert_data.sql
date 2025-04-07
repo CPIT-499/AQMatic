@@ -47,10 +47,11 @@ VALUES
   (5, 'Alpine Climate', 'AC-1000', '2023-09-12', 5, NULL, NULL, 'Zurich Alpine Station', 'Anna Alpine');
 
 -- Finally users (which depend on organizations)
-INSERT INTO users (organization_id, username, api_key, password_hash, email, role)
-VALUES 
-  (1, 'john_green', 'abc123', 'hash1', 'john@greenearth.org', 'admin'),
-  (1, 'emily_eco', 'def456', 'hash2', 'emily@greenearth.org', 'viewer'),
-  (2, 'dave_drone', 'ghi789', 'hash3', 'dave@skydrones.com', 'operator'),
-  (3, 'sarah_sky', 'jkl012', 'hash4', 'sarah@urbanair.io', 'admin'),
-  (4, 'mike_marine', 'mno345', 'hash5', 'mike@oceanwatch.org', 'viewer');
+-- Added name (derived from username) and "emailVerified" (set to NOW()) for Auth.js compatibility
+INSERT INTO users (organization_id, username, password_hash, email, role, name, "emailVerified")
+VALUES
+  (1, 'john_green', 'hash1', 'john@greenearth.org', 'admin', 'John Green', NOW()),
+  (1, 'emily_eco', 'hash2', 'emily@greenearth.org', 'viewer', 'Emily Eco', NOW()),
+  (2, 'dave_drone', 'hash3', 'dave@skydrones.com', 'operator', 'Dave Drone', NOW()),
+  (3, 'sarah_sky', 'hash4', 'sarah@urbanair.io', 'admin', 'Sarah Sky', NOW()),
+  (4, 'mike_marine', 'hash5', 'mike@oceanwatch.org', 'viewer', 'Mike Marine', NOW());
