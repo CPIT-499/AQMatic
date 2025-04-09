@@ -1,33 +1,39 @@
-from typing import Union
-from fastapi import FastAPI
+from typing import Union, List
+from fastapi import FastAPI, Depends
 import os
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
-
-# Get database connection parameters from environment variables
-POSTGRES_USER = os.getenv("POSTGRES_USER")
-POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD")
-POSTGRES_DB = os.getenv("POSTGRES_DB")
-POSTGRES_HOST = os.getenv("POSTGRES_HOST")
-POSTGRES_PORT = os.getenv("POSTGRES_PORT")
-
+from .database import get_db
+from .models import Location
 
 app = FastAPI()
 
 
-
-
-
-@app.get("/graph")
+@app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    # You'll need to modify this since POSTGRES_USER won't be defined anymore
+    return {"Hello": "AQMatic API"}
 
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
+
+
+@app.get("/Location")
+def get_all_locations(db=Depends(get_db)):
+    """
+    Retrieve all locations from the database
+    """
+    locations = db.query(Location).all()
+    # Convert location objects to dictionaries
+    return [
+        {
+            "location_id": location.location_id,
+            "latitude": location.latitude,
+            "longitude": location.longitude,
+            "altitude": location.altitude,
+            "city": location.city,
+            "region": location.region,
+            "country": location.country
+        }
+        for location in locations
+    ]

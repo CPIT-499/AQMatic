@@ -82,6 +82,7 @@ services:
       dockerfile: ./docker/fastapi/Dockerfile
     volumes:
       - ./API:/app/API
+      - ./.env:/app/.env
     ports:
       - "8000:8000"
     networks:
