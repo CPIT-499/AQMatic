@@ -3,6 +3,8 @@
 // --- Types ---
 export type TimeRangeOption = "7d" | "30d" | "90d";
 
+export type GasKey = 'pm25' | 'pm10' | 'o3' | 'no2' | 'so2' | 'co' | 'temperature' | 'humidity' | 'co2' | 'wind_speed' | 'methane' | 'nitrous_oxide' | 'fluorinated_gases';
+
 export interface ChartDataPoint {
   date: string;
   pm25: number;
@@ -10,12 +12,22 @@ export interface ChartDataPoint {
   o3: number;
   no2: number;
   so2: number;
+  co?: number;
+  temperature?: number;
+  humidity?: number;
+  co2?: number;
+  wind_speed?: number;
+  methane?: number;
+  nitrous_oxide?: number;
+  fluorinated_gases?: number;
 }
 
 export interface GasConfig {
   [key: string]: {
+    name: string;
     label: string;
     color: string;
+    unit: string;
   };
 }
 
@@ -48,34 +60,42 @@ export interface Alert {
 // --- Constants ---
 
 export const GAS_CONFIG: GasConfig = {
-  pm25: { label: "PM2.5", color: "#10b981" },
-  pm10: { label: "PM10", color: "#3b82f6" },
-  o3: { label: "O₃", color: "#f59e0b" },
-  no2: { label: "NO₂", color: "#ef4444" },
-  so2: { label: "SO₂", color: "#8b5cf6" },
+  pm25: { name: 'PM2.5', label: "PM2.5", color: "#ef4444", unit: 'µg/m³' },
+  pm10: { name: 'PM10', label: "PM10", color: "#f59e0b", unit: 'µg/m³' },
+  o3: { name: 'O₃', label: "O₃", color: "#3b82f6", unit: 'ppb' },
+  no2: { name: 'NO₂', label: "NO₂", color: "#10b981", unit: 'ppb' },
+  so2: { name: 'SO₂', label: "SO₂", color: "#8b5cf6", unit: 'ppb' },
+  co: { name: 'CO', label: 'CO', color: '#ec4899', unit: 'ppm' },
+  temperature: { name: 'Temperature', label: 'Temperature', color: '#dc2626', unit: '°C' },
+  humidity: { name: 'Humidity', label: 'Humidity', color: '#2563eb', unit: '%' },
+  co2: { name: 'CO₂', label: 'CO₂', color: '#4b5563', unit: 'ppm' },
+  wind_speed: { name: 'Wind Speed', label: 'Wind Speed', color: '#6366f1', unit: 'm/s' },
+  methane: { name: 'Methane', label: 'Methane', color: '#d97706', unit: 'ppb' },
+  nitrous_oxide: { name: 'Nitrous Oxide', label: 'Nitrous Oxide', color: '#9333ea', unit: 'ppb' },
+  fluorinated_gases: { name: 'Fluorinated Gases', label: 'Fluorinated Gases', color: '#059669', unit: 'ppt' }
 };
 
 export const TIME_RANGE_OPTIONS = [
   { value: "7d", label: "Last week" },
   { value: "30d", label: "Last month" },
-  { value: "90d", label: "Last 3 months" },
+  { value: "90d", label: "Last 3 months" }
 ] as const; // Use 'as const' for stricter typing
 
 // --- Sample Data ---
 
 export const CHART_DATA: ChartDataPoint[] = [
-  { date: "Apr 2", pm25: 22, pm10: 60, o3: 35, no2: 15, so2: 8 },
-  { date: "Apr 4", pm25: 25, pm10: 70, o3: 38, no2: 18, so2: 10 },
-  { date: "Apr 10", pm25: 28, pm10: 75, o3: 42, no2: 20, so2: 12 },
-  { date: "Apr 20", pm25: 30, pm10: 85, o3: 45, no2: 22, so2: 14 },
-  { date: "Apr 30", pm25: 32, pm10: 90, o3: 48, no2: 25, so2: 15 },
-  { date: "May 5", pm25: 35, pm10: 95, o3: 50, no2: 28, so2: 16 },
-  { date: "May 15", pm25: 38, pm10: 105, o3: 52, no2: 30, so2: 18 },
-  { date: "May 25", pm25: 42, pm10: 120, o3: 55, no2: 32, so2: 20 },
-  { date: "Jun 1", pm25: 40, pm10: 110, o3: 53, no2: 30, so2: 19 },
-  { date: "Jun 10", pm25: 36, pm10: 100, o3: 50, no2: 28, so2: 17 },
-  { date: "Jun 20", pm25: 34, pm10: 95, o3: 48, no2: 26, so2: 16 },
-  { date: "Jun 30", pm25: 32, pm10: 90, o3: 45, no2: 24, so2: 15 },
+  { date: "Apr 2", pm25: 22, pm10: 60, o3: 35, no2: 15, so2: 8, co: 1.2, temperature: 25, humidity: 60, co2: 10, wind_speed: 5, methane: 1.8, nitrous_oxide: 0.3, fluorinated_gases: 0.01 },
+  { date: "Apr 4", pm25: 25, pm10: 70, o3: 38, no2: 18, so2: 10, co: 1.3, temperature: 26, humidity: 62, co2: 10, wind_speed: 6, methane: 1.9, nitrous_oxide: 0.32, fluorinated_gases: 0.011 },
+  { date: "Apr 10", pm25: 28, pm10: 75, o3: 42, no2: 20, so2: 12, co: 1.4, temperature: 27, humidity: 64, co2: 20, wind_speed: 7, methane: 2.0, nitrous_oxide: 0.34, fluorinated_gases: 0.012 },
+  { date: "Apr 20", pm25: 30, pm10: 85, o3: 45, no2: 22, so2: 14, co: 1.5, temperature: 28, humidity: 66, co2: 30, wind_speed: 8, methane: 2.1, nitrous_oxide: 0.36, fluorinated_gases: 0.013 },
+  { date: "Apr 30", pm25: 32, pm10: 90, o3: 48, no2: 25, so2: 15, co: 1.6, temperature: 29, humidity: 68, co2: 40, wind_speed: 9, methane: 2.2, nitrous_oxide: 0.38, fluorinated_gases: 0.014 },
+  { date: "May 5", pm25: 35, pm10: 95, o3: 50, no2: 28, so2: 16, co: 1.7, temperature: 30, humidity: 70, co2: 50, wind_speed: 10, methane: 2.3, nitrous_oxide: 0.4, fluorinated_gases: 0.015 },
+  { date: "May 15", pm25: 38, pm10: 105, o3: 52, no2: 30, so2: 18, co: 1.8, temperature: 31, humidity: 72, co2: 60, wind_speed: 11, methane: 2.4, nitrous_oxide: 0.42, fluorinated_gases: 0.016 },
+  { date: "May 25", pm25: 42, pm10: 120, o3: 55, no2: 32, so2: 20, co: 1.9, temperature: 32, humidity: 74, co2: 70, wind_speed: 12, methane: 2.5, nitrous_oxide: 0.44, fluorinated_gases: 0.017 },
+  { date: "Jun 1", pm25: 40, pm10: 110, o3: 53, no2: 30, so2: 19, co: 1.85, temperature: 31.5, humidity: 73, co2: 65, wind_speed: 11.5, methane: 2.45, nitrous_oxide: 0.43, fluorinated_gases: 0.0165 },
+  { date: "Jun 10", pm25: 36, pm10: 100, o3: 50, no2: 28, so2: 17, co: 1.8, temperature: 31, humidity: 72, co2: 60, wind_speed: 11, methane: 2.4, nitrous_oxide: 0.42, fluorinated_gases: 0.016 },
+  { date: "Jun 20", pm25: 34, pm10: 95, o3: 48, no2: 26, so2: 16, co: 1.75, temperature: 30.5, humidity: 71, co2: 55, wind_speed: 10.5, methane: 2.35, nitrous_oxide: 0.41, fluorinated_gases: 0.0155 },
+  { date: "Jun 30", pm25: 32, pm10: 90, o3: 45, no2: 24, so2: 15, co: 1.7, temperature: 30, humidity: 70, co2: 50, wind_speed: 10, methane: 2.3, nitrous_oxide: 0.4, fluorinated_gases: 0.015 },
 ];
 
 export const SUMMARY_STATS: SummaryStat[] = [
@@ -111,10 +131,6 @@ export const ALERTS: Alert[] = [
   { id: "3", severity: "outline", title: "New monitoring station online", description: "Station #7 is now operational in Dammam", timestamp: "1 day ago", color: "bg-green-500" }
 ];
 
-
-// data/dashboardData.ts
-
-// ... (Previous code)
 
 // Placeholder Data for Organization Mode
 export const CHART_DATA_ORG: ChartDataPoint[] = [

@@ -1,6 +1,9 @@
 FROM apache/airflow:latest
-USER root
-COPY --chown=airflow:airflow requirements.txt /requirements.txt
-USER airflow
-RUN pip install --no-cache-dir -r /requirements.txt
+
+# Use absolute path to copy requirements.txt
+COPY --chown=airflow:root ../../requirements.txt /opt/airflow/requirements.txt
+# Install packages as the airflow user
+RUN pip install --no-cache-dir -r /opt/airflow/requirements.txt
+
+# No need to switch users since we never switched to root
 

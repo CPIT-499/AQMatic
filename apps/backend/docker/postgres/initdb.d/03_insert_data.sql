@@ -1,8 +1,6 @@
 -- First, insert organizations
 INSERT INTO organizations (organization_name, contact_email, contact_phone, address, website)
 VALUES 
-  ('OpenWeatherMap', 'Null', 'Null', 'Null', 'https://openweathermap.org'),
-  ('Open-Meteo', 'Null', 'Null', 'Null', 'https://open-meteo.com'),
   ('GreenEarth', 'contact@greenearth.org', '+1234567890', '123 Earth St', 'www.greenearth.org'),
   ('SkyDrones', 'info@skydrones.com', '+2345678901', '456 Sky Ave', 'www.skydrones.com'),
   ('UrbanAir', 'contact@urbanair.io', '+3456789012', '789 Urban Blvd', 'www.urbanair.io'),
@@ -48,10 +46,11 @@ VALUES
 
 -- Finally users (which depend on organizations)
 -- Added name (derived from username) and "emailVerified" (set to NOW()) for Auth.js compatibility
+-- Update all users to have consistent, plain text passwords for testing
 INSERT INTO users (organization_id, username, password_hash, email, role, name, "emailVerified")
 VALUES
-  (1, 'john_green', 'hash1', 'john@greenearth.org', 'admin', 'John Green', NOW()),
-  (1, 'emily_eco', 'hash2', 'emily@greenearth.org', 'viewer', 'Emily Eco', NOW()),
-  (2, 'dave_drone', 'hash3', 'dave@skydrones.com', 'operator', 'Dave Drone', NOW()),
-  (3, 'sarah_sky', 'hash4', 'sarah@urbanair.io', 'admin', 'Sarah Sky', NOW()),
-  (4, 'mike_marine', 'hash5', 'mike@oceanwatch.org', 'viewer', 'Mike Marine', NOW());
+  (1, 'john_green', 'password123', 'john@greenearth.org', 'admin', 'John Green', NOW()),
+  (1, 'emily_eco', 'password123', 'emily@greenearth.org', 'viewer', 'Emily Eco', NOW()),
+  (2, 'dave_drone', 'password123', 'dave@skydrones.com', 'operator', 'Dave Drone', NOW()),
+  (3, 'sarah_sky', 'password123', 'sarah@urbanair.io', 'admin', 'Sarah Sky', NOW()),
+  (4, 'mike_marine', 'password123', 'mike@oceanwatch.org', 'viewer', 'Mike Marine', NOW());

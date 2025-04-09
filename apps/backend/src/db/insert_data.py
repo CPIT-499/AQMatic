@@ -36,14 +36,14 @@ def insert_measurements(conn, sensor_id, organization_id, measurement_time, loca
 #     conn.commit()
 #     return cursor.lastrowid
 
-def insert_organization(conn, organization_name, contact_email=None, contact_phone=None, address=None, website=None):
+def insert_organization(conn, organization_name, contact_email=None, contact_phone=None, address=None, website=None, role='Private'):
     """
     Inserts a new organization into the organizations table.
     """
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO organizations (organization_name, contact_email, contact_phone, address, website) VALUES (?, ?, ?, ?, ?)",
-        (organization_name, contact_email, contact_phone, address, website)
+        "INSERT INTO organizations (organization_name, contact_email, contact_phone, address, website, role) VALUES (?, ?, ?, ?, ?, ?)",
+        (organization_name, contact_email, contact_phone, address, website, role)
     )
     conn.commit()
     return cursor.lastrowid

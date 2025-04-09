@@ -1,11 +1,14 @@
--- Table: organizations
+-- Create enum type for organization role
+CREATE TYPE organization_role AS ENUM ('public', 'private');
+-- Create organizations table with role field
 CREATE TABLE organizations (
     organization_id SERIAL PRIMARY KEY,
     organization_name VARCHAR NOT NULL,
     contact_email VARCHAR,
     contact_phone VARCHAR,
     address TEXT,
-    website VARCHAR
+    website VARCHAR,
+    role organization_role NOT NULL DEFAULT 'private'
 );
 
 -- Table: users

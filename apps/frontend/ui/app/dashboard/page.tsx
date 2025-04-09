@@ -1,9 +1,20 @@
 "use client";
 
+// React and Next.js imports
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import type {} from 'react/jsx-runtime';
 
-// Data and Types
+// Types and interfaces
+export interface Alert {
+  id: string;
+  title: string;
+  description: string;
+  severity: "destructive" | "warning" | "outline";
+  timestamp?: string; // Added optional timestamp
+}
+
+// Data imports
 import {
   CHART_DATA,
   CHART_DATA_ORG,
@@ -15,29 +26,23 @@ import {
   TimeRangeOption
 } from "@/data/dashboardData"; // Adjust path
 
-// UI Components
+// UI Components imports
 import Navbar from "@/components/Navbar/navbar";
 import { SummaryStats } from "@/components/Dashboard/SummaryStats";
 import { AlertsSection } from "@/components/Alerts/AlertsSection";
-import { ModeSelector } from "@/components/Dashboard/ModeSelector"; // New component
-import { ChartSection } from "@/components/Dashboard/ChartSection"; // New component
-import { MapSection } from "@/components/Dashboard/MapSection";     // New component
-export interface Alert {
-  id: string;
-  title: string;
-  description: string;
-  severity: "destructive" | "warning" | "outline";
-  timestamp?: string; // Added optional timestamp
-}
+import { ModeSelector } from "@/components/Dashboard/ModeSelector";
+import { ChartSection } from "@/components/Dashboard/ChartSection";
+import { MapSection } from "@/components/Dashboard/MapSection";
+
 export default function DashboardPage() {
   const router = useRouter();
 
-  // --- State ---
+  // --- State Management ---
   const [selectedMode, setSelectedMode] = React.useState<"public" | "organization">("public");
   const [selectedGases, setSelectedGases] = React.useState<string[]>(["pm25"]); // Default selection
   const [timeRange, setTimeRange] = React.useState<TimeRangeOption>("90d");
 
-  // --- Memoized Data Filtering ---
+  // --- Data Processing ---
   const filteredData = React.useMemo(() => {
     const data = selectedMode === "public" ? CHART_DATA : CHART_DATA_ORG;
     
@@ -52,12 +57,10 @@ export default function DashboardPage() {
     }
   }, [timeRange, selectedMode]);
 
-  // --- Memoized Stats Filtering ---
   const filteredSummaryStats = React.useMemo(() => {
     return selectedMode === "public" ? SUMMARY_STATS : SUMMARY_STATS_ORG;
   }, [selectedMode]);
 
-  // --- Memoized Alerts Filtering ---
   const filteredAlerts = React.useMemo(() => {
     return selectedMode === "public" ? ALERTS : ALERTS_ORG;
   }, [selectedMode]);
@@ -80,7 +83,7 @@ export default function DashboardPage() {
         return newSelection.length === 0 ? ["pm25"] : newSelection;
       });
     }
-  }, [selectedGases.length]); // Dependency ensures callback updates if selection count logic changes implicitly
+  }, [selectedGases.length]);
 
   const handleSetTimeRange = React.useCallback((newTimeRange: TimeRangeOption) => {
     setTimeRange(newTimeRange);
@@ -90,14 +93,13 @@ export default function DashboardPage() {
     router.push('/alerts');
   }, [router]);
 
-  // --- Render ---
+  // --- Render UI ---
   return (
     <div className="flex min-h-screen bg-background">
-      <div className="flex-1"> {/* Assuming Navbar might be part of a Sidebar layout later */}
+      <div className="flex-1">
         <Navbar />
 
-        <main className="p-6 space-y-6"> {/* Added space-y for consistent spacing */}
-          {/* Removed redundant section wrappers */}
+        <main className="p-6 space-y-6">
           <ModeSelector
             selectedMode={selectedMode}
             onSelectMode={setSelectedMode}
@@ -116,7 +118,7 @@ export default function DashboardPage() {
             />
 
             <MapSection />
-            </div>
+          </div>
 
           <AlertsSection
             alerts={filteredAlerts}

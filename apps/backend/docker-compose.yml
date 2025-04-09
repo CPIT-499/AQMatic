@@ -72,6 +72,24 @@ services:
       - .:/app
     networks:
       - my_network  
+    command: python -m dags.data_pipeline  # This is the problem
+
+#======================================================================================================
+#this is for the fastapi service
+  fastapi:
+    build:
+      context: .
+      dockerfile: ./docker/fastapi/Dockerfile
+    volumes:
+      - ./API:/app/API
+    ports:
+      - "8000:8000"
+    networks:
+      - my_network
+    depends_on:
+      - db
+    command: uvicorn API.API:app --host 0.0.0.0 --port 8000 --reload
+
 
 volumes:
   my_postgres_data:

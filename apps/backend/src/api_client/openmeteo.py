@@ -116,25 +116,25 @@ def insert_measurements_meto(**context):
     finally:
         if conn:
             conn.close()
-def get_or_create_organization(conn, org_name, website):
-            """Get organization ID or create a new organization if it doesn't exist"""
-            cursor = conn.cursor()
+def get_or_create_organization(conn, org_name, website, role='public'):
+        """Get organization ID or create a new organization if it doesn't exist"""
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT organization_id FROM organizations WHERE organization_name = %s",
+            (org_name,)
+        )
+        org_result = cursor.fetchone()
+        
+        if not org_result:
+            print(f"Creating {org_name} organization record")
             cursor.execute(
-                "SELECT organization_id FROM organizations WHERE organization_name = %s",
-                (org_name,)
+                "INSERT INTO organizations (organization_name, contact_email, contact_phone, address, website, role) " +
+                "VALUES (%s, %s, %s, %s, %s, %s) RETURNING organization_id",
+                (org_name, "Null", "Null", "Null", website, role)
             )
-            org_result = cursor.fetchone()
-            
-            if not org_result:
-                print(f"Creating {org_name} organization record")
-                cursor.execute(
-                    "INSERT INTO organizations (organization_name, contact_email, contact_phone, address, website) " +
-                    "VALUES (%s, %s, %s, %s, %s) RETURNING organization_id",
-                    (org_name, "Null", "Null", "Null", website)
-                )
-                organization_id = cursor.fetchone()[0]
-                conn.commit()
-            else:
-                organization_id = org_result[0]
-            
-            return organization_id
+            organization_id = cursor.fetchone()[0]
+            conn.commit()
+        else:
+            organization_id = org_result[0]
+        
+        return organization_id
