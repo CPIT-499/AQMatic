@@ -22,7 +22,7 @@ dag = DAG(
     'weather_data_pipeline',
     default_args=default_args,
     description='Pipeline for collecting weather data from multiple sources',
-    schedule='@daily',
+    schedule='@hourly',
     catchup=False,
     tags=['weather', 'api'],
 )

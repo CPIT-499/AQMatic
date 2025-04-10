@@ -1,7 +1,7 @@
 "use client"
 
 import { MetricCard } from "./MetricCard"
-import { aqiData, pm25Data, complianceData } from "@/app/dashboard/data"
+import { aqiData, pm25Data, complianceData } from "@/app/dashboard/DataChart"
 
 export function SummaryMetrics() {
   return (

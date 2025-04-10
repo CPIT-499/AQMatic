@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 import { Calendar } from "lucide-react"
-import { TimeRangeOption } from "@/app/dashboard/data"
+import { TimeRangeOption } from "@/app/dashboard/DataChart"
 
 interface TimePeriodControlProps {
   currentPeriod: TimeRangeOption;

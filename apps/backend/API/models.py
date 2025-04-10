@@ -1,18 +1,14 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Enum
+from sqlalchemy import Column, Integer, String, Float, DateTime
 from sqlalchemy.orm import relationship
 from .database import Base
-import enum
 
-
-
-class Location(Base):
-    __tablename__ = "locations"
-
-    location_id = Column(Integer, primary_key=True, index=True)
-    latitude = Column(Float, nullable=False)
-    longitude = Column(Float, nullable=False)
-    altitude = Column(Float)
-    city = Column(String)
-    region = Column(String)
-    country = Column(String)
-
+class hourly_measurement_summary_View_graph(Base):
+    __tablename__ = "hourly_measurement_summary_View_graph"
+    __table_args__ = {'schema': 'public'}
+    measurement_id = Column(Integer, primary_key=True)
+    measurement_time = Column(DateTime)
+    attribute_name = Column(String)
+    value = Column(Float)
+    unit = Column(String)
+    organization_name = Column(String)
+    role = Column(String)

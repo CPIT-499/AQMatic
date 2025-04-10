@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { GasKey, TimeRangeOption, gasConfig } from "@/app/dashboard/data"
+import { GasKey, TimeRangeOption, gasConfig } from "@/app/dashboard/DataChart"
 
 interface ChartControlsProps {
   selectedGases: GasKey[]

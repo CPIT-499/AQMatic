@@ -2,7 +2,7 @@
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { RecommendationCard } from "./RecommendationCard"
-import { Recommendation } from "@/app/dashboard/data"
+import { Recommendation } from "@/app/dashboard/DataChart"
 
 interface RecommendationsCardProps {
   recommendations: Recommendation[]

@@ -24,21 +24,33 @@ import {
   SelectValue 
 } from "@/components/ui/select"
 import { GasFilterOption, TimeRangeOption } from "@/components/GasFilter/GasFilter"
-import { chartData } from "@/data/dashboardData"
 
-interface DataItem {
+// Define measurement data type matching the provided format
+interface MeasurementData {
   date: string;
-  desktop: number;
-  mobile: number;
+  temperature: number | null;
+  humidity: number | null;
+  co2: number | null;
+  pm25: number | null;
+  wind_speed: number | null;
+  pm10: number | null;
+  no2: number | null;
+  so2: number | null;
+  co: number | null;
+  o3: number | null;
+  methane: number | null;
+  nitrous_oxide: number | null;
+  fluorinated_gases: number | null;
+  [key: string]: number | string | null; // Allow dynamic access to properties
 }
 
 interface AreaChartComponentProps {
-  timeRange: TimeRangeOption
-  setTimeRange: (value: TimeRangeOption) => void
-  activeFilter: GasFilterOption
-  setActiveFilter: (value: GasFilterOption) => void
-  chartConfig: ChartConfig
-  onDataFiltered: (filteredData: DataItem[]) => void
+  data: MeasurementData[]; // Accept data directly in the required format
+  timeRange: TimeRangeOption;
+  setTimeRange: (value: TimeRangeOption) => void;
+  activeFilter: GasFilterOption;
+  setActiveFilter: (value: GasFilterOption) => void;
+  chartConfig: ChartConfig;
 }
 
 // Define color mapping for specific gases
@@ -47,100 +59,79 @@ const gasColors: Record<string, string> = {
   pm10: "hsl(200, 95%, 39%)",
   o3: "hsl(271, 81%, 56%)",
   no2: "hsl(349, 89%, 43%)",
-  mobile: "var(--color-mobile)",
-  desktop: "var(--color-desktop)",
+  so2: "hsl(32, 89%, 50%)",
+  co: "hsl(0, 89%, 43%)",
   all: "hsl(215, 90%, 50%)" // Default color for "all" filter
 }
 
 export default function AreaChartComponent({
+  data,
   timeRange,
   setTimeRange,
   activeFilter,
   setActiveFilter,
   chartConfig,
-  onDataFiltered
 }: AreaChartComponentProps) {
-  // State for filtered data
-  const [filteredData, setFilteredData] = React.useState<Array<{
-    date: string;
-    desktop: number;
-    mobile: number;
-  }>>([])
-
-  // Process and filter data when filter or time range changes
-  React.useEffect(() => {
-    // Only run this effect on the client side
-    if (typeof window === 'undefined') return;
+  // Filter data based on the selected time range
+  const filteredData = React.useMemo(() => {
+    if (!data || data.length === 0) return [];
     
-    // Filter data by time range
-    const filteredByTime = chartData.filter((item) => {
-      const date = new Date(item.date)
-      const referenceDate = new Date("2024-06-30")
-      const daysToSubtract = timeRange === "30d" ? 30 : timeRange === "7d" ? 7 : 90
-      const startDate = new Date(referenceDate)
-      startDate.setDate(startDate.getDate() - daysToSubtract)
+    // Apply time range filter
+    const now = new Date();
+    let startDate = new Date();
+    
+    switch(timeRange) {
+      case "7d": startDate.setDate(now.getDate() - 7); break;
+      case "30d": startDate.setDate(now.getDate() - 30); break;
+      case "90d": startDate.setDate(now.getDate() - 90); break;
+      default: startDate.setDate(now.getDate() - 90);
+    }
+    
+    return data.filter(item => {
+      const itemDate = new Date(item.date);
+      return itemDate >= startDate && itemDate <= now;
+    });
+  }, [data, timeRange]);
 
-      return date >= startDate
-    })
-
-    // Transform data based on active pollutant filter
-    const transformedData = filteredByTime.map(item => {
-      const transformedItem = { ...item }
-
-      switch (activeFilter) {
-        case "pm25":
-          // Using fixed multipliers instead of Math.round for consistency
-          transformedItem.desktop = Number((item.desktop * 0.8).toFixed(1))
-          transformedItem.mobile = Number((item.mobile * 0.7).toFixed(1))
-          break
-        case "pm10":
-          transformedItem.desktop = Number((item.desktop * 1.2).toFixed(1))
-          transformedItem.mobile = Number((item.mobile * 1.1).toFixed(1))
-          break
-        case "o3":
-          transformedItem.desktop = Number((item.desktop * 0.6).toFixed(1))
-          transformedItem.mobile = Number((item.mobile * 0.9).toFixed(1))
-          break
-        case "no2":
-          transformedItem.desktop = Number((item.desktop * 0.5).toFixed(1))
-          transformedItem.mobile = Number((item.mobile * 0.4).toFixed(1))
-          break
-        case "all":
-          // For "all", keep the original values - no transformation needed
-          break
-        default:
-          // Default case - also keep original data
-          break
-      }
-
-      return transformedItem
-    })
-
-    setFilteredData(transformedData)
-    onDataFiltered(transformedData)
-  }, [timeRange, activeFilter, onDataFiltered])
-
-  // Format the tooltip label for dates
+  // Format date for display in tooltip
   const formatDate = (value: any) => {
-    const date = new Date(value)
+    if (!value) return "";
+    
+    // If value is already in "Apr 10" format, return as is
+    if (typeof value === "string" && value.includes(" ")) {
+      return value;
+    }
+    
+    // Otherwise format it
+    const date = new Date(value);
     return date.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
-    })
+    });
   }
+
+  // Get display name for the selected gas
+  const getGasDisplayName = (gasId: string): string => {
+    switch(gasId) {
+      case 'pm25': return 'PM2.5';
+      case 'pm10': return 'PM10';
+      case 'o3': return 'O₃';
+      case 'no2': return 'NO₂';
+      case 'so2': return 'SO₂';
+      case 'co': return 'CO';
+      default: return gasId.toUpperCase();
+    }
+  };
 
   return (
     <Card className="shadow-lg hover:shadow-xl transition-all duration-300 border-primary/10">
       <CardHeader className="flex items-center gap-6 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle>
-            {chartConfig[activeFilter]?.label || "Gas Concentration Measurements"}
+            {activeFilter === 'all' ? 'Gas Concentration Measurements' : `${getGasDisplayName(activeFilter)} Measurements`}
           </CardTitle>
           <CardDescription>
-            {`Showing ${activeFilter === 'all' ? 'all gases' : 
-              activeFilter === 'pm25' ? 'PM2.5' : 
-              activeFilter === 'pm10' ? 'PM10' : 
-              activeFilter === 'o3' ? 'O₃' : 'NO₂'} for the last ${
+            {`Showing ${activeFilter === 'all' ? 'all gases' : getGasDisplayName(activeFilter)} for the last ${
               timeRange === '90d' ? '3 months' : 
               timeRange === '30d' ? '30 days' : '7 days'
             }`}
@@ -161,6 +152,8 @@ export default function AreaChartComponent({
             <SelectItem value="pm10" className="rounded-lg">PM10</SelectItem>
             <SelectItem value="o3" className="rounded-lg">O₃</SelectItem>
             <SelectItem value="no2" className="rounded-lg">NO₂</SelectItem>
+            <SelectItem value="so2" className="rounded-lg">SO₂</SelectItem>
+            <SelectItem value="co" className="rounded-lg">CO</SelectItem>
           </SelectContent>
         </Select>
         
@@ -190,35 +183,50 @@ export default function AreaChartComponent({
         {filteredData.length > 0 ? (
           <AreaChart data={filteredData}>
             <defs>
-              <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--color-desktop)" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="var(--color-desktop)" stopOpacity={0.1} />
-              </linearGradient>
-              <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--color-mobile)" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="var(--color-mobile)" stopOpacity={0.1} />
-              </linearGradient>
-              <linearGradient id="fillSelected" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={gasColors[activeFilter]} stopOpacity={0.8} />
-                <stop offset="95%" stopColor={gasColors[activeFilter]} stopOpacity={0.1} />
-              </linearGradient>
+              {Object.keys(gasColors).map(gas => (
+                <linearGradient key={gas} id={`fill-${gas}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={gasColors[gas]} stopOpacity={0.8} />
+                  <stop offset="95%" stopColor={gasColors[gas]} stopOpacity={0.1} />
+                </linearGradient>
+              ))}
             </defs>
             <CartesianGrid vertical={false} />
             <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} minTickGap={32} tickFormatter={formatDate} />
             <YAxis hide={false} tickLine={false} axisLine={false} tickMargin={8} />
             <ChartTooltip cursor={false} content={<ChartTooltipContent labelFormatter={formatDate} indicator="dot" />} />
+            
             {activeFilter === "all" ? (
+              // Show multiple gas lines when "all" is selected
               <>
-                <Area dataKey="mobile" name="Mobile Measurements" type="natural" fill="url(#fillMobile)" stroke={gasColors.mobile} strokeWidth={2} stackId="a" />
-                <Area dataKey="desktop" name="Desktop Measurements" type="natural" fill="url(#fillDesktop)" stroke={gasColors.desktop} strokeWidth={2} stackId="a" />
+                {["pm25", "pm10", "o3", "no2", "so2", "co"].map(gas => (
+                  <Area 
+                    key={gas}
+                    dataKey={gas} 
+                    name={getGasDisplayName(gas)} 
+                    type="monotone" 
+                    fill={`url(#fill-${gas})`}
+                    stroke={gasColors[gas]} 
+                    strokeWidth={2} 
+                    connectNulls 
+                  />
+                ))}
               </>
             ) : (
-              <Area dataKey="desktop" name={String(chartConfig[activeFilter]?.label || "Concentration")} type="natural" fill="url(#fillSelected)" stroke={gasColors[activeFilter]} strokeWidth={2} />
+              // Show only selected gas
+              <Area 
+                dataKey={activeFilter} 
+                name={getGasDisplayName(activeFilter)} 
+                type="monotone" 
+                fill={`url(#fill-${activeFilter})`}
+                stroke={gasColors[activeFilter]} 
+                strokeWidth={2} 
+                connectNulls
+              />
             )}
             <ChartLegend content={<ChartLegendContent />} />
           </AreaChart>
         ) : (
-          <div className="flex h-full items-center justify-center">Loading data...</div>
+          <div className="flex h-full items-center justify-center">No data available</div>
         )}
       </ChartContainer>
     </Card>

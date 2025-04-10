@@ -14,7 +14,7 @@ import {
   monthlyPollutantData, 
   regionData, 
   recommendationsData 
-} from "@/app/dashboard/data"
+} from "@/app/dashboard/DataChart"
 
 interface TrendsTabProps {
   setActiveTab: (value: string) => void

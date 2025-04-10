@@ -2,7 +2,7 @@
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { RegionData } from "@/app/dashboard/data"
+import { RegionData } from "@/app/dashboard/DataChart"
 
 interface RegionComparisonCardProps {
   regions: RegionData[]

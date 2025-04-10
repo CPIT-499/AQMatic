@@ -3,7 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { TrendingDown, TrendingUp } from "lucide-react"
 import { AreaChart, Area, ResponsiveContainer } from "recharts"
-import { MetricData } from "@/app/dashboard/data"
+import { MetricData } from "@/app/dashboard/DataChart"
 
 export interface MetricCardProps {
   title: string

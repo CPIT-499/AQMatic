@@ -2,7 +2,7 @@
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts"
-import { gasConfig } from "@/app/dashboard/data"
+import { gasConfig } from "@/app/dashboard/DataChart"
 
 interface PollutantTrendsChartProps {
   data: any[]

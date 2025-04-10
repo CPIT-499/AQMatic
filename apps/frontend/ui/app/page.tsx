@@ -55,6 +55,7 @@ export default function Home() {
         onGetStartedClick={handleGetStarted}
         onSeePlansClick={handleSeePlans}
       />
+      
 
       {/* Map Section */}
       <MapSection onDashboardLinkClick={handleDashboardLink} />

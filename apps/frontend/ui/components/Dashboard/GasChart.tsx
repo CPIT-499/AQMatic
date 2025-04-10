@@ -1,7 +1,7 @@
 "use client"
 
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts"
-import { GasKey, gasConfig } from "@/app/dashboard/data"
+import { GasKey, gasConfig } from "@/app/dashboard/DataChart"
 import { ReactNode } from "react"
 
 interface GasChartProps {

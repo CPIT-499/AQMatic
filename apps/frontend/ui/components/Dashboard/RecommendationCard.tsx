@@ -1,7 +1,7 @@
 "use client"
 
 import { AlertTriangle, Info } from "lucide-react"
-import { Recommendation as RecommendationType } from "@/app/dashboard/data"
+import { Recommendation as RecommendationType } from "@/app/dashboard/DataChart"
 
 interface RecommendationCardProps {
   recommendation: RecommendationType
