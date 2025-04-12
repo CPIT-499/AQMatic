@@ -1,5 +1,6 @@
 CREATE OR REPLACE VIEW hourly_measurement_summary_View_graph AS
 SELECT 
+    m.measurement_id,             -- unique key added
     m.measurement_time,  
     ma.attribute_name,
     m.value,

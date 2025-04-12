@@ -34,7 +34,7 @@ def get_hourly_measurement_summary(db=Depends(get_db)):
     Retrieve data from the hourly_measurement_summary_View_graph
     """
     result = db.execute("SELECT * FROM hourly_measurement_summary_View_graph").fetchall()
-
+    #http://localhost:8000/hourly_measurement_summary_View_graph
     # Format the data using the utils module
     formatted_data = utils.format_hourly_measurement_data(result)
 
