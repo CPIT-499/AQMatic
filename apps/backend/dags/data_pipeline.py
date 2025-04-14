@@ -8,7 +8,8 @@ import pendulum
 
 from src.api_client.openmeteo import get_weather_and_air_quality, insert_measurements_meto
 from src.api_client.openweathermap_API import collect_measurements, insert_measurements_openweathermap
-from operators.db_operations import create_hourly_summary_view  # Import your function
+from operators.db_operations import create_hourly_summary_view, create_map_data_view  # Import the new function
+
 # Define default arguments
 default_args = {
     'owner': 'airflow',
@@ -77,10 +78,17 @@ with dag:
 
     # Database View Task Group
     with TaskGroup(group_id='db_view_operations') as db_view_group:
-        create_view_task = PythonOperator(
+        create_hourly_view_task = PythonOperator(
             task_id='create_hourly_summary_view',
             python_callable=create_hourly_summary_view,
         )
+        
+        create_map_view_task = PythonOperator(
+            task_id='create_map_data_view',
+            python_callable=create_map_data_view,
+        )
+        
+        create_hourly_view_task >> create_map_view_task
 
     end_pipeline = EmptyOperator(
         task_id='end_pipeline'

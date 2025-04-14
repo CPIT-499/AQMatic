@@ -1,6 +1,7 @@
 import * as React from "react";
 import dynamic from 'next/dynamic';
 import { Button } from "@/components/ui/button";
+import { Activity } from "lucide-react"; // Import Activity icon for the button
 
 // Dynamically import map component with no server-side rendering
 const MapComponentNoSSR = dynamic(
@@ -10,28 +11,28 @@ const MapComponentNoSSR = dynamic(
 
 export function MapSection() {
   return (
-    <section className="col-span-1">
+    <section className="col-span-1 lg:col-span-1 h-full">
       <div className="rounded-lg border bg-card text-card-foreground shadow-sm h-full flex flex-col">
         {/* Card Header */}
-        <div className="flex flex-row items-center justify-between p-4 pb-2 border-b">
+        <div className="flex flex-row items-center justify-between space-x-4 p-6 pb-4 border-b">
           <div>
             <h3 className="text-lg font-semibold leading-none tracking-tight">
               Monitoring Locations
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground mt-2">
               Real-time air quality across stations
             </p>
           </div>
           <div>
-            {/* Consider making this button functional if needed */}
-            <Button variant="outline" size="sm" className="text-xs pointer-events-none">
-              <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
-              Live Data
+            <Button variant="outline" size="sm" className="h-8 px-3 flex items-center gap-2">
+              <Activity className="h-4 w-4" />
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+              <span>Live Data</span>
             </Button>
           </div>
         </div>
         {/* Map Container */}
-        <div className="flex-grow h-[350px] w-full"> {/* Use flex-grow to fill remaining space */}
+        <div className="flex-1 min-h-[500px] w-full">
           <MapComponentNoSSR className="w-full h-full" />
         </div>
       </div>

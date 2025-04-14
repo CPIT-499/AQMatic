@@ -21,7 +21,15 @@ def execute_sql_file(sql_file_path, **kwargs):
         with open(sql_file_path, 'r') as f:
             sql = f.read()
         
-        # Execute SQL
+        # Extract view name from SQL
+        view_name = sql.split('VIEW')[1].split('AS')[0].strip()
+        
+        # First drop the view if it exists
+        drop_sql = f"DROP VIEW IF EXISTS {view_name};"
+        cursor.execute(drop_sql)
+        conn.commit()
+        
+        # Then execute the create view SQL
         cursor.execute(sql)
         conn.commit()
         print(f"Successfully executed SQL from {sql_file_path}")
@@ -37,4 +45,9 @@ def execute_sql_file(sql_file_path, **kwargs):
 def create_hourly_summary_view(**kwargs):
     """Task to create the hourly measurement summary view."""
     sql_file_path = '/opt/airflow/src/DBview/hourly_measurement_summary_View_graph.sql'
+    execute_sql_file(sql_file_path)
+
+def create_map_data_view(**kwargs):
+    """Task to create the map data view."""
+    sql_file_path = '/opt/airflow/src/DBview/map_data_view.sql'
     execute_sql_file(sql_file_path)

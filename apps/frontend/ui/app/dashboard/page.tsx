@@ -69,7 +69,7 @@ export default function DashboardPage() {
       <div className="flex-1">
         <Navbar />
 
-        <main className="p-6 space-y-6">
+        <main className="p-8 space-y-8 max-w-[1800px] mx-auto">
           <ModeSelector
             selectedMode={selectedMode}
             onSelectMode={setSelectedMode}
@@ -77,7 +77,7 @@ export default function DashboardPage() {
 
           <SummaryStats stats={filteredSummaryStats} />
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-8 grid-cols-1 lg:grid-cols-3 min-h-[600px]">
             <ChartSection
               selectedGases={selectedGases}
               timeRange={timeRange}

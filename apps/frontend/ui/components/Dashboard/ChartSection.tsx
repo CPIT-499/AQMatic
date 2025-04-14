@@ -82,23 +82,23 @@ export function ChartSection({
   }, [selectedGases, gasConfig, allSelected]);
 
   return (
-    <section className="col-span-2">
-      <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
+    <section className="col-span-2 lg:col-span-2 h-full">
+      <div className="rounded-lg border bg-card text-card-foreground shadow-sm h-full flex flex-col">
         {/* Card Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-6 pb-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-6 pb-4 border-b">
           <div>
             <h3 className="text-lg font-semibold leading-none tracking-tight">
               Tracking {selectedGasLabel} Concentrations
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground mt-2">
               Showing data for the {timeRangeLabel.toLowerCase()}
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             {/* Gas Selector Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-1">
+                <Button variant="outline" className="flex items-center gap-1 h-8 px-3">
                   {selectedGasLabel}
                   <ChevronDown className="h-4 w-4" />
                 </Button>
@@ -128,7 +128,7 @@ export function ChartSection({
             {/* Time Range Selector Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-1">
+                <Button variant="outline" className="flex items-center gap-1 h-8 px-3">
                   {timeRangeLabel}
                   <ChevronDown className="h-4 w-4" />
                 </Button>
@@ -149,8 +149,8 @@ export function ChartSection({
         </div>
 
         {/* Chart */}
-        <div className="p-6 pt-2">
-          <div className="h-[350px]">
+        <div className="flex-1 p-6 pt-2">
+          <div className="h-full min-h-[500px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
                 data={filteredData}
@@ -166,7 +166,11 @@ export function ChartSection({
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
                 <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
+                <YAxis 
+                  tick={{ fontSize: 12 }} 
+                  tickCount={20} 
+                  domain={[0, 250]}
+                />
                 <Tooltip content={<CustomTooltip gasConfig={gasConfig} />} />
                 <Legend />
                 {selectedGases.map((gas) => (

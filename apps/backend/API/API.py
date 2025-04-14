@@ -58,8 +58,8 @@ async def get_map_data(
         query = "SELECT * FROM map_data_view"
         
         # Add organization filter if provided
-        if organization_id is not None:
-            query += f" WHERE organization_id = {organization_id}"
+        #if organization_id is not None:
+        #    query += f" WHERE organization_id = {organization_id}"
         
         # Execute query
         result = db.execute(text(query))
@@ -75,8 +75,8 @@ async def get_map_data(
                 "city": row.city,
                 "region": row.region,
                 "country": row.country,
-                "organization_id": row.organization_id,
-                "organization_name": row.organization_name,
+                #"organization_id": row.organization_id,
+                #"organization_name": row.organization_name,
                 # Air Quality Measurements
                 "pm25": float(row.pm25) if row.pm25 is not None else None,
                 "pm10": float(row.pm10) if row.pm10 is not None else None,
