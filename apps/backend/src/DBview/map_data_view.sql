@@ -16,14 +16,22 @@ SELECT
     l.city,
     l.region,
     l.country,
+    -- Air quality measurements
     MAX(CASE WHEN lm.attribute_name = 'pm2.5' THEN lm.value ELSE NULL END) as pm25,
     MAX(CASE WHEN lm.attribute_name = 'pm10' THEN lm.value ELSE NULL END) as pm10,
     MAX(CASE WHEN lm.attribute_name = 'o3' THEN lm.value ELSE NULL END) as o3,
     MAX(CASE WHEN lm.attribute_name = 'no2' THEN lm.value ELSE NULL END) as no2,
     MAX(CASE WHEN lm.attribute_name = 'so2' THEN lm.value ELSE NULL END) as so2,
     MAX(CASE WHEN lm.attribute_name = 'co' THEN lm.value ELSE NULL END) as co,
+    -- Weather measurements
     MAX(CASE WHEN lm.attribute_name = 'temperature' THEN lm.value ELSE NULL END) as temperature,
     MAX(CASE WHEN lm.attribute_name = 'humidity' THEN lm.value ELSE NULL END) as humidity,
+    MAX(CASE WHEN lm.attribute_name = 'wind_speed' THEN lm.value ELSE NULL END) as wind_speed,
+    -- Greenhouse gases
+    MAX(CASE WHEN lm.attribute_name = 'co2' THEN lm.value ELSE NULL END) as co2,
+    MAX(CASE WHEN lm.attribute_name = 'methane' THEN lm.value ELSE NULL END) as methane,
+    MAX(CASE WHEN lm.attribute_name = 'nitrous_oxide' THEN lm.value ELSE NULL END) as nitrous_oxide,
+    MAX(CASE WHEN lm.attribute_name = 'fluorinated_gases' THEN lm.value ELSE NULL END) as fluorinated_gases,
     -- Calculate AQI based on the pollutant with highest intensity (simplified version)
     -- This formula creates a 0-1 scale value that can be used for heatmap intensity
     GREATEST(
