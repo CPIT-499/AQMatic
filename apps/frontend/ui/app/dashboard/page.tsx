@@ -21,11 +21,12 @@ export interface Alert {
 // Data imports
 import {
   GAS_CONFIG,
-  SUMMARY_STATS,
-  SUMMARY_STATS_ORG,
-  ALERTS,
-  ALERTS_ORG,
-  TimeRangeOption
+  FALLBACK_SUMMARY_STATS,
+  FALLBACK_ALERTS,
+  TimeRangeOption,
+  getAQIStatus,
+  formatTrendPercent,
+  ChartDataPoint
 } from "@/data/dashboardData";
 
 // UI Components imports
@@ -45,8 +46,8 @@ export default function DashboardPage() {
   const { selectedGases, toggleGas } = useGasSelection();
 
   // --- Custom Hooks ---
-  const dashboardData = useDashboardData(selectedMode);
-  const filteredData = useFilteredData({ timeRange, selectedMode, dashboardData });
+  const dashboardData = useDashboardData(selectedMode === "organization" ? 1 : undefined);
+  const filteredData = useFilteredData({ timeRange, dashboardData });
   const { handleSetTimeRange, handleNavigateToAlerts } = useDashboardEventHandlers({
     selectedGases,
     setSelectedGases: (setSelectedGases) => { },
@@ -56,11 +57,15 @@ export default function DashboardPage() {
 
   // --- Derived State ---
   const filteredSummaryStats = React.useMemo(() => {
-    return selectedMode === "public" ? SUMMARY_STATS : SUMMARY_STATS_ORG;
+    return FALLBACK_SUMMARY_STATS;
   }, [selectedMode]);
 
   const filteredAlerts = React.useMemo(() => {
-    return selectedMode === "public" ? ALERTS : ALERTS_ORG;
+    // Map the alert structure to match what AlertsSection expects
+    return FALLBACK_ALERTS.map(alert => ({
+      ...alert,
+      severity: alert.severity as "destructive" | "warning" | "outline"
+    }));
   }, [selectedMode]);
 
   // --- Render UI ---

@@ -30,6 +30,37 @@ Identifies and formats air quality alerts:
 - Calculates relative timestamps
 - Prioritizes alerts by severity and recency
 
+## AQI View
+
+The `aqi_view.sql` provides raw pollutant values for all gases from the measurement_attributes table. This view:
+
+1. Retrieves the most recent measurements for each location
+2. Includes all relevant pollutants: PM2.5, PM10, O3, NO2, SO2, CO, CO2, Methane, Nitrous Oxide, and Fluorinated gases
+3. Does not perform any AQI calculations (these should be calculated in your application code)
+
+### Key Features
+
+- Provides the latest value for each pollutant by location
+- Includes location and organization context
+- Simple structure for easy querying
+
+### Usage Example
+
+```sql
+-- Get raw pollutant data for all locations
+SELECT city, region, pm25_value, pm10_value, o3_value FROM aqi_view;
+
+-- Get detailed pollutant data for a specific location
+SELECT 
+    city, 
+    pm25_value,
+    o3_value,
+    co2_value,
+    methane_value
+FROM aqi_view 
+WHERE location_id = 123;
+```
+
 ## Usage
 
 Query these views directly to retrieve formatted data:

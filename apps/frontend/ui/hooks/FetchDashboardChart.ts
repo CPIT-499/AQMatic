@@ -1,52 +1,21 @@
 import { useState, useEffect, useMemo } from 'react';
-import { fetchDashboardData } from "@/services/api/dashboardApi";
 import {
   CHART_DATA,
-  CHART_DATA_ORG,
+  GasKey,
+  GAS_CONFIG,
+  TimeRangeOption,
+  ChartDataPoint
 } from "@/data/dashboardData";
-import { TimeRangeOption } from '@/data/dashboardData';
-
-// Define GasKey type here
-export type GasKey =
-  | 'pm25'
-  | 'pm10'
-  | 'o3'
-  | 'no2'
-  | 'so2'
-  | 'co'
-  | 'temperature'
-  | 'humidity'
-  | 'co2'
-  | 'wind_speed'
-  | 'methane'
-  | 'nitrous_oxide'
-  | 'fluorinated_gases';
-
-// Define gasConfig here (example)
-export const gasConfig: { [key in GasKey]: { label: string; color: string } } = {
-  pm25: { label: 'PM2.5', color: '#e45756' },
-  pm10: { label: 'PM10', color: '#4c78a8' },
-  o3: { label: 'Ozone', color: '#f58518' },
-  no2: { label: 'Nitrogen Dioxide', color: '#e45756' },
-  so2: { label: 'Sulfur Dioxide', color: '#72b7b2' },
-  co: { label: 'Carbon Monoxide', color: '#54a24b' },
-  temperature: { label: 'Temperature', color: '#64b5f6' },
-  humidity: { label: 'Humidity', color: '#a1887f' },
-  co2: { label: 'CO2', color: '#90a4ae' },
-  wind_speed: { label: 'Wind Speed', color: '#ba68c8' },
-  methane: { label: 'Methane', color: '#8bc34a' },
-  nitrous_oxide: { label: 'Nitrous Oxide', color: '#fbc02d' },
-  fluorinated_gases: { label: 'Fluorinated Gases', color: '#6d4c41' },
-};
+import { api } from "@/services/api";
 
 // --- useDashboardData ---
 interface DashboardDataState {
-  chartData: any[];
+  chartData: ChartDataPoint[];
   loading: boolean;
   error: string | null;
 }
 
-export const useDashboardData = (selectedMode: "public" | "organization") => {
+export const useDashboardData = (organizationId?: number) => {
   const [dashboardData, setDashboardData] = useState<DashboardDataState>({
     chartData: [],
     loading: false,
@@ -57,24 +26,32 @@ export const useDashboardData = (selectedMode: "public" | "organization") => {
     async function fetchData() {
       try {
         setDashboardData(prev => ({...prev, loading: true}));
-        const { chartData, error } = await fetchDashboardData();
+        
+        // Use the organizationId if provided
+        const endpoint = organizationId 
+          ? `/hourly_measurement_summary_View_graph?organization_id=${organizationId}`
+          : `/hourly_measurement_summary_View_graph`;
+          
+        const chartData = await api.get<ChartDataPoint[]>(endpoint);
+        
         setDashboardData({
           chartData: chartData || [],
           loading: false,
-          error: error
+          error: null
         });
       } catch (error: any) {
         console.error('Error fetching data:', error);
         setDashboardData(prev => ({
           ...prev,
           loading: false,
+          chartData: CHART_DATA, // Fallback to static data on error
           error: error.message || 'Failed to fetch data'
         }));
       }
     }
 
     fetchData();
-  }, [selectedMode]);
+  }, [organizationId]);
 
   return dashboardData;
 };
@@ -82,37 +59,66 @@ export const useDashboardData = (selectedMode: "public" | "organization") => {
 // --- useFilteredData ---
 interface UseFilteredDataProps {
   timeRange: TimeRangeOption;
-  selectedMode: "public" | "organization";
   dashboardData: {
-    chartData: any[];
+    chartData: ChartDataPoint[];
     loading: boolean;
     error: null | string;
   };
 }
 
-export const useFilteredData = ({ timeRange, selectedMode, dashboardData }: UseFilteredDataProps) => {
+export const useFilteredData = ({ timeRange, dashboardData }: UseFilteredDataProps) => {
   return useMemo(() => {
     const data = dashboardData.chartData.length > 0
       ? dashboardData.chartData
-      : (selectedMode === "public" ? CHART_DATA : CHART_DATA_ORG);
+      : CHART_DATA; // Use fallback data if no API data available
 
+    // Filter data based on time range
+    // The API might return data already sorted by date
+    const sortedData = [...data].sort((a, b) => 
+      new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+    
+    const today = new Date();
+    let filteredData: ChartDataPoint[] = [];
+    
     switch (timeRange) {
       case "7d":
-        return data.slice(-3);
+        // Last 7 days
+        const sevenDaysAgo = new Date(today);
+        sevenDaysAgo.setDate(today.getDate() - 7);
+        filteredData = sortedData.filter(item => 
+          new Date(item.date) >= sevenDaysAgo
+        );
+        break;
       case "30d":
-        return data.slice(-7);
+        // Last 30 days
+        const thirtyDaysAgo = new Date(today);
+        thirtyDaysAgo.setDate(today.getDate() - 30);
+        filteredData = sortedData.filter(item => 
+          new Date(item.date) >= thirtyDaysAgo
+        );
+        break;
       case "90d":
       default:
-        return data;
+        // Last 90 days (or all data if less than 90 days)
+        const ninetyDaysAgo = new Date(today);
+        ninetyDaysAgo.setDate(today.getDate() - 90);
+        filteredData = sortedData.filter(item => 
+          new Date(item.date) >= ninetyDaysAgo
+        );
+        break;
     }
-  }, [timeRange, selectedMode, dashboardData.chartData]);
+    
+    // If no data matches the filter, return a reasonable subset of all data
+    return filteredData.length > 0 ? filteredData : sortedData.slice(-10);
+  }, [timeRange, dashboardData.chartData]);
 };
 
 // --- useGasSelection ---
 export function useGasSelection() {
   const [selectedGases, setSelectedGases] = useState<GasKey[]>(["pm25"]);
 
-  const allGasKeys = Object.keys(gasConfig) as GasKey[];
+  const allGasKeys = Object.keys(GAS_CONFIG) as GasKey[];
   const allSelected = selectedGases.length === allGasKeys.length;
 
   const toggleGas = (gas: string) => {
@@ -120,7 +126,7 @@ export function useGasSelection() {
       setSelectedGases(
         selectedGases.length === allGasKeys.length ? ["pm25"] : allGasKeys
       );
-    } else if (Object.keys(gasConfig).includes(gas)) {
+    } else if (Object.keys(GAS_CONFIG).includes(gas)) {
       const gasKey = gas as GasKey;
       setSelectedGases((prev) => 
         prev.includes(gasKey) 

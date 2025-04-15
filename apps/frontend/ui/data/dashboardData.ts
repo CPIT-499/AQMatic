@@ -7,19 +7,19 @@ export type GasKey = 'pm25' | 'pm10' | 'o3' | 'no2' | 'so2' | 'co' | 'temperatur
 
 export interface ChartDataPoint {
   date: string;
-  pm25: number;
-  pm10: number;
-  o3: number;
-  no2: number;
-  so2: number;
-  co?: number;
-  temperature?: number;
-  humidity?: number;
-  co2?: number;
-  wind_speed?: number;
-  methane?: number;
-  nitrous_oxide?: number;
-  fluorinated_gases?: number;
+  pm25: number | null;
+  pm10: number | null;
+  o3: number | null;
+  no2: number | null;
+  so2: number | null;
+  co?: number | null;
+  temperature?: number | null;
+  humidity?: number | null;
+  co2?: number | null;
+  wind_speed?: number | null;
+  methane?: number | null;
+  nitrous_oxide?: number | null;
+  fluorinated_gases?: number | null;
 }
 
 export interface GasConfig {
@@ -81,10 +81,75 @@ export const TIME_RANGE_OPTIONS = [
   { value: "90d", label: "Last 3 months" }
 ] as const; // Use 'as const' for stricter typing
 
-// --- Sample Data ---
+// --- API Helper Functions ---
+// Function to generate status color and label based on AQI value
+export function getAQIStatus(aqi: number) {
+  if (aqi <= 50) {
+    return { 
+      label: "Good", 
+      color: { 
+        bg: "bg-green-100", 
+        text: "text-green-800", 
+        border: "border-green-200" 
+      } 
+    };
+  } else if (aqi <= 100) {
+    return { 
+      label: "Moderate", 
+      color: { 
+        bg: "bg-yellow-100", 
+        text: "text-yellow-800", 
+        border: "border-yellow-200" 
+      } 
+    };
+  } else if (aqi <= 150) {
+    return { 
+      label: "Unhealthy for Sensitive Groups", 
+      color: { 
+        bg: "bg-orange-100", 
+        text: "text-orange-800", 
+        border: "border-orange-200" 
+      } 
+    };
+  } else if (aqi <= 200) {
+    return { 
+      label: "Unhealthy", 
+      color: { 
+        bg: "bg-red-100", 
+        text: "text-red-800", 
+        border: "border-red-200" 
+      } 
+    };
+  } else if (aqi <= 300) {
+    return { 
+      label: "Very Unhealthy", 
+      color: { 
+        bg: "bg-purple-100", 
+        text: "text-purple-800", 
+        border: "border-purple-200" 
+      } 
+    };
+  } else {
+    return { 
+      label: "Hazardous", 
+      color: { 
+        bg: "bg-gray-800", 
+        text: "text-white", 
+        border: "border-gray-700" 
+      } 
+    };
+  }
+}
 
+// Function to create a percent trend string from a number
+export function formatTrendPercent(value: number) {
+  return value >= 0 ? `+${value}%` : `${value}%`;
+}
+
+// --- Fallback Data ---
+// This data is only used if the API calls fail or during development
 export const CHART_DATA: ChartDataPoint[] = [
-  { date: "Apr 2", pm25: 22, pm10: 60, o3: 35, no2: 15, so2: 8, co: 1.2, temperature: 25, humidity: 60, co2: 10, wind_speed: 5, methane: 1.8, nitrous_oxide: 0.3, fluorinated_gases: 0.01 },
+  { date: "Apr 2", pm25: 25, pm10: 60, o3: 35, no2: 15, so2: 8, co: 1.2, temperature: 25, humidity: 60, co2: 10, wind_speed: 5, methane: 1.8, nitrous_oxide: 0.3, fluorinated_gases: 0.01 },
   { date: "Apr 4", pm25: 25, pm10: 70, o3: 38, no2: 18, so2: 10, co: 1.3, temperature: 26, humidity: 62, co2: 10, wind_speed: 6, methane: 1.9, nitrous_oxide: 0.32, fluorinated_gases: 0.011 },
   { date: "Apr 10", pm25: 28, pm10: 75, o3: 42, no2: 20, so2: 12, co: 1.4, temperature: 27, humidity: 64, co2: 20, wind_speed: 7, methane: 2.0, nitrous_oxide: 0.34, fluorinated_gases: 0.012 },
   { date: "Apr 20", pm25: 30, pm10: 85, o3: 45, no2: 22, so2: 14, co: 1.5, temperature: 28, humidity: 66, co2: 30, wind_speed: 8, methane: 2.1, nitrous_oxide: 0.36, fluorinated_gases: 0.013 },
@@ -98,10 +163,10 @@ export const CHART_DATA: ChartDataPoint[] = [
   { date: "Jun 30", pm25: 32, pm10: 90, o3: 45, no2: 24, so2: 15, co: 1.7, temperature: 30, humidity: 70, co2: 50, wind_speed: 10, methane: 2.3, nitrous_oxide: 0.4, fluorinated_gases: 0.015 },
 ];
 
-export const SUMMARY_STATS: SummaryStat[] = [
+export const FALLBACK_SUMMARY_STATS: SummaryStat[] = [
     {
       title: "Current AQI",
-      value: 87,
+      value: 17,
       status: { label: "Moderate", color: { bg: "bg-yellow-100", text: "text-yellow-800", border: "border-yellow-200" } },
       trend: { value: "+5%", label: "from yesterday" }
     },
@@ -125,56 +190,8 @@ export const SUMMARY_STATS: SummaryStat[] = [
     }
 ];
 
-export const ALERTS: Alert[] = [
+export const FALLBACK_ALERTS: Alert[] = [
   { id: "1", severity: "destructive", title: "High PM2.5 levels detected in Riyadh", description: "Levels exceeded 35μg/m³ for over 2 hours", timestamp: "2 hours ago" },
   { id: "2", severity: "warning", title: "Ozone levels rising in Jeddah", description: "Approaching unhealthy levels for sensitive groups", timestamp: "5 hours ago", color: "bg-yellow-500" },
   { id: "3", severity: "outline", title: "New monitoring station online", description: "Station #7 is now operational in Dammam", timestamp: "1 day ago", color: "bg-green-500" }
-];
-
-
-// Placeholder Data for Organization Mode
-export const CHART_DATA_ORG: ChartDataPoint[] = [
-  { date: "Apr 2", pm25: 15, pm10: 40, o3: 25, no2: 10, so2: 5 },
-  { date: "Apr 4", pm25: 18, pm10: 50, o3: 28, no2: 12, so2: 7 },
-  { date: "Apr 10", pm25: 20, pm10: 55, o3: 30, no2: 15, so2: 8 },
-  { date: "Apr 20", pm25: 22, pm10: 60, o3: 33, no2: 17, so2: 9 },
-  { date: "Apr 30", pm25: 24, pm10: 65, o3: 35, no2: 20, so2: 10 },
-  { date: "May 5", pm25: 26, pm10: 70, o3: 38, no2: 22, so2: 11 },
-  { date: "May 15", pm25: 28, pm10: 75, o3: 40, no2: 24, so2: 12 },
-  { date: "May 25", pm25: 30, pm10: 80, o3: 43, no2: 26, so2: 13 },
-  { date: "Jun 1", pm25: 28, pm10: 70, o3: 41, no2: 24, so2: 12 },
-  { date: "Jun 10", pm25: 26, pm10: 65, o3: 38, no2: 22, so2: 11 },
-  { date: "Jun 20", pm25: 24, pm10: 60, o3: 35, no2: 20, so2: 10 },
-  { date: "Jun 30", pm25: 22, pm10: 55, o3: 33, no2: 18, so2: 9 },
-];
-
-export const SUMMARY_STATS_ORG: SummaryStat[] = [
-  {
-    title: "Current AQI",
-    value: 70,
-    status: { label: "Good", color: { bg: "bg-green-100", text: "text-green-800", border: "border-green-200" } },
-    trend: { value: "+2%", label: "from yesterday" }
-  },
-  {
-    title: "PM2.5 Level",
-    value: 15.5,
-    status: { label: "Good", color: { bg: "bg-green-100", text: "text-green-800", border: "border-green-200" } },
-    trend: { value: "-1%", label: "from yesterday" }
-  },
-  {
-    title: "Monitoring Stations",
-    value: 8,
-    status: { label: "All Online", color: { bg: "bg-green-100", text: "text-green-800", border: "border-green-200" } },
-    trend: { value: "100%", label: "uptime" }
-  },
-  {
-    title: "Alerts Today",
-    value: 0,
-    status: { label: "No Alerts", color: { bg: "bg-green-100", text: "text-green-800", border: "border-green-200" } },
-    trend: { value: "", label: "View details" }
-  }
-];
-
-export const ALERTS_ORG: Alert[] = [
-{ id: "1", severity: "outline", title: "Station maintenance complete", description: "Station #4 is back online", timestamp: "3 hours ago" }
 ];

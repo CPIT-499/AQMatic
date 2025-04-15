@@ -82,6 +82,7 @@ services:
       dockerfile: ./docker/fastapi/Dockerfile
     volumes:
       - ./API:/app/API
+      - ./requirements.txt:/app/requirements.txt
       - ./.env:/app/.env
     ports:
       - "8000:8000"
@@ -89,8 +90,10 @@ services:
       - my_network
     depends_on:
       - db
-    command: uvicorn API.API:app --host 0.0.0.0 --port 8000 --reload
-
+    # Force rebuild when requirements change
+    command: >
+      bash -c "pip install --no-cache-dir -r requirements.txt && 
+      uvicorn API.API:app --host 0.0.0.0 --port 8000 --reload"
 
 volumes:
   my_postgres_data:

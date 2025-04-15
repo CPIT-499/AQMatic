@@ -8,7 +8,7 @@ import pendulum
 
 from src.api_client.openmeteo import get_weather_and_air_quality, insert_measurements_meto
 from src.api_client.openweathermap_API import collect_measurements, insert_measurements_openweathermap
-from operators.db_operations import create_hourly_summary_view, create_map_data_view  # Import the new function
+from operators.db_operations import create_hourly_summary_view, create_map_data_view, create_dashboard_summary_stats_view  # Import the new function
 
 # Define default arguments
 default_args = {
@@ -87,8 +87,12 @@ with dag:
             task_id='create_map_data_view',
             python_callable=create_map_data_view,
         )
+        create_dashboard_summary_stats_view_task = PythonOperator(
+            task_id='create_dashboard_summary_stats_view',
+            python_callable=create_dashboard_summary_stats_view,
+        )
         
-        create_hourly_view_task >> create_map_view_task
+        create_hourly_view_task >> create_map_view_task >> create_dashboard_summary_stats_view_task
 
     end_pipeline = EmptyOperator(
         task_id='end_pipeline'

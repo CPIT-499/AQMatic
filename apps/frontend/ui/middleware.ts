@@ -1,6 +1,6 @@
 export const runtime = "nodejs"; // Force Node.js runtime for middleware
 
-import { auth } from "./auth"; // Import from relative path instead of @/
+import { auth } from "@/auth"; // Import from relative path instead of @/
 
 // Auth.js expects the middleware to be the default export
 // or named 'middleware' if not using the matcher config object.

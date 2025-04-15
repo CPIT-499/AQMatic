@@ -6,13 +6,14 @@ WITH daily_measurements AS (
         AVG(m.value) as avg_value,
         ma.unit,
         o.organization_name,
+        o.organization_id,
         o.role
     FROM measurements m
     JOIN measurement_attributes ma ON m.attribute_id = ma.attribute_id
     JOIN locations l ON m.location_id = l.location_id
     JOIN organizations o ON m.organization_id = o.organization_id
     WHERE m.measurement_time >= CURRENT_DATE - INTERVAL '90 days'
-    GROUP BY DATE_TRUNC('day', m.measurement_time), ma.attribute_name, ma.unit, o.organization_name, o.role
+    GROUP BY DATE_TRUNC('day', m.measurement_time), ma.attribute_name, ma.unit, o.organization_name, o.organization_id, o.role
 )
 SELECT 
     measurement_time,
@@ -20,6 +21,7 @@ SELECT
     avg_value as value,
     unit,
     organization_name,
+    organization_id,
     role
 FROM daily_measurements
 ORDER BY measurement_time DESC;

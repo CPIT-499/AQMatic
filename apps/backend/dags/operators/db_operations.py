@@ -51,3 +51,7 @@ def create_map_data_view(**kwargs):
     """Task to create the map data view."""
     sql_file_path = '/opt/airflow/src/DBview/map_data_view.sql'
     execute_sql_file(sql_file_path)
+def create_dashboard_summary_stats_view(**kwargs):
+    """Task to create the dashboard summary stats view."""
+    sql_file_path = '/opt/airflow/src/DBview/dashboard_summary_stats_view.sql'
+    execute_sql_file(sql_file_path)

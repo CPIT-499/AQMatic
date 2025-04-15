@@ -8,9 +8,41 @@ import CredentialsProvider from "next-auth/providers/credentials"
 // You need to install bcrypt: pnpm add bcrypt @types/bcrypt -w
 // import bcrypt from "bcrypt"
 
+// Define custom types to extend next-auth types
+declare module "next-auth" {
+  interface User {
+    role: string;
+    organizationId: number;
+    accessToken: string;
+  }
+  
+  interface Session {
+    accessToken: string;
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+      organizationId: number;
+    }
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    role: string;
+    organizationId: number;
+    accessToken: string;
+  }
+}
+
 // Remove direct database access which uses Node.js features
 // const pool = new Pool({...})
 // async function getUserByEmail(email: string) {...}
+
+// Define backend API URL
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   // adapter: PostgresAdapter(pool), // Remove adapter that uses Node.js features
@@ -31,8 +63,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
         
         try {
-          // Call our own API instead of directly accessing DB
-          const res = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/login`, {
+          // Call the backend API directly instead of through an internal API route
+          const res = await fetch(`${API_URL}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -41,12 +73,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             }),
           });
           
-          const user = await res.json();
-          
-          if (res.ok && user) {
-            return user;
+          if (!res.ok) {
+            console.error("Login failed:", res.status, res.statusText);
+            return null;
           }
-          return null;
+          
+          const userData = await res.json();
+          
+          // Map the API response to the expected user format
+          const user = {
+            id: userData.user_id.toString(),
+            email: userData.email,
+            name: userData.name,
+            role: userData.role,
+            organizationId: userData.organization_id,
+            // Store access token for future API requests
+            accessToken: userData.access_token
+          };
+          
+          return user;
         } catch (error) {
           console.error("Authentication error:", error);
           return null;
@@ -58,11 +103,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({ token, user }) {
       // Initial sign-in
       if (user) {
-        token.id = user.id;
+        token.id = user.id as string;
         token.email = user.email;
         token.name = user.name;
         token.role = user.role;
         token.organizationId = user.organizationId;
+        // Store access token in the JWT
+        token.accessToken = user.accessToken;
       }
       return token;
     },
@@ -73,6 +120,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.name = token.name as string;
         session.user.role = token.role as string;
         session.user.organizationId = token.organizationId as number;
+        // Add access token to the session for client-side API calls
+        session.accessToken = token.accessToken as string;
       }
       return session;
     }
