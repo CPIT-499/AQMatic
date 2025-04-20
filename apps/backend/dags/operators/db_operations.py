@@ -22,6 +22,9 @@ def execute_sql_file(sql_file_path, **kwargs):
             sql = f.read()
         
         # Extract view name from SQL
+        if 'VIEW' not in sql or 'AS' not in sql:
+            raise ValueError(f"SQL file {sql_file_path} does not contain a valid CREATE VIEW statement.")
+        
         view_name = sql.split('VIEW')[1].split('AS')[0].strip()
         
         # First drop the view if it exists

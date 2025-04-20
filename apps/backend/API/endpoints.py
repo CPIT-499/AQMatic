@@ -314,4 +314,138 @@ def get_org_summary_stats_handler(organization_id: int, db: Session):
             }
         
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e)) 
+        raise HTTPException(status_code=500, detail=str(e))
+
+def get_public_summary_stats_handler(db: Session):
+    """
+    Retrieve and aggregate summary statistics from dashboard_summary_stats_view
+    for organizations with role = 'public', calculating AQI and trends.
+    """
+    try:
+        # Get all summary stats for public organizations
+        # Select specific columns needed for calculation
+        query = """
+            SELECT
+                pm25_current, pm10_current, o3_current, no2_current, so2_current, co_current,
+                pm25_yesterday, pm10_yesterday, o3_yesterday, no2_yesterday, so2_yesterday, co_yesterday,
+                monitoring_stations, alerts_today
+            FROM dashboard_summary_stats_view
+            WHERE role = 'public'
+        """
+        result = db.execute(text(query)).fetchall()
+
+        if not result:
+            # Return default values if no public data found
+            return {
+                "current_aqi": 0,
+                "pm25_level": 0,
+                "aqi_trend_pct": 0,
+                "pm25_trend_pct": 0,
+                "monitoring_stations": 0,
+                "alerts_today": 0
+            }
+
+        # Initialize totals and count
+        total_pm25 = 0
+        total_stations = 0
+        total_alerts = 0
+        total_calculated_aqi = 0
+        total_calculated_aqi_yesterday = 0 # To calculate AQI trend
+        total_pm25_yesterday = 0 # To calculate PM2.5 trend
+        valid_aqi_rows = 0
+        valid_pm25_rows = 0
+        valid_trend_rows = 0
+        row_count = 0
+
+        # Process each row, replacing NULLs with 0 and calculating AQI/trends
+        for row in result:
+            row_count += 1
+            total_stations += row.monitoring_stations or 0
+            total_alerts += row.alerts_today or 0
+
+            # --- Calculate Current AQI ---
+            current_pollutants = {
+                "pm2.5": row.pm25_current, "pm10": row.pm10_current,
+                "o3": row.o3_current, "no2": row.no2_current,
+                "so2": row.so2_current, "co": row.co_current
+            }
+            # Filter out None values before calculating AQI
+            valid_current_pollutants = {k: v for k, v in current_pollutants.items() if v is not None}
+            if valid_current_pollutants:
+                aqi_result = measure_aqi(valid_current_pollutants)
+                current_aqi_value = aqi_result.get("AQI")
+                if current_aqi_value is not None:
+                    total_calculated_aqi += current_aqi_value
+                    valid_aqi_rows += 1
+
+            # Accumulate current PM2.5 for averaging
+            current_pm25 = row.pm25_current
+            if current_pm25 is not None:
+                total_pm25 += current_pm25
+                valid_pm25_rows += 1
+
+            # --- Prepare for Trend Calculation ---
+            yesterday_pollutants = {
+                "pm2.5": row.pm25_yesterday, "pm10": row.pm10_yesterday,
+                "o3": row.o3_yesterday, "no2": row.no2_yesterday,
+                "so2": row.so2_yesterday, "co": row.co_yesterday
+            }
+            valid_yesterday_pollutants = {k: v for k, v in yesterday_pollutants.items() if v is not None}
+            yesterday_aqi_value = None
+            if valid_yesterday_pollutants:
+                 aqi_yesterday_result = measure_aqi(valid_yesterday_pollutants)
+                 yesterday_aqi_value = aqi_yesterday_result.get("AQI")
+
+            yesterday_pm25 = row.pm25_yesterday
+
+            # Accumulate yesterday values only if both current and yesterday are valid for trend
+            if current_aqi_value is not None and yesterday_aqi_value is not None and current_pm25 is not None and yesterday_pm25 is not None:
+                 total_calculated_aqi_yesterday += yesterday_aqi_value
+                 total_pm25_yesterday += yesterday_pm25
+                 valid_trend_rows += 1
+
+
+        if row_count == 0: # Should be caught by 'if not result' but good practice
+             return {"current_aqi": 0, "pm25_level": 0, "aqi_trend_pct": 0, "pm25_trend_pct": 0, "monitoring_stations": 0, "alerts_today": 0}
+
+        # --- Calculate Averages and Trends ---
+        avg_aqi = round(total_calculated_aqi / valid_aqi_rows, 1) if valid_aqi_rows > 0 else 0
+        avg_pm25 = round(total_pm25 / valid_pm25_rows, 1) if valid_pm25_rows > 0 else 0
+
+        avg_aqi_trend = 0
+        avg_pm25_trend = 0
+        if valid_trend_rows > 0:
+            avg_aqi_yesterday = total_calculated_aqi_yesterday / valid_trend_rows
+            avg_pm25_yesterday = total_pm25_yesterday / valid_trend_rows
+            # Calculate percentage change: ((current_avg - yesterday_avg) / yesterday_avg) * 100
+            if avg_aqi_yesterday != 0:
+                 avg_aqi_trend = round(((avg_aqi - avg_aqi_yesterday) / avg_aqi_yesterday) * 100, 1)
+            if avg_pm25_yesterday != 0:
+                 avg_pm25_trend = round(((avg_pm25 - avg_pm25_yesterday) / avg_pm25_yesterday) * 100, 1)
+
+
+        # Return the aggregated public stats
+        return {
+            "current_aqi": avg_aqi,
+            "pm25_level": avg_pm25,
+            "aqi_trend_pct": avg_aqi_trend,
+            "pm25_trend_pct": avg_pm25_trend,
+            "monitoring_stations": total_stations, # Still relies on view providing correct sum per row
+            "alerts_today": total_alerts
+        }
+
+    except Exception as e:
+        import traceback
+        print(f"Error in get_public_summary_stats_handler: {str(e)}")
+        print(traceback.format_exc())
+
+        # Return default values in case of any error during processing
+        return {
+            "current_aqi": 0,
+            "pm25_level": 0,
+            "aqi_trend_pct": 0,
+            "pm25_trend_pct": 0,
+            "monitoring_stations": 0,
+            "alerts_today": 0
+        }
+

@@ -27,9 +27,10 @@ export interface SummaryStatsProps {
 }
 
 export function SummaryStats({ stats, className = "" }: SummaryStatsProps) {
+  const items = Array.isArray(stats) ? stats : [];
   return (
     <div className={`grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6 ${className}`}>
-      {stats.map((stat, index) => (
+      {items.map((stat, index) => (
         <Card key={index} className="shadow-sm hover:shadow-md transition-all duration-300 border-primary/10">
           <CardHeader className="pb-2">
             <CardDescription>{stat.title}</CardDescription>

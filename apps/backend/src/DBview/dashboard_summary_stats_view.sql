@@ -1,3 +1,4 @@
+CREATE OR REPLACE VIEW dashboard_summary_stats_view AS
 WITH current_data AS (
     -- Get the most recent measurements with minimal processing
     SELECT 
@@ -75,4 +76,4 @@ FROM organizations o
 LEFT JOIN current_data cd ON o.organization_id = cd.organization_id
 LEFT JOIN yesterday_data yd ON o.organization_id = yd.organization_id AND yd.attribute_name = cd.attribute_name
 LEFT JOIN stations_data sd ON o.organization_id = sd.organization_id
-GROUP BY o.organization_id, o.role, sd.active_stations; 
+GROUP BY o.organization_id, o.role, sd.active_stations;

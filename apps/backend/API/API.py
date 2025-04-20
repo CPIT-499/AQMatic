@@ -22,7 +22,8 @@ from .endpoints import (
     get_location_measurements_handler,
     get_aqi_data_handler,
     get_location_aqi_handler,
-    get_org_summary_stats_handler
+    get_org_summary_stats_handler,
+    get_public_summary_stats_handler  # New import
 )
 
 # Create FastAPI app
@@ -104,6 +105,18 @@ def get_location_aqi(
     organization_id: Optional[int] = None
 ):
     return get_location_aqi_handler(location_id, db, organization_id)
+
+
+# Organization summary stats route
+@app.get("/summary_stats")
+def get_org_summary_stats(
+    db: Session = Depends(get_db),
+    organization_id: Optional[int] = None
+):
+    if organization_id is None:
+        # If no organization_id is provided, return public summary stats
+        return get_public_summary_stats_handler(db)
+    return get_org_summary_stats_handler(organization_id, db)
 
 # Organization summary stats route
 @app.get("/summary_stats/{organization_id}")

@@ -37,93 +37,103 @@ def format_hourly_measurement_data(data):
     formatted_data = list(time_grouped_data.values())
     return formatted_data
 
-def measure_aqi(data):
-    """
-    Calculate AQI for a day's average values of various pollutants using US EPA standards.
-    
-    Parameters:
-        data: dict like {
-            "pm2.5": 42.3,
-            "pm10": 87.1,
-            "o3": 0.065,  # in ppm
-            "no2": 80,    # in ppb
-            "so2": 50,    # in ppb
-            "co": 7.0     # in ppm
-        }
-    
-    Returns:
-        dict with AQI per pollutant and the max AQI (overall AQI)
-    """
-    # Breakpoint tables (EPA standard)
-    BREAKPOINTS = {
-        "pm2.5": [
-            (0.0, 12.0, 0, 50),
-            (12.1, 35.4, 51, 100),
-            (35.5, 55.4, 101, 150),
-            (55.5, 150.4, 151, 200),
-            (150.5, 250.4, 201, 300),
-            (250.5, 350.4, 301, 400),
-            (350.5, 500.4, 401, 500),
-        ],
-        "pm10": [
-            (0, 54, 0, 50),
-            (55, 154, 51, 100),
-            (155, 254, 101, 150),
-            (255, 354, 151, 200),
-            (355, 424, 201, 300),
-            (425, 504, 301, 400),
-            (505, 604, 401, 500),
-        ],
-        "o3": [  # 8-hour average
-            (0.000, 0.054, 0, 50),
-            (0.055, 0.070, 51, 100),
-            (0.071, 0.085, 101, 150),
-            (0.086, 0.105, 151, 200),
-            (0.106, 0.200, 201, 300),
-        ],
-        "no2": [
-            (0, 53, 0, 50),
-            (54, 100, 51, 100),
-            (101, 360, 101, 150),
-            (361, 649, 151, 200),
-            (650, 1249, 201, 300),
-            (1250, 1649, 301, 400),
-            (1650, 2049, 401, 500),
-        ],
-        "so2": [
-            (0, 35, 0, 50),
-            (36, 75, 51, 100),
-            (76, 185, 101, 150),
-            (186, 304, 151, 200),
-            (305, 604, 201, 300),
-            (605, 804, 301, 400),
-            (805, 1004, 401, 500),
-        ],
-        "co": [
-            (0.0, 4.4, 0, 50),
-            (4.5, 9.4, 51, 100),
-            (9.5, 12.4, 101, 150),
-            (12.5, 15.4, 151, 200),
-            (15.5, 30.4, 201, 300),
-            (30.5, 40.4, 301, 400),
-            (40.5, 50.4, 401, 500),
-        ]
-    }
-    
-    def calculate_aqi(concentration, breakpoints):
-        for Clow, Chigh, Ilow, Ihigh in breakpoints:
-            if Clow <= concentration <= Chigh:
+AQI_BREAKPOINTS = {
+    "pm2.5": [
+        (0.0, 12.0, 0, 50),
+        (12.1, 35.4, 51, 100),
+        (35.5, 55.4, 101, 150),
+        (55.5, 150.4, 151, 200),
+        (150.5, 250.4, 201, 300),
+        (250.5, 350.4, 301, 400),
+        (350.5, 500.4, 401, 500),
+    ],
+    "pm10": [
+        (0, 54, 0, 50),
+        (55, 154, 51, 100),
+        (155, 254, 101, 150),
+        (255, 354, 151, 200),
+        (355, 424, 201, 300),
+        (425, 504, 301, 400),
+        (505, 604, 401, 500),
+    ],
+    "o3": [  # 8-hour average
+        (0.000, 0.054, 0, 50),
+        (0.055, 0.070, 51, 100),
+        (0.071, 0.085, 101, 150),
+        (0.086, 0.105, 151, 200),
+        (0.106, 0.200, 201, 300),
+    ],
+    "no2": [
+        (0, 53, 0, 50),
+        (54, 100, 51, 100),
+        (101, 360, 101, 150),
+        (361, 649, 151, 200),
+        (650, 1249, 201, 300),
+        (1250, 1649, 301, 400),
+        (1650, 2049, 401, 500),
+    ],
+    "so2": [
+        (0, 35, 0, 50),
+        (36, 75, 51, 100),
+        (76, 185, 101, 150),
+        (186, 304, 151, 200),
+        (305, 604, 201, 300),
+        (605, 804, 301, 400),
+        (805, 1004, 401, 500),
+    ],
+    "co": [
+        (0.0, 4.4, 0, 50),
+        (4.5, 9.4, 51, 100),
+        (9.5, 12.4, 101, 150),
+        (12.5, 15.4, 151, 200),
+        (15.5, 30.4, 201, 300),
+        (30.5, 40.4, 301, 400),
+        (40.5, 50.4, 401, 500),
+    ]
+}
+
+def calculate_aqi(concentration, breakpoints):
+    """Calculate AQI for a given concentration and pollutant breakpoints."""
+    # Ensure concentration is a float for calculations
+    try:
+        concentration = float(concentration)
+    except (ValueError, TypeError):
+        return None # Cannot calculate if concentration is not a valid number
+
+    for (Clow, Chigh, Ilow, Ihigh) in breakpoints:
+        if Clow <= concentration <= Chigh:
+            # Standard AQI calculation formula
+            # Ensure all parts of the calculation use floats
+            try:
                 return round(((Ihigh - Ilow) / (Chigh - Clow)) * (concentration - Clow) + Ilow)
-        return None
-    
+            except ZeroDivisionError:
+                # Handle cases where Clow == Chigh, though unlikely with standard breakpoints
+                return float(Ilow) if concentration == float(Clow) else None
+            except Exception:
+                # Catch any other calculation errors
+                return None
+    return None # Concentration out of range
+
+def measure_aqi(pollutant_data):
+    """Calculate the overall AQI based on multiple pollutant concentrations."""
     aqi_results = {}
-    for pollutant, value in data.items():
-        bps = BREAKPOINTS.get(pollutant.lower())
-        if bps and value is not None:
-            aqi_results[pollutant] = calculate_aqi(value, bps)
-    
-    # Calculate overall AQI (maximum of all pollutant AQIs)
-    aqi_results["AQI"] = max([v for v in aqi_results.values() if v is not None], default=None)
+    max_aqi = 0
+
+    for pollutant, value in pollutant_data.items():
+        if value is not None and pollutant in AQI_BREAKPOINTS:
+            bps = AQI_BREAKPOINTS[pollutant]
+            # Value is converted to float inside calculate_aqi now
+            individual_aqi = calculate_aqi(value, bps)
+            if individual_aqi is not None:
+                aqi_results[pollutant] = individual_aqi
+                if individual_aqi > max_aqi:
+                    max_aqi = individual_aqi
+            else:
+                aqi_results[pollutant] = None # Indicate calculation failed or out of range
+        else:
+             aqi_results[pollutant] = None # Pollutant not supported or value is None
+
+    aqi_results["AQI"] = max_aqi if max_aqi > 0 else None # Return None if no valid AQI calculated
     return aqi_results
 
 def get_aqi_category(aqi):
