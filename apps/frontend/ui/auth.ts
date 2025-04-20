@@ -14,6 +14,7 @@ declare module "next-auth" {
     role: string;
     organizationId: number;
     accessToken: string;
+    username: string; // Add username field to match backend response
   }
   
   interface Session {
@@ -24,6 +25,7 @@ declare module "next-auth" {
       email: string;
       role: string;
       organizationId: number;
+      username: string; 
     }
   }
 }
@@ -34,18 +36,14 @@ declare module "next-auth/jwt" {
     role: string;
     organizationId: number;
     accessToken: string;
+    username: string;
   }
 }
-
-// Remove direct database access which uses Node.js features
-// const pool = new Pool({...})
-// async function getUserByEmail(email: string) {...}
 
 // Define backend API URL
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  // adapter: PostgresAdapter(pool), // Remove adapter that uses Node.js features
   session: { strategy: "jwt" }, // Use JWT strategy for credentials provider
   pages: {
     signIn: '/login', // Use custom login page
@@ -81,15 +79,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const userData = await res.json();
           
           // Map the API response to the expected user format
+          // Fields based on backend's LoginResponse model
           const user = {
             id: userData.user_id.toString(),
             email: userData.email,
-            name: userData.name,
-            role: userData.role,
+            name: userData.name || userData.username, // Use name if available, otherwise username
+            username: userData.username,
+            role: userData.role || "user", // Default to "user" if role is not provided
             organizationId: userData.organization_id,
-            // Store access token for future API requests
+            // Store access token for future API requests (named access_token in backend)
             accessToken: userData.access_token
           };
+          
+          // Log the organization ID to verify it's correct
+          console.log("Authenticated with organization ID:", user.organizationId);
           
           return user;
         } catch (error) {
@@ -106,6 +109,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.id = user.id as string;
         token.email = user.email;
         token.name = user.name;
+        token.username = user.username;
         token.role = user.role;
         token.organizationId = user.organizationId;
         // Store access token in the JWT
@@ -118,6 +122,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = token.id;
         session.user.email = token.email as string;
         session.user.name = token.name as string;
+        session.user.username = token.username as string;
         session.user.role = token.role as string;
         session.user.organizationId = token.organizationId as number;
         // Add access token to the session for client-side API calls

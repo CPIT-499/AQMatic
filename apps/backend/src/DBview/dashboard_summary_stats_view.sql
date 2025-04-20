@@ -1,3 +1,4 @@
+CREATE OR REPLACE VIEW dashboard_summary_stats_view AS
 WITH current_data AS (
     -- Get the most recent measurements with minimal processing
     SELECT 

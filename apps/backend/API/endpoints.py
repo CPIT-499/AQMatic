@@ -74,12 +74,21 @@ async def get_map_data_handler(db: Session, organization_id: Optional[int] = Non
     If no organization_id is provided, return all public data.
     """
     try:
+        # Base query - check if organization_id column exists
+        try:
+            # First check if the column exists in the view
+            check_query = "SELECT column_name FROM information_schema.columns WHERE table_name = 'map_data_view' AND column_name = 'organization_id'"
+            has_org_id = db.execute(text(check_query)).fetchone() is not None
+        except Exception:
+            has_org_id = False
+            print("Warning: Could not verify if organization_id column exists in map_data_view")
+        
         # Base query
         query = "SELECT * FROM map_data_view"
         params = {}
         
-        # Add organization filter if provided
-        if organization_id is not None:
+        # Add organization filter if provided and column exists
+        if organization_id is not None and has_org_id:
             query += " WHERE organization_id = :organization_id"
             params["organization_id"] = organization_id
         
@@ -314,4 +323,4 @@ def get_org_summary_stats_handler(organization_id: int, db: Session):
             }
         
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e)) 
+        raise HTTPException(status_code=500, detail=str(e))
