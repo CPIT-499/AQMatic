@@ -45,6 +45,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" }, // Use JWT strategy for credentials provider
+  secret: process.env.NEXTAUTH_SECRET || "your-development-only-secret-key-change-in-production",
   pages: {
     signIn: '/login', // Use custom login page
   },
