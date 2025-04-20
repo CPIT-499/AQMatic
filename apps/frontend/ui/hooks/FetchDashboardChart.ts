@@ -27,10 +27,15 @@ export const useDashboardData = (organizationId?: number) => {
       try {
         setDashboardData(prev => ({...prev, loading: true}));
         
-        // Use the organizationId if provided
-        const endpoint = organizationId 
-          ? `/hourly_measurement_summary_View_graph?organization_id=${organizationId}`
-          : `/hourly_measurement_summary_View_graph`;
+        // Use the API service without manually adding organization_id
+        // The API service will handle adding the correct organization ID
+        let endpoint = '/hourly_measurement_summary_View_graph';
+        
+        // Only append organization_id if explicitly provided
+        if (organizationId !== undefined) {
+          console.log(`Fetching dashboard data for organization ID: ${organizationId}`);
+          endpoint = `/hourly_measurement_summary_View_graph?organization_id=${organizationId}`;
+        }
           
         const chartData = await api.get<ChartDataPoint[]>(endpoint);
         

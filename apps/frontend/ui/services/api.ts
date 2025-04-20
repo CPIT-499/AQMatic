@@ -51,7 +51,20 @@ async function getOrganizationId(): Promise<number | null> {
       }
       
       const session = await sessionPromise;
-      return session?.user?.organizationId || null;
+      
+      // First check the user property (standard location)
+      if (session?.user?.organizationId) {
+        console.log("Using organization ID from session:", session.user.organizationId);
+        return session.user.organizationId;
+      }
+      
+      // Then check if it's directly on the session (some auth providers do this)
+      if (session?.organizationId) {
+        console.log("Using organization ID from session root:", session.organizationId);
+        return session.organizationId;
+      }
+      
+      console.warn('No organization ID found in session:', session);
     }
   } catch (error) {
     console.error('Error getting organization ID:', error);
@@ -65,12 +78,14 @@ async function getOrganizationId(): Promise<number | null> {
 async function appendOrganizationId(endpoint: string): Promise<string> {
   const organizationId = await getOrganizationId();
   
-  if (organizationId !== null) {
-    const separator = endpoint.includes('?') ? '&' : '?';
-    return `${endpoint}${separator}organization_id=${organizationId}`;
+  // If we don't have an organization ID or the endpoint already has an organization_id parameter, return as is
+  if (organizationId === null || endpoint.includes('organization_id=')) {
+    return endpoint;
   }
   
-  return endpoint;
+  // Add organization_id parameter
+  const separator = endpoint.includes('?') ? '&' : '?';
+  return `${endpoint}${separator}organization_id=${organizationId}`;
 }
 
 /**
@@ -262,4 +277,4 @@ export const api = {
       return handleApiError(error, endpoint);
     }
   }
-}; 
+};

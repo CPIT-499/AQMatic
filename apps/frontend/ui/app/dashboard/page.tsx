@@ -4,6 +4,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import type {} from 'react/jsx-runtime';
+import { useSession } from "next-auth/react";
 
 // Custom hooks imports
 import { useGasSelection } from "@/hooks/FetchDashboardChart";
@@ -39,11 +40,19 @@ import { ModeSelector } from "@/components/Dashboard/ModeSelector";
 import { ChartSection } from "@/components/Dashboard/ChartSection";
 import { MapSection } from "@/components/Dashboard/MapSection";
 
+// Define constants for organization IDs
+const PUBLIC_ORG_ID = 1; // Public data organization ID
+const DEFAULT_ORG_ID = 7; // Default organization ID for authenticated users
+
 export default function DashboardPage() {
   const router = useRouter();
+  const { data: session } = useSession();
 
+  // Get user's organization ID from the session
+  const userOrgId = session?.user?.organizationId || DEFAULT_ORG_ID;
+  
   // --- State Management ---
-  const [selectedMode, setSelectedMode] = React.useState<"public" | "organization">("public");
+  const [selectedMode, setSelectedMode] = React.useState<"public" | "organization">("organization");
   const [timeRange, setTimeRange] = React.useState<TimeRangeOption>("90d");
   const { selectedGases, toggleGas } = useGasSelection();
 

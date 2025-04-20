@@ -4,9 +4,11 @@ WITH latest_measurements AS (
         m.location_id,
         ma.attribute_name,
         m.value,
+        l.organization_id,  -- Include organization_id from locations
         ROW_NUMBER() OVER (PARTITION BY m.location_id, ma.attribute_name ORDER BY m.measurement_time DESC) as rn
     FROM measurements m
     JOIN measurement_attributes ma ON m.attribute_id = ma.attribute_id
+    JOIN locations l ON m.location_id = l.location_id  -- Join locations to get organization_id
     WHERE m.measurement_time >= CURRENT_DATE - INTERVAL '7 days'
 )
 SELECT 
@@ -16,6 +18,7 @@ SELECT
     l.city,
     l.region,
     l.country,
+    l.organization_id,  -- Add organization_id to the output
     -- Air quality measurements
     MAX(CASE WHEN lm.attribute_name = 'pm2.5' THEN lm.value ELSE NULL END) as pm25,
     MAX(CASE WHEN lm.attribute_name = 'pm10' THEN lm.value ELSE NULL END) as pm10,
@@ -43,4 +46,4 @@ SELECT
     ) as intensity
 FROM locations l
 LEFT JOIN latest_measurements lm ON l.location_id = lm.location_id AND lm.rn = 1
-GROUP BY l.location_id, l.latitude, l.longitude, l.city, l.region, l.country; 
+GROUP BY l.location_id, l.latitude, l.longitude, l.city, l.region, l.country, l.organization_id;  -- Include organization_id in GROUP BY
