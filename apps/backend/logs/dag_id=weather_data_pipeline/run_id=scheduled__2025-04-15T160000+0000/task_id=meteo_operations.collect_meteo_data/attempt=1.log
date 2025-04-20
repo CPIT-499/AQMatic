@@ -1,0 +1,18 @@
+[2025-04-15T17:00:05.234+0000] {local_task_job_runner.py:123} INFO - ::group::Pre task execution logs
+[2025-04-15T17:00:05.247+0000] {taskinstance.py:2614} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: weather_data_pipeline.meteo_operations.collect_meteo_data scheduled__2025-04-15T16:00:00+00:00 [queued]>
+[2025-04-15T17:00:05.254+0000] {taskinstance.py:2614} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: weather_data_pipeline.meteo_operations.collect_meteo_data scheduled__2025-04-15T16:00:00+00:00 [queued]>
+[2025-04-15T17:00:05.255+0000] {taskinstance.py:2867} INFO - Starting attempt 1 of 2
+[2025-04-15T17:00:05.264+0000] {taskinstance.py:2890} INFO - Executing <Task(PythonOperator): meteo_operations.collect_meteo_data> on 2025-04-15 16:00:00+00:00
+[2025-04-15T17:00:05.272+0000] {standard_task_runner.py:104} INFO - Running: ['airflow', 'tasks', 'run', 'weather_data_pipeline', 'meteo_operations.collect_meteo_data', 'scheduled__2025-04-15T16:00:00+00:00', '--job-id', '41', '--raw', '--subdir', 'DAGS_FOLDER/data_pipeline.py', '--cfg-path', '/tmp/tmpv94y0n_v']
+[2025-04-15T17:00:05.274+0000] {standard_task_runner.py:105} INFO - Job 41: Subtask meteo_operations.collect_meteo_data
+[2025-04-15T17:00:05.276+0000] {logging_mixin.py:190} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:70 DeprecationWarning: This process (pid=1766) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-04-15T17:00:05.277+0000] {standard_task_runner.py:72} INFO - Started process 1788 to run task
+[2025-04-15T17:00:05.320+0000] {task_command.py:467} INFO - Running <TaskInstance: weather_data_pipeline.meteo_operations.collect_meteo_data scheduled__2025-04-15T16:00:00+00:00 [running]> on host 9b6a771fafd5
+[2025-04-15T17:00:05.377+0000] {taskinstance.py:3134} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='weather_data_pipeline' AIRFLOW_CTX_TASK_ID='meteo_operations.collect_meteo_data' AIRFLOW_CTX_EXECUTION_DATE='2025-04-15T16:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-04-15T16:00:00+00:00'
+[2025-04-15T17:00:05.378+0000] {taskinstance.py:732} INFO - ::endgroup::
+[2025-04-15T17:00:06.091+0000] {python.py:240} INFO - Done. Returned value was: {'latitude': 21.4901, 'longitude': 39.1862, 'timestamp': '2025-04-15 00:00:00', 'temperature': 22.423500061035156, 'humidity': 62.0, 'wind_speed': 18.391735076904297, 'pm2_5': 327.79998779296875, 'co': 162.0}
+[2025-04-15T17:00:06.109+0000] {taskinstance.py:341} INFO - ::group::Post task execution logs
+[2025-04-15T17:00:06.110+0000] {taskinstance.py:353} INFO - Marking task as SUCCESS. dag_id=weather_data_pipeline, task_id=meteo_operations.collect_meteo_data, run_id=scheduled__2025-04-15T16:00:00+00:00, execution_date=20250415T160000, start_date=20250415T170005, end_date=20250415T170006
+[2025-04-15T17:00:06.173+0000] {local_task_job_runner.py:266} INFO - Task exited with return code 0
+[2025-04-15T17:00:06.193+0000] {taskinstance.py:3901} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2025-04-15T17:00:06.195+0000] {local_task_job_runner.py:245} INFO - ::endgroup::

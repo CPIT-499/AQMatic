@@ -1,0 +1,24 @@
+[2025-04-15T19:00:17.351+0000] {local_task_job_runner.py:123} INFO - ::group::Pre task execution logs
+[2025-04-15T19:00:17.363+0000] {taskinstance.py:2614} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: weather_data_pipeline.openweather_operations.save_openweather_data scheduled__2025-04-15T18:00:00+00:00 [queued]>
+[2025-04-15T19:00:17.368+0000] {taskinstance.py:2614} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: weather_data_pipeline.openweather_operations.save_openweather_data scheduled__2025-04-15T18:00:00+00:00 [queued]>
+[2025-04-15T19:00:17.369+0000] {taskinstance.py:2867} INFO - Starting attempt 1 of 2
+[2025-04-15T19:00:17.377+0000] {taskinstance.py:2890} INFO - Executing <Task(PythonOperator): openweather_operations.save_openweather_data> on 2025-04-15 18:00:00+00:00
+[2025-04-15T19:00:17.382+0000] {standard_task_runner.py:104} INFO - Running: ['airflow', 'tasks', 'run', 'weather_data_pipeline', 'openweather_operations.save_openweather_data', 'scheduled__2025-04-15T18:00:00+00:00', '--job-id', '63', '--raw', '--subdir', 'DAGS_FOLDER/data_pipeline.py', '--cfg-path', '/tmp/tmpj8fcsz6q']
+[2025-04-15T19:00:17.383+0000] {standard_task_runner.py:105} INFO - Job 63: Subtask openweather_operations.save_openweather_data
+[2025-04-15T19:00:17.385+0000] {logging_mixin.py:190} WARNING - /home/airflow/.local/lib/python3.12/site-packages/airflow/task/task_runner/standard_task_runner.py:70 DeprecationWarning: This process (pid=522) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2025-04-15T19:00:17.386+0000] {standard_task_runner.py:72} INFO - Started process 544 to run task
+[2025-04-15T19:00:17.416+0000] {task_command.py:467} INFO - Running <TaskInstance: weather_data_pipeline.openweather_operations.save_openweather_data scheduled__2025-04-15T18:00:00+00:00 [running]> on host 8e2c8626a9ef
+[2025-04-15T19:00:17.468+0000] {taskinstance.py:3134} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='weather_data_pipeline' AIRFLOW_CTX_TASK_ID='openweather_operations.save_openweather_data' AIRFLOW_CTX_EXECUTION_DATE='2025-04-15T18:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-04-15T18:00:00+00:00'
+[2025-04-15T19:00:17.469+0000] {taskinstance.py:732} INFO - ::endgroup::
+[2025-04-15T19:00:17.491+0000] {logging_mixin.py:190} INFO - Inserted data for Riyadh
+[2025-04-15T19:00:17.494+0000] {logging_mixin.py:190} INFO - Inserted data for Jeddah
+[2025-04-15T19:00:17.496+0000] {logging_mixin.py:190} INFO - Inserted data for Mecca
+[2025-04-15T19:00:17.499+0000] {logging_mixin.py:190} INFO - Inserted data for Medina
+[2025-04-15T19:00:17.501+0000] {logging_mixin.py:190} INFO - Inserted data for Dammam
+[2025-04-15T19:00:17.503+0000] {logging_mixin.py:190} INFO - Inserted data for Taif
+[2025-04-15T19:00:17.504+0000] {python.py:240} INFO - Done. Returned value was: Successfully inserted measurement into database
+[2025-04-15T19:00:17.521+0000] {taskinstance.py:341} INFO - ::group::Post task execution logs
+[2025-04-15T19:00:17.522+0000] {taskinstance.py:353} INFO - Marking task as SUCCESS. dag_id=weather_data_pipeline, task_id=openweather_operations.save_openweather_data, run_id=scheduled__2025-04-15T18:00:00+00:00, execution_date=20250415T180000, start_date=20250415T190017, end_date=20250415T190017
+[2025-04-15T19:00:17.560+0000] {local_task_job_runner.py:266} INFO - Task exited with return code 0
+[2025-04-15T19:00:17.579+0000] {taskinstance.py:3901} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-04-15T19:00:17.582+0000] {local_task_job_runner.py:245} INFO - ::endgroup::
