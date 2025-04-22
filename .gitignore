@@ -2,3 +2,6 @@ http://api.openweathermap.org = f63b209dc710559a30df1d507a4f4432
 https://api.purpleair.com = 82FE1825-D80A-11EF-A3B4-42010A800010
 https://air-quality-api.open-meteo.com = for free ya w7sh
 node_modules
+
+# ignore application log files
+apps/backend/logs/

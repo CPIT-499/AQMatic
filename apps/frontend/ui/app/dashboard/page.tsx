@@ -52,7 +52,7 @@ export default function DashboardPage() {
   const userOrgId = session?.user?.organizationId || DEFAULT_ORG_ID;
   
   // --- State Management ---
-  const [selectedMode, setSelectedMode] = React.useState<"public" | "organization">("organization");
+  const [selectedMode, setSelectedMode] = React.useState<"public" | "organization">("public");
   const [timeRange, setTimeRange] = React.useState<TimeRangeOption>("90d");
   const { selectedGases, toggleGas } = useGasSelection();
 
