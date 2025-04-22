@@ -1,0 +1,26 @@
+[2025-04-22T22:40:02.228+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: weather_data_pipeline.ai_forecast_operations.forecast_co2_org1 manual__2025-04-22T22:34:18.951412+00:00 [queued]>
+[2025-04-22T22:40:02.234+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: weather_data_pipeline.ai_forecast_operations.forecast_co2_org1 manual__2025-04-22T22:34:18.951412+00:00 [queued]>
+[2025-04-22T22:40:02.235+0000] {taskinstance.py:1361} INFO - Starting attempt 2 of 2
+[2025-04-22T22:40:02.244+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): ai_forecast_operations.forecast_co2_org1> on 2025-04-22 22:34:18.951412+00:00
+[2025-04-22T22:40:02.250+0000] {standard_task_runner.py:57} INFO - Started process 2398 to run task
+[2025-04-22T22:40:02.252+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'weather_data_pipeline', 'ai_forecast_operations.forecast_co2_org1', 'manual__2025-04-22T22:34:18.951412+00:00', '--job-id', '40', '--raw', '--subdir', 'DAGS_FOLDER/data_pipeline.py', '--cfg-path', '/tmp/tmp1q3tjok4']
+[2025-04-22T22:40:02.254+0000] {standard_task_runner.py:85} INFO - Job 40: Subtask ai_forecast_operations.forecast_co2_org1
+[2025-04-22T22:40:02.292+0000] {task_command.py:415} INFO - Running <TaskInstance: weather_data_pipeline.ai_forecast_operations.forecast_co2_org1 manual__2025-04-22T22:34:18.951412+00:00 [running]> on host ba2ad926eb92
+[2025-04-22T22:40:02.346+0000] {taskinstance.py:1660} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='weather_data_pipeline' AIRFLOW_CTX_TASK_ID='ai_forecast_operations.forecast_co2_org1' AIRFLOW_CTX_EXECUTION_DATE='2025-04-22T22:34:18.951412+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-04-22T22:34:18.951412+00:00'
+[2025-04-22T22:40:02.360+0000] {taskinstance.py:1943} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 192, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 209, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/src/ai/forecast.py", line 55, in forecast_next_week_and_store
+    df
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/core/frame.py", line 11471, in interpolate
+    return super().interpolate(
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/core/generic.py", line 7649, in interpolate
+    raise TypeError(
+TypeError: Cannot interpolate with all object-dtype columns in the DataFrame. Try setting at least one column to a numeric dtype.
+[2025-04-22T22:40:02.371+0000] {taskinstance.py:1400} INFO - Marking task as FAILED. dag_id=weather_data_pipeline, task_id=ai_forecast_operations.forecast_co2_org1, execution_date=20250422T223418, start_date=20250422T224002, end_date=20250422T224002
+[2025-04-22T22:40:02.379+0000] {standard_task_runner.py:104} ERROR - Failed to execute job 40 for task ai_forecast_operations.forecast_co2_org1 (Cannot interpolate with all object-dtype columns in the DataFrame. Try setting at least one column to a numeric dtype.; 2398)
+[2025-04-22T22:40:02.387+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 1
+[2025-04-22T22:40:02.402+0000] {taskinstance.py:2784} INFO - 0 downstream tasks scheduled from follow-on schedule check

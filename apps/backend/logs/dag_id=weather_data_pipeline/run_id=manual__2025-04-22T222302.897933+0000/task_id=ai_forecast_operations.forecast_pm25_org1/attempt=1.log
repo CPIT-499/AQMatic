@@ -1,0 +1,14 @@
+[2025-04-22T22:24:28.832+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: weather_data_pipeline.ai_forecast_operations.forecast_pm25_org1 manual__2025-04-22T22:23:02.897933+00:00 [queued]>
+[2025-04-22T22:24:28.837+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: weather_data_pipeline.ai_forecast_operations.forecast_pm25_org1 manual__2025-04-22T22:23:02.897933+00:00 [queued]>
+[2025-04-22T22:24:28.838+0000] {taskinstance.py:1361} INFO - Starting attempt 1 of 2
+[2025-04-22T22:24:28.847+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): ai_forecast_operations.forecast_pm25_org1> on 2025-04-22 22:23:02.897933+00:00
+[2025-04-22T22:24:28.851+0000] {standard_task_runner.py:57} INFO - Started process 886 to run task
+[2025-04-22T22:24:28.853+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'weather_data_pipeline', 'ai_forecast_operations.forecast_pm25_org1', 'manual__2025-04-22T22:23:02.897933+00:00', '--job-id', '19', '--raw', '--subdir', 'DAGS_FOLDER/data_pipeline.py', '--cfg-path', '/tmp/tmpdft0__d_']
+[2025-04-22T22:24:28.854+0000] {standard_task_runner.py:85} INFO - Job 19: Subtask ai_forecast_operations.forecast_pm25_org1
+[2025-04-22T22:24:28.884+0000] {task_command.py:415} INFO - Running <TaskInstance: weather_data_pipeline.ai_forecast_operations.forecast_pm25_org1 manual__2025-04-22T22:23:02.897933+00:00 [running]> on host ba2ad926eb92
+[2025-04-22T22:24:28.939+0000] {taskinstance.py:1660} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='weather_data_pipeline' AIRFLOW_CTX_TASK_ID='ai_forecast_operations.forecast_pm25_org1' AIRFLOW_CTX_EXECUTION_DATE='2025-04-22T22:23:02.897933+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2025-04-22T22:23:02.897933+00:00'
+[2025-04-22T22:24:28.945+0000] {logging_mixin.py:151} INFO - No data found for organization 1 and attribute 2
+[2025-04-22T22:24:28.945+0000] {python.py:194} INFO - Done. Returned value was: None
+[2025-04-22T22:24:28.953+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=weather_data_pipeline, task_id=ai_forecast_operations.forecast_pm25_org1, execution_date=20250422T222302, start_date=20250422T222428, end_date=20250422T222428
+[2025-04-22T22:24:28.986+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2025-04-22T22:24:28.997+0000] {taskinstance.py:2784} INFO - 0 downstream tasks scheduled from follow-on schedule check

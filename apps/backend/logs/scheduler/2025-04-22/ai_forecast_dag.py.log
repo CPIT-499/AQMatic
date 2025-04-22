@@ -1,0 +1,378 @@
+[2025-04-22T18:02:46.695+0000] {processor.py:186} INFO - Started process (PID=1087) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:02:46.695+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:02:46.696+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:02:46.696+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:02:47.050+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:02:47.044+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:02:47.052+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:02:47.064+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.373 seconds
+[2025-04-22T18:03:17.325+0000] {processor.py:186} INFO - Started process (PID=1092) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:03:17.325+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:03:17.326+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:03:17.326+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:03:17.684+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:03:17.678+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:03:17.686+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:03:17.699+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.378 seconds
+[2025-04-22T18:03:47.951+0000] {processor.py:186} INFO - Started process (PID=1097) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:03:47.952+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:03:47.953+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:03:47.953+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:03:48.321+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:03:48.314+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:03:48.323+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:03:48.335+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.388 seconds
+[2025-04-22T18:04:18.594+0000] {processor.py:186} INFO - Started process (PID=1102) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:04:18.594+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:04:18.595+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:04:18.595+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:04:18.955+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:04:18.948+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:04:18.957+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:04:18.972+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.382 seconds
+[2025-04-22T18:04:49.215+0000] {processor.py:186} INFO - Started process (PID=1107) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:04:49.215+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:04:49.216+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:04:49.216+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:04:49.600+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:04:49.589+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:04:49.602+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:04:49.614+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.403 seconds
+[2025-04-22T18:05:19.878+0000] {processor.py:186} INFO - Started process (PID=1112) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:05:19.879+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:05:19.880+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:05:19.879+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:05:20.269+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:05:20.262+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:05:20.271+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:05:20.283+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.408 seconds
+[2025-04-22T18:05:50.517+0000] {processor.py:186} INFO - Started process (PID=1117) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:05:50.518+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:05:50.519+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:05:50.519+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:05:50.887+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:05:50.879+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:05:50.889+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:05:50.903+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.389 seconds
+[2025-04-22T18:06:21.330+0000] {processor.py:186} INFO - Started process (PID=1123) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:06:21.330+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:06:21.331+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:06:21.331+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:06:21.654+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:06:21.648+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:06:21.656+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:06:21.666+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.340 seconds
+[2025-04-22T18:06:52.108+0000] {processor.py:186} INFO - Started process (PID=1129) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:06:52.108+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:06:52.109+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:06:52.109+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:06:52.458+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:06:52.451+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:06:52.460+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:06:52.472+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.368 seconds
+[2025-04-22T18:07:22.887+0000] {processor.py:186} INFO - Started process (PID=1135) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:07:22.887+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:07:22.888+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:07:22.888+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:07:23.221+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:07:23.215+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:07:23.223+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:07:23.235+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.352 seconds
+[2025-04-22T18:07:53.689+0000] {processor.py:186} INFO - Started process (PID=1141) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:07:53.690+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:07:53.690+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:07:53.690+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:07:53.990+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:07:53.984+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:07:53.991+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:07:54.001+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.315 seconds
+[2025-04-22T18:08:24.402+0000] {processor.py:186} INFO - Started process (PID=1147) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:08:24.402+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:08:24.403+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:08:24.403+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:08:24.706+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:08:24.697+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:08:24.708+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:08:24.719+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.320 seconds
+[2025-04-22T18:08:55.125+0000] {processor.py:186} INFO - Started process (PID=1153) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:08:55.126+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:08:55.126+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:08:55.126+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:08:55.426+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:08:55.420+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:08:55.428+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:08:55.438+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.316 seconds
+[2025-04-22T18:09:25.843+0000] {processor.py:186} INFO - Started process (PID=1159) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:09:25.844+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:09:25.844+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:09:25.844+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:09:26.213+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:09:26.206+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:09:26.215+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:09:26.226+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.388 seconds
+[2025-04-22T18:09:56.663+0000] {processor.py:186} INFO - Started process (PID=1165) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:09:56.664+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:09:56.664+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:09:56.664+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:09:56.976+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:09:56.971+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:09:56.978+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:09:56.988+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.328 seconds
+[2025-04-22T18:10:27.448+0000] {processor.py:186} INFO - Started process (PID=1171) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:10:27.448+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:10:27.450+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:10:27.450+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:10:27.761+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:10:27.754+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:10:27.763+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:10:27.773+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.329 seconds
+[2025-04-22T18:10:58.210+0000] {processor.py:186} INFO - Started process (PID=1177) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:10:58.210+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:10:58.212+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:10:58.211+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:10:58.583+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:10:58.577+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:10:58.585+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:10:58.598+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.392 seconds
+[2025-04-22T18:11:29.009+0000] {processor.py:186} INFO - Started process (PID=1183) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:11:29.010+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:11:29.011+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:11:29.011+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:11:29.366+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:11:29.358+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:11:29.368+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:11:29.380+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.376 seconds
+[2025-04-22T18:11:59.770+0000] {processor.py:186} INFO - Started process (PID=1189) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:11:59.770+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:11:59.771+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:11:59.771+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:12:00.092+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:12:00.085+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:12:00.093+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:12:00.104+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.338 seconds
+[2025-04-22T18:12:30.509+0000] {processor.py:186} INFO - Started process (PID=1195) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:12:30.510+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:12:30.512+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:12:30.511+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:12:30.822+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:12:30.816+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:12:30.823+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:12:30.833+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.327 seconds
+[2025-04-22T18:13:01.288+0000] {processor.py:186} INFO - Started process (PID=1201) to work on /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:13:01.288+0000] {processor.py:914} INFO - Processing file /opt/airflow/dags/ai_forecast_dag.py for tasks to queue
+[2025-04-22T18:13:01.289+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:13:01.289+0000] {dagbag.py:588} INFO - Filling up the DagBag from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:13:01.656+0000] {logging_mixin.py:190} INFO - [2025-04-22T18:13:01.647+0000] {dagbag.py:387} ERROR - Failed to import: /opt/airflow/dags/ai_forecast_dag.py
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 383, in parse
+    loader.exec_module(new_module)
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/opt/airflow/dags/ai_forecast_dag.py", line 17, in <module>
+    from ai.ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/__init__.py", line 6, in <module>
+    from .ai_module import forecast_next_week_and_store
+  File "/opt/airflow/dags/../src/ai/ai_module.py", line 5, in <module>
+    from sklearn.preprocessing import MinMaxScaler
+ModuleNotFoundError: No module named 'sklearn'
+[2025-04-22T18:13:01.658+0000] {processor.py:927} WARNING - No viable dags retrieved from /opt/airflow/dags/ai_forecast_dag.py
+[2025-04-22T18:13:01.670+0000] {processor.py:208} INFO - Processing /opt/airflow/dags/ai_forecast_dag.py took 0.386 seconds

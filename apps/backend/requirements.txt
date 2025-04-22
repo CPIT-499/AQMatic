@@ -18,3 +18,7 @@ python-multipart
 pydantic
 typing_extensions
 starlette
+# Required for AI forecasting functionality
+tensorflow>=2.10.0
+scikit-learn>=1.0.0
+numpy>=1.20.0

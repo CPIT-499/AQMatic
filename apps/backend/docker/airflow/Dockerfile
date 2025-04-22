@@ -1,4 +1,4 @@
-FROM apache/airflow:latest
+FROM apache/airflow:2.7.0
 
 # Use absolute path to copy requirements.txt
 COPY --chown=airflow:root ../../requirements.txt /opt/airflow/requirements.txt

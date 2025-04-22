@@ -1,0 +1,28 @@
+[2025-04-22T22:07:11.484+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: weather_data_pipeline.ai_forecast_operations.forecast_co2_org1 scheduled__2025-04-22T21:00:00+00:00 [queued]>
+[2025-04-22T22:07:11.490+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: weather_data_pipeline.ai_forecast_operations.forecast_co2_org1 scheduled__2025-04-22T21:00:00+00:00 [queued]>
+[2025-04-22T22:07:11.490+0000] {taskinstance.py:1361} INFO - Starting attempt 1 of 2
+[2025-04-22T22:07:11.498+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): ai_forecast_operations.forecast_co2_org1> on 2025-04-22 21:00:00+00:00
+[2025-04-22T22:07:11.503+0000] {standard_task_runner.py:57} INFO - Started process 456 to run task
+[2025-04-22T22:07:11.505+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'weather_data_pipeline', 'ai_forecast_operations.forecast_co2_org1', 'scheduled__2025-04-22T21:00:00+00:00', '--job-id', '25', '--raw', '--subdir', 'DAGS_FOLDER/data_pipeline.py', '--cfg-path', '/tmp/tmphurs7hvv']
+[2025-04-22T22:07:11.506+0000] {standard_task_runner.py:85} INFO - Job 25: Subtask ai_forecast_operations.forecast_co2_org1
+[2025-04-22T22:07:11.535+0000] {task_command.py:415} INFO - Running <TaskInstance: weather_data_pipeline.ai_forecast_operations.forecast_co2_org1 scheduled__2025-04-22T21:00:00+00:00 [running]> on host 0030001c0aa2
+[2025-04-22T22:07:11.609+0000] {taskinstance.py:1660} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='weather_data_pipeline' AIRFLOW_CTX_TASK_ID='ai_forecast_operations.forecast_co2_org1' AIRFLOW_CTX_EXECUTION_DATE='2025-04-22T21:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-04-22T21:00:00+00:00'
+[2025-04-22T22:07:11.613+0000] {logging_mixin.py:151} INFO - No data found for organization 1 and attribute 1
+[2025-04-22T22:07:11.614+0000] {python.py:194} INFO - Done. Returned value was: None
+[2025-04-22T22:07:11.620+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=weather_data_pipeline, task_id=ai_forecast_operations.forecast_co2_org1, execution_date=20250422T210000, start_date=20250422T220711, end_date=20250422T220711
+[2025-04-22T22:07:11.637+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2025-04-22T22:07:11.651+0000] {taskinstance.py:2784} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2025-04-22T22:24:17.097+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: weather_data_pipeline.ai_forecast_operations.forecast_co2_org1 scheduled__2025-04-22T21:00:00+00:00 [queued]>
+[2025-04-22T22:24:17.104+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: weather_data_pipeline.ai_forecast_operations.forecast_co2_org1 scheduled__2025-04-22T21:00:00+00:00 [queued]>
+[2025-04-22T22:24:17.105+0000] {taskinstance.py:1361} INFO - Starting attempt 1 of 2
+[2025-04-22T22:24:17.114+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): ai_forecast_operations.forecast_co2_org1> on 2025-04-22 21:00:00+00:00
+[2025-04-22T22:24:17.119+0000] {standard_task_runner.py:57} INFO - Started process 760 to run task
+[2025-04-22T22:24:17.121+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'weather_data_pipeline', 'ai_forecast_operations.forecast_co2_org1', 'scheduled__2025-04-22T21:00:00+00:00', '--job-id', '16', '--raw', '--subdir', 'DAGS_FOLDER/data_pipeline.py', '--cfg-path', '/tmp/tmpwj2s6jin']
+[2025-04-22T22:24:17.122+0000] {standard_task_runner.py:85} INFO - Job 16: Subtask ai_forecast_operations.forecast_co2_org1
+[2025-04-22T22:24:17.153+0000] {task_command.py:415} INFO - Running <TaskInstance: weather_data_pipeline.ai_forecast_operations.forecast_co2_org1 scheduled__2025-04-22T21:00:00+00:00 [running]> on host ba2ad926eb92
+[2025-04-22T22:24:17.199+0000] {taskinstance.py:1660} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='weather_data_pipeline' AIRFLOW_CTX_TASK_ID='ai_forecast_operations.forecast_co2_org1' AIRFLOW_CTX_EXECUTION_DATE='2025-04-22T21:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-04-22T21:00:00+00:00'
+[2025-04-22T22:24:17.203+0000] {logging_mixin.py:151} INFO - No data found for organization 1 and attribute 1
+[2025-04-22T22:24:17.204+0000] {python.py:194} INFO - Done. Returned value was: None
+[2025-04-22T22:24:17.210+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=weather_data_pipeline, task_id=ai_forecast_operations.forecast_co2_org1, execution_date=20250422T210000, start_date=20250422T222417, end_date=20250422T222417
+[2025-04-22T22:24:17.254+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2025-04-22T22:24:17.268+0000] {taskinstance.py:2784} INFO - 0 downstream tasks scheduled from follow-on schedule check

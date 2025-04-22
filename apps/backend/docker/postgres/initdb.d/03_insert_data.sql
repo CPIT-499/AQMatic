@@ -53,5 +53,4 @@ VALUES
   (1, 'emily_eco', 'password123', 'emily@greenearth.org', 'viewer', 'Emily Eco', NOW()),
   (2, 'dave_drone', 'password123', 'dave@skydrones.com', 'operator', 'Dave Drone', NOW()),
   (3, 'sarah_sky', 'password123', 'sarah@urbanair.io', 'admin', 'Sarah Sky', NOW()),
-  (4, 'mike_marine', 'password123', 'mike@oceanwatch.org', 'viewer', 'Mike Marine', NOW()),
-  (6, 'mike_marine', 'password123', '1@1x.org', 'viewer', 'Mike Marine', NOW());
+  (4, 'mike_marine', 'password123', 'mike@oceanwatch.org', 'viewer', 'Mike Marine', NOW())

@@ -1,0 +1,13 @@
+[2025-04-22T21:48:14.128+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: weather_data_pipeline.meteo_operations.collect_meteo_data scheduled__2025-04-22T20:00:00+00:00 [queued]>
+[2025-04-22T21:48:14.133+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: weather_data_pipeline.meteo_operations.collect_meteo_data scheduled__2025-04-22T20:00:00+00:00 [queued]>
+[2025-04-22T21:48:14.133+0000] {taskinstance.py:1361} INFO - Starting attempt 1 of 2
+[2025-04-22T21:48:14.142+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): meteo_operations.collect_meteo_data> on 2025-04-22 20:00:00+00:00
+[2025-04-22T21:48:14.144+0000] {standard_task_runner.py:57} INFO - Started process 70 to run task
+[2025-04-22T21:48:14.146+0000] {standard_task_runner.py:84} INFO - Running: ['airflow', 'tasks', 'run', 'weather_data_pipeline', 'meteo_operations.collect_meteo_data', 'scheduled__2025-04-22T20:00:00+00:00', '--job-id', '2', '--raw', '--subdir', 'DAGS_FOLDER/data_pipeline.py', '--cfg-path', '/tmp/tmp0iqs8udf']
+[2025-04-22T21:48:14.147+0000] {standard_task_runner.py:85} INFO - Job 2: Subtask meteo_operations.collect_meteo_data
+[2025-04-22T21:48:14.182+0000] {task_command.py:415} INFO - Running <TaskInstance: weather_data_pipeline.meteo_operations.collect_meteo_data scheduled__2025-04-22T20:00:00+00:00 [running]> on host 7883cdd07699
+[2025-04-22T21:48:14.252+0000] {taskinstance.py:1660} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='airflow' AIRFLOW_CTX_DAG_ID='weather_data_pipeline' AIRFLOW_CTX_TASK_ID='meteo_operations.collect_meteo_data' AIRFLOW_CTX_EXECUTION_DATE='2025-04-22T20:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2025-04-22T20:00:00+00:00'
+[2025-04-22T21:48:14.971+0000] {python.py:194} INFO - Done. Returned value was: {'latitude': 21.4901, 'longitude': 39.1862, 'timestamp': '2025-04-22 00:00:00', 'temperature': 27.073501586914062, 'humidity': 77.0, 'wind_speed': 3.096837043762207, 'pm2_5': 117.5999984741211, 'co': 441.0}
+[2025-04-22T21:48:14.987+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=weather_data_pipeline, task_id=meteo_operations.collect_meteo_data, execution_date=20250422T200000, start_date=20250422T214814, end_date=20250422T214814
+[2025-04-22T21:48:15.001+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2025-04-22T21:48:15.019+0000] {taskinstance.py:2784} INFO - 1 downstream tasks scheduled from follow-on schedule check
