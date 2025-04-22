@@ -5151,3 +5151,9 @@ ModuleNotFoundError: No module named 'airflow.providers.standard'
 [2025-04-22T22:55:15.086+0000] {processor.py:839} INFO - DAG(s) dict_keys(['weather_data_pipeline']) retrieved from /opt/airflow/dags/data_pipeline.py
 [2025-04-22T22:55:15.102+0000] {logging_mixin.py:151} INFO - [2025-04-22T22:55:15.102+0000] {dag.py:2907} INFO - Sync 1 DAGs
 [2025-04-22T22:55:15.126+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/data_pipeline.py took 1.927 seconds
+[2025-04-22T22:55:45.273+0000] {processor.py:157} INFO - Started process (PID=8887) to work on /opt/airflow/dags/data_pipeline.py
+[2025-04-22T22:55:45.274+0000] {processor.py:829} INFO - Processing file /opt/airflow/dags/data_pipeline.py for tasks to queue
+[2025-04-22T22:55:45.275+0000] {logging_mixin.py:151} INFO - [2025-04-22T22:55:45.274+0000] {dagbag.py:539} INFO - Filling up the DagBag from /opt/airflow/dags/data_pipeline.py
+[2025-04-22T22:55:47.069+0000] {processor.py:839} INFO - DAG(s) dict_keys(['weather_data_pipeline']) retrieved from /opt/airflow/dags/data_pipeline.py
+[2025-04-22T22:55:47.086+0000] {logging_mixin.py:151} INFO - [2025-04-22T22:55:47.086+0000] {dag.py:2907} INFO - Sync 1 DAGs
+[2025-04-22T22:55:47.116+0000] {processor.py:179} INFO - Processing /opt/airflow/dags/data_pipeline.py took 1.845 seconds
