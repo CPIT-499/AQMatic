@@ -1,4 +1,5 @@
 from src.db.map import get_attribute_id
+from src.db.connect import db_cursor
 
 def insert_measurements(conn, sensor_id, organization_id, measurement_time, location_id, attributes):
     """
@@ -88,3 +89,30 @@ def insert_measurement_attribute(conn, attribute_name, unit):
     )
     conn.commit()
     return cursor.lastrowid
+
+def insert_forecasts(forecast_rows):
+    """
+    Insert or update forecast values in the database.
+    
+    Args:
+        forecast_rows: List of tuples containing forecast data
+                      (org_id, attr_id, horizon_days, forecast_time, target_time, predicted_value)
+                      
+    Returns:
+        True if successful, False otherwise
+    """
+    with db_cursor() as cursor:
+        if cursor is None:
+            return False
+        
+        cursor.executemany("""
+            INSERT INTO forecasts
+              (organization_id, attribute_id, horizon_days,
+              forecast_time, target_time, predicted_value)
+            VALUES (%s,%s,%s,%s,%s,%s)
+            ON CONFLICT (organization_id, attribute_id, horizon_days, target_time)
+            DO UPDATE SET 
+              forecast_time = EXCLUDED.forecast_time,
+              predicted_value = EXCLUDED.predicted_value
+        """, forecast_rows)
+        return True
