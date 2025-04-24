@@ -108,7 +108,7 @@ with dag:
         forecast_pm25_org1_task = PythonOperator(
             task_id='forecast_pm25_org1',
             python_callable=forecast_next_week_and_store,
-            op_kwargs={'org_id': 6, 'attr_id': 4},  # Assuming org_id=1, attr_id=2 is PM2.5
+            op_kwargs={'org_id': 6, 'attr_id': 3},  # Assuming org_id=1, attr_id=2 is PM2.5
             doc_md="""#### Task Documentation
             Forecasts PM2.5 levels for organization 1 for the next 7 days
             """,
