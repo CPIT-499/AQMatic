@@ -149,18 +149,35 @@ export function formatTrendPercent(value: number) {
 // --- Fallback Data ---
 // This data is only used if the API calls fail or during development
 export const CHART_DATA: ChartDataPoint[] = [
-  { date: "Apr 2", pm25: 25, pm10: 60, o3: 35, no2: 15, so2: 8, co: 1.2, temperature: 25, humidity: 60, co2: 10, wind_speed: 5, methane: 1.8, nitrous_oxide: 0.3, fluorinated_gases: 0.01 },
-  { date: "Apr 4", pm25: 25, pm10: 70, o3: 38, no2: 18, so2: 10, co: 1.3, temperature: 26, humidity: 62, co2: 10, wind_speed: 6, methane: 1.9, nitrous_oxide: 0.32, fluorinated_gases: 0.011 },
-  { date: "Apr 10", pm25: 28, pm10: 75, o3: 42, no2: 20, so2: 12, co: 1.4, temperature: 27, humidity: 64, co2: 20, wind_speed: 7, methane: 2.0, nitrous_oxide: 0.34, fluorinated_gases: 0.012 },
-  { date: "Apr 20", pm25: 30, pm10: 85, o3: 45, no2: 22, so2: 14, co: 1.5, temperature: 28, humidity: 66, co2: 30, wind_speed: 8, methane: 2.1, nitrous_oxide: 0.36, fluorinated_gases: 0.013 },
-  { date: "Apr 30", pm25: 32, pm10: 90, o3: 48, no2: 25, so2: 15, co: 1.6, temperature: 29, humidity: 68, co2: 40, wind_speed: 9, methane: 2.2, nitrous_oxide: 0.38, fluorinated_gases: 0.014 },
-  { date: "May 5", pm25: 35, pm10: 95, o3: 50, no2: 28, so2: 16, co: 1.7, temperature: 30, humidity: 70, co2: 50, wind_speed: 10, methane: 2.3, nitrous_oxide: 0.4, fluorinated_gases: 0.015 },
-  { date: "May 15", pm25: 38, pm10: 105, o3: 52, no2: 30, so2: 18, co: 1.8, temperature: 31, humidity: 72, co2: 60, wind_speed: 11, methane: 2.4, nitrous_oxide: 0.42, fluorinated_gases: 0.016 },
-  { date: "May 25", pm25: 42, pm10: 120, o3: 55, no2: 32, so2: 20, co: 1.9, temperature: 32, humidity: 74, co2: 70, wind_speed: 12, methane: 2.5, nitrous_oxide: 0.44, fluorinated_gases: 0.017 },
-  { date: "Jun 1", pm25: 40, pm10: 110, o3: 53, no2: 30, so2: 19, co: 1.85, temperature: 31.5, humidity: 73, co2: 65, wind_speed: 11.5, methane: 2.45, nitrous_oxide: 0.43, fluorinated_gases: 0.0165 },
+  { date: "Apr 2", pm25: 999, pm10: 60, o3: 35, no2: 15, so2: 8, co: 1.2, temperature: 25, humidity: 60, co2: 10, wind_speed: 5, methane: 1.8, nitrous_oxide: 0.3, fluorinated_gases: 0.01 },
+  { date: "Apr 4", pm25: 999, pm10: 70, o3: 38, no2: 18, so2: 10, co: 1.3, temperature: 26, humidity: 62, co2: 10, wind_speed: 6, methane: 1.9, nitrous_oxide: 0.32, fluorinated_gases: 0.011 },
+  { date: "Apr 10", pm25: 999, pm10: 75, o3: 42, no2: 20, so2: 12, co: 1.4, temperature: 27, humidity: 64, co2: 20, wind_speed: 7, methane: 2.0, nitrous_oxide: 0.34, fluorinated_gases: 0.012 },
+  { date: "Apr 20", pm25: 999, pm10: 85, o3: 45, no2: 22, so2: 14, co: 1.5, temperature: 28, humidity: 66, co2: 30, wind_speed: 8, methane: 2.1, nitrous_oxide: 0.36, fluorinated_gases: 0.013 },
+  { date: "Apr 30", pm25: 999, pm10: 90, o3: 48, no2: 25, so2: 15, co: 1.6, temperature: 29, humidity: 68, co2: 40, wind_speed: 9, methane: 2.2, nitrous_oxide: 0.38, fluorinated_gases: 0.014 },
+  { date: "May 5", pm25: 999, pm10: 95, o3: 50, no2: 28, so2: 16, co: 1.7, temperature: 30, humidity: 70, co2: 50, wind_speed: 10, methane: 2.3, nitrous_oxide: 0.4, fluorinated_gases: 0.015 },
+  { date: "May 15", pm25: 999, pm10: 105, o3: 52, no2: 30, so2: 18, co: 1.8, temperature: 31, humidity: 72, co2: 60, wind_speed: 11, methane: 2.4, nitrous_oxide: 0.42, fluorinated_gases: 0.016 },
+  { date: "May 25", pm25: 999, pm10: 120, o3: 55, no2: 32, so2: 20, co: 1.9, temperature: 32, humidity: 74, co2: 70, wind_speed: 12, methane: 2.5, nitrous_oxide: 0.44, fluorinated_gases: 0.017 },
+  { date: "Jun 1", pm25: 999, pm10: 110, o3: 53, no2: 30, so2: 19, co: 1.85, temperature: 31.5, humidity: 73, co2: 65, wind_speed: 11.5, methane: 2.45, nitrous_oxide: 0.43, fluorinated_gases: 0.0165 },
   { date: "Jun 10", pm25: 36, pm10: 100, o3: 50, no2: 28, so2: 17, co: 1.8, temperature: 31, humidity: 72, co2: 60, wind_speed: 11, methane: 2.4, nitrous_oxide: 0.42, fluorinated_gases: 0.016 },
   { date: "Jun 20", pm25: 34, pm10: 95, o3: 48, no2: 26, so2: 16, co: 1.75, temperature: 30.5, humidity: 71, co2: 55, wind_speed: 10.5, methane: 2.35, nitrous_oxide: 0.41, fluorinated_gases: 0.0155 },
   { date: "Jun 30", pm25: 32, pm10: 90, o3: 45, no2: 24, so2: 15, co: 1.7, temperature: 30, humidity: 70, co2: 50, wind_speed: 10, methane: 2.3, nitrous_oxide: 0.4, fluorinated_gases: 0.015 },
+];
+
+// AI forecast data - future predicted data
+export const FORECAST_DATA: ChartDataPoint[] = [
+  { date: "May 1", pm25: 999, pm10: 92, o3: 49, no2: 26, so2: 16, co: 1.65, temperature: 29.5, humidity: 69, co2: 45, wind_speed: 9.5, methane: 2.25, nitrous_oxide: 0.39, fluorinated_gases: 0.0145 },
+  { date: "May 5", pm25: 36, pm10: 98, o3: 51, no2: 29, so2: 17, co: 1.75, temperature: 31, humidity: 71, co2: 52, wind_speed: 10.5, methane: 2.35, nitrous_oxide: 0.41, fluorinated_gases: 0.0155 },
+  { date: "May 10", pm25: 38, pm10: 105, o3: 53, no2: 31, so2: 18, co: 1.85, temperature: 32, humidity: 73, co2: 58, wind_speed: 11, methane: 2.42, nitrous_oxide: 0.43, fluorinated_gases: 0.0162 },
+  { date: "May 15", pm25: 40, pm10: 112, o3: 54, no2: 32, so2: 19, co: 1.90, temperature: 32.5, humidity: 74, co2: 62, wind_speed: 11.5, methane: 2.47, nitrous_oxide: 0.44, fluorinated_gases: 0.0168 },
+  { date: "May 20", pm25: 43, pm10: 122, o3: 56, no2: 33, so2: 21, co: 1.95, temperature: 33, humidity: 75, co2: 72, wind_speed: 12.5, methane: 2.55, nitrous_oxide: 0.45, fluorinated_gases: 0.0175 },
+  { date: "May 25", pm25: 44, pm10: 125, o3: 57, no2: 34, so2: 22, co: 2.0, temperature: 33.5, humidity: 76, co2: 75, wind_speed: 13, methane: 2.6, nitrous_oxide: 0.46, fluorinated_gases: 0.018 },
+  { date: "Jun 1", pm25: 41, pm10: 115, o3: 54, no2: 31, so2: 20, co: 1.9, temperature: 32, humidity: 74, co2: 67, wind_speed: 12, methane: 2.5, nitrous_oxide: 0.44, fluorinated_gases: 0.017 },
+  { date: "Jun 5", pm25: 39, pm10: 108, o3: 52, no2: 30, so2: 19, co: 1.85, temperature: 31.5, humidity: 73, co2: 63, wind_speed: 11.5, methane: 2.45, nitrous_oxide: 0.43, fluorinated_gases: 0.0165 },
+  { date: "Jun 10", pm25: 37, pm10: 102, o3: 51, no2: 29, so2: 18, co: 1.82, temperature: 31.2, humidity: 72, co2: 61, wind_speed: 11.2, methane: 2.42, nitrous_oxide: 0.425, fluorinated_gases: 0.0162 },
+  { date: "Jun 15", pm25: 35, pm10: 97, o3: 49, no2: 27, so2: 17, co: 1.78, temperature: 30.8, humidity: 71, co2: 57, wind_speed: 10.8, methane: 2.38, nitrous_oxide: 0.415, fluorinated_gases: 0.0158 },
+  { date: "Jun 20", pm25: 33, pm10: 93, o3: 47, no2: 25, so2: 16, co: 1.72, temperature: 30.3, humidity: 70, co2: 52, wind_speed: 10.3, methane: 2.32, nitrous_oxide: 0.405, fluorinated_gases: 0.0152 },
+  { date: "Jun 25", pm25: 31, pm10: 88, o3: 44, no2: 23, so2: 14, co: 1.68, temperature: 29.8, humidity: 69, co2: 48, wind_speed: 9.8, methane: 2.28, nitrous_oxide: 0.395, fluorinated_gases: 0.0148 },
+  { date: "Jun 30", pm25: 30, pm10: 85, o3: 43, no2: 22, so2: 13, co: 1.65, temperature: 29.5, humidity: 68, co2: 45, wind_speed: 9.5, methane: 2.25, nitrous_oxide: 0.39, fluorinated_gases: 0.0145 },
 ];
 
 export const FALLBACK_SUMMARY_STATS: SummaryStat[] = [

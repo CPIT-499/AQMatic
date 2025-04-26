@@ -279,15 +279,25 @@ def get_location_aqi_handler(location_id: int, db: Session, organization_id: Opt
 
 def get_org_summary_stats_handler(organization_id: int, db: Session):
     """
-    Retrieve raw summary statistics from dashboard_summary_stats_view
-    for a specific organization
+    Retrieve and process summary statistics for a specific organization
+    using the same calculation approach as the public stats handler.
     """
     try:
-        query = "SELECT * FROM dashboard_summary_stats_view WHERE organization_id = :organization_id"
+        # Get summary stats for the specified organization
+        # Select the same columns as in the public stats handler
+        query = """
+            SELECT
+                pm25_current, pm10_current, o3_current, no2_current, so2_current, co_current,
+                pm25_yesterday, pm10_yesterday, o3_yesterday, no2_yesterday, so2_yesterday, co_yesterday,
+                monitoring_stations, alerts_today
+            FROM dashboard_summary_stats_view
+            WHERE organization_id = :organization_id
+        """
         params = {"organization_id": organization_id}
         result = db.execute(text(query), params).fetchall()
-        
+
         if not result:
+            # Return default values if no data found for this organization
             return {
                 "current_aqi": 0,
                 "pm25_level": 0,
@@ -296,34 +306,76 @@ def get_org_summary_stats_handler(organization_id: int, db: Session):
                 "monitoring_stations": 0,
                 "alerts_today": 0
             }
-            
-        # Process the raw data using the utility function
-        processed_stats = process_dashboard_stats(result)
+
+        # Unlike the public stats, we're dealing with one organization,
+        # so we don't need to average across multiple rows
+        row = result[0]  # Take the first row for the organization
+
+        # --- Calculate Current AQI ---
+        current_pollutants = {
+            "pm2.5": row.pm25_current, "pm10": row.pm10_current,
+            "o3": row.o3_current, "no2": row.no2_current,
+            "so2": row.so2_current, "co": row.co_current
+        }
         
-        # Return the specific organization's stats
-        if str(organization_id) in processed_stats:
-            org_data = processed_stats[str(organization_id)]
-            return {
-                "current_aqi": org_data["current_aqi"]["value"],
-                "pm25_level": org_data["pm25_level"]["value"],
-                "aqi_trend_pct": float(org_data["current_aqi"]["trend"]["value"].replace("%", "").replace("+", "")),
-                "pm25_trend_pct": float(org_data["pm25_level"]["trend"]["value"].replace("%", "").replace("+", "")),
-                "monitoring_stations": org_data["monitoring_stations"]["value"],
-                "alerts_today": org_data["alerts_today"]["value"]
-            }
-        else:
-            # If the organization_id doesn't match any processed data
-            return {
-                "current_aqi": 0,
-                "pm25_level": 0,
-                "aqi_trend_pct": 0,
-                "pm25_trend_pct": 0,
-                "monitoring_stations": 0,
-                "alerts_today": 0
-            }
+        # Filter out None values before calculating AQI
+        valid_current_pollutants = {k: v for k, v in current_pollutants.items() if v is not None}
+        current_aqi_value = 0
+        if valid_current_pollutants:
+            aqi_result = measure_aqi(valid_current_pollutants)
+            current_aqi_value = aqi_result.get("AQI", 0)
+
+        # Get current PM2.5
+        current_pm25 = row.pm25_current or 0
+
+        # --- Calculate Trends ---
+        yesterday_pollutants = {
+            "pm2.5": row.pm25_yesterday, "pm10": row.pm10_yesterday,
+            "o3": row.o3_yesterday, "no2": row.no2_yesterday,
+            "so2": row.so2_yesterday, "co": row.co_yesterday
+        }
         
+        valid_yesterday_pollutants = {k: v for k, v in yesterday_pollutants.items() if v is not None}
+        yesterday_aqi_value = 0
+        if valid_yesterday_pollutants:
+            aqi_yesterday_result = measure_aqi(valid_yesterday_pollutants)
+            yesterday_aqi_value = aqi_yesterday_result.get("AQI", 0)
+
+        yesterday_pm25 = row.pm25_yesterday or 0
+
+        # Calculate percentage change for AQI and PM2.5
+        aqi_trend_pct = 0
+        if yesterday_aqi_value != 0:
+            aqi_trend_pct = round(((current_aqi_value - yesterday_aqi_value) / yesterday_aqi_value) * 100, 1)
+
+        pm25_trend_pct = 0
+        if yesterday_pm25 != 0:
+            pm25_trend_pct = round(((current_pm25 - yesterday_pm25) / yesterday_pm25) * 100, 1)
+
+        # Return the organization stats
+        return {
+            "current_aqi": current_aqi_value,
+            "pm25_level": current_pm25,
+            "aqi_trend_pct": aqi_trend_pct,
+            "pm25_trend_pct": pm25_trend_pct,
+            "monitoring_stations": row.monitoring_stations or 0,
+            "alerts_today": row.alerts_today or 0
+        }
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        import traceback
+        print(f"Error in get_org_summary_stats_handler for organization {organization_id}: {str(e)}")
+        print(traceback.format_exc())
+
+        # Return default values in case of any error during processing
+        return {
+            "current_aqi": 0,
+            "pm25_level": 0,
+            "aqi_trend_pct": 0,
+            "pm25_trend_pct": 0,
+            "monitoring_stations": 0,
+            "alerts_today": 0
+        }
 
 def get_public_summary_stats_handler(db: Session):
     """
