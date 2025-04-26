@@ -26,6 +26,7 @@ import {
   GAS_CONFIG,
   FALLBACK_SUMMARY_STATS,
   FALLBACK_ALERTS,
+  FORECAST_DATA,
   TimeRangeOption,
   getAQIStatus,
   formatTrendPercent,
@@ -148,6 +149,7 @@ export default function DashboardPage() {
               selectedGases={selectedGases}
               timeRange={timeRange}
               filteredData={filteredData}
+              forecastData={FORECAST_DATA}
               gasConfig={GAS_CONFIG}
               onToggleGas={toggleGas}
               onSetTimeRange={handleSetTimeRange}

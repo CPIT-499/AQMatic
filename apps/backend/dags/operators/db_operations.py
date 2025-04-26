@@ -1,5 +1,12 @@
 import os
 import psycopg2
+import logging
+import sys
+
+# Add the src directory to the Python path
+# This works both locally and in Airflow container
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+
 
 def execute_sql_file(sql_file_path, **kwargs):
     """Execute a SQL file against the PostgreSQL database."""
@@ -54,7 +61,13 @@ def create_map_data_view(**kwargs):
     """Task to create the map data view."""
     sql_file_path = '/opt/airflow/src/DBview/map_data_view.sql'
     execute_sql_file(sql_file_path)
+
 def create_dashboard_summary_stats_view(**kwargs):
     """Task to create the dashboard summary stats view."""
     sql_file_path = '/opt/airflow/src/DBview/dashboard_summary_stats_view.sql'
+    execute_sql_file(sql_file_path)
+    
+def create_forecast_summary_view(**kwargs):
+    """Task to create the forecast summary view."""
+    sql_file_path = '/opt/airflow/src/DBview/forecast_summary_view.sql'
     execute_sql_file(sql_file_path)
