@@ -34,3 +34,7 @@ def get_recent_forecasts(org_id: int, attr_id: int):
             LIMIT 7
         """, (org_id, attr_id))
         return cur.fetchall()
+    
+    
+    
+    
