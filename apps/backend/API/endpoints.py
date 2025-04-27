@@ -200,75 +200,7 @@ async def get_location_measurements_handler(location_id: int, db: Session, organ
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-def get_aqi_data_handler(db: Session, location_id: Optional[int] = None, organization_id: Optional[int] = None):
-    """
-    Retrieve AQI data calculated from aqi_view and measure_aqi function
-    Filtered by organization_id if provided
-    """
-    # Base query
-    query = "SELECT * FROM aqi_view"
-    
-    # Add filters if provided
-    filters = []
-    params = {}
-    
-    if location_id is not None:
-        filters.append("location_id = :location_id")
-        params["location_id"] = location_id
-        
-    if organization_id is not None:
-        filters.append("organization_id = :organization_id")
-        params["organization_id"] = organization_id
-        
-    if filters:
-        query += " WHERE " + " AND ".join(filters)
-    
-    # Execute query
-    result = db.execute(text(query), params).fetchall()
-    
-    # Format and process the data
-    formatted_data = []
-    for row in result:
-        # Extract pollutant values
-        pollutant_data = {
-            "pm2.5": float(row.pm25_value) if row.pm25_value is not None else None,
-            "pm10": float(row.pm10_value) if row.pm10_value is not None else None,
-            "o3": float(row.o3_value) if row.o3_value is not None else None,
-            "no2": float(row.no2_value) if row.no2_value is not None else None,
-            "so2": float(row.so2_value) if row.so2_value is not None else None,
-            "co": float(row.co_value) if row.co_value is not None else None
-        }
-        
-        # Calculate AQI using the measure_aqi function
-        aqi_results = measure_aqi(pollutant_data)
-        
-        # Create the response data
-        data = {
-            "location_id": row.location_id,
-            "city": row.city,
-            "region": row.region,
-            "country": row.country,
-            "organization_id": row.organization_id,
-            "organization_name": row.organization_name,
-            "aqi": aqi_results.get("AQI"),
-            # Include individual pollutant AQIs
-            "pm25_aqi": aqi_results.get("pm2.5"),
-            "pm10_aqi": aqi_results.get("pm10"),
-            "o3_aqi": aqi_results.get("o3"),
-            "no2_aqi": aqi_results.get("no2"),
-            "so2_aqi": aqi_results.get("so2"),
-            "co_aqi": aqi_results.get("co"),
-            # Include raw values
-            "pm25": pollutant_data["pm2.5"],
-            "pm10": pollutant_data["pm10"],
-            "o3": pollutant_data["o3"],
-            "no2": pollutant_data["no2"],
-            "so2": pollutant_data["so2"],
-            "co": pollutant_data["co"]
-        }
-        formatted_data.append(data)
 
-    return formatted_data
 
 def get_location_aqi_handler(location_id: int, db: Session, organization_id: Optional[int] = None):
     """

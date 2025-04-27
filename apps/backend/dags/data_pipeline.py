@@ -4,6 +4,10 @@ from airflow.operators.python import PythonOperator
 from airflow.utils.task_group import TaskGroup
 from airflow.sensors.time_delta import TimeDeltaSensor
 from datetime import datetime, timedelta
+import unittest
+import subprocess
+import sys
+import os
 
 import pendulum
 
@@ -12,6 +16,35 @@ from src.api_client.openmeteo import get_weather_and_air_quality, insert_measure
 from src.api_client.openweathermap_API import collect_measurements, insert_measurements_openweathermap
 from operators.db_operations import create_hourly_summary_view, create_map_data_view, create_dashboard_summary_stats_view, create_forecast_summary_view
 from src.ai.forecast import forecast_next_week_and_store
+
+# Define the API testing function
+def run_api_tests(**kwargs):
+    """
+    Function to run API unit tests and return the results
+    Returns success status as boolean
+    """
+    try:
+        # Using subprocess to run the tests in the right environment
+        result = subprocess.run(
+            ["python", "-m", "unittest", "API.test_api"],
+            capture_output=True,
+            text=True,
+            check=False  # Don't raise exception on test failure
+        )
+        
+        # Log the test output
+        print("API Test Output:")
+        print(result.stdout)
+        
+        if result.stderr:
+            print("API Test Errors:")
+            print(result.stderr)
+        
+        # Return True if tests succeeded (exit code 0), False otherwise
+        return result.returncode == 0
+    except Exception as e:
+        print(f"Error running API tests: {str(e)}")
+        return False
 
 # Define default arguments
 default_args = {
@@ -95,6 +128,28 @@ with dag:
         
         create_hourly_view_task >> create_map_view_task >> create_dashboard_summary_stats_view_task
 
+    # Add API Testing Task Group
+    with TaskGroup(group_id='api_testing') as api_test_group:
+        run_api_tests_task = PythonOperator(
+            task_id='run_api_unit_tests',
+            python_callable=run_api_tests,
+            do_xcom_push=True,  # Push test success status to XCom
+            doc_md="""#### Task Documentation
+            Runs the API unit tests to verify API functionality
+            """,
+        )
+        
+        # Add branching based on test results if needed
+        handle_test_results = PythonOperator(
+            task_id='handle_test_results',
+            python_callable=lambda ti: print(f"API Tests {'passed' if ti.xcom_pull(task_ids='api_testing.run_api_unit_tests') else 'failed'}"),
+            doc_md="""#### Task Documentation
+            Logs the result of the API tests
+            """,
+        )
+        
+        run_api_tests_task >> handle_test_results
+
     # Weekly schedule check for AI forecasting
     # This will only run once per week (every 7 days)
     is_weekly_run = PythonOperator(
@@ -149,7 +204,7 @@ with dag:
     )
 
     # Define the complete workflow with conditional branching
-    start_pipeline >> [meteo_group, openweather_group] >> db_view_group >> is_weekly_run
+    start_pipeline >> [meteo_group, openweather_group] >> db_view_group >> api_test_group >> is_weekly_run
     
     # Weekly tasks only run when is_weekly_run resolves to True
     is_weekly_run >> ai_forecast_group >> create_forecast_view_task >> end_pipeline

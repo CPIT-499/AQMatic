@@ -20,7 +20,6 @@ from .endpoints import (
     get_hourly_measurement_summary_handler,
     get_map_data_handler,
     get_location_measurements_handler,
-    get_aqi_data_handler,
     get_location_aqi_handler,
     get_org_summary_stats_handler,
     get_public_summary_stats_handler  # New import
@@ -58,10 +57,6 @@ app.add_middleware(
 def read_root():
     return {"Hello": "AQMatic API"}
 
-# Sample route
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
 
 # Hourly measurements route
 @app.get("/hourly_measurement_summary_View_graph")
@@ -88,14 +83,7 @@ async def get_location_measurements(
 ):
     return await get_location_measurements_handler(location_id, db, organization_id)
 
-# AQI data route
-@app.get("/aqi_data")
-def get_aqi_data(
-    db: Session = Depends(get_db), 
-    location_id: Optional[int] = None, 
-    organization_id: Optional[int] = None
-):
-    return get_aqi_data_handler(db, location_id, organization_id)
+
 
 # Location-specific AQI data route
 @app.get("/aqi_data/{location_id}")
@@ -135,10 +123,7 @@ async def login(login_data: LoginRequest, db: Session = Depends(get_db)):
 async def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user
 
-# Development-only debug endpoint
-@app.get("/debug/users")
-async def debug_users(db: Session = Depends(get_db)):
-    return await debug_users_handler(db)
+
 
 # Generic OPTIONS handler for all routes
 @app.options("/{full_path:path}")
