@@ -1,11 +1,10 @@
 -- First, insert organizations
 INSERT INTO organizations (organization_name, contact_email, contact_phone, address, website)
 VALUES 
-  ('GreenEarth', 'contact@greenearth.org', '+1234567890', '123 Earth St', 'www.greenearth.org'),
-  ('SkyDrones', 'info@skydrones.com', '+2345678901', '456 Sky Ave', 'www.skydrones.com'),
-  ('UrbanAir', 'contact@urbanair.io', '+3456789012', '789 Urban Blvd', 'www.urbanair.io'),
-  ('OceanWatch', 'info@oceanwatch.org', '+4567890123', '101 Ocean Dr', 'www.oceanwatch.org'),
-  ('AlpineMonitor', 'info@alpinemonitor.org', '+5678901234', '202 Alpine Way', 'www.alpinemonitor.org');
+    ('APSCO', 'info@apsco.com', '+966123456789', '123 APSCO Rd', 'www.apsco.com'), -- Added APSCO
+    ('OpenWeatherMap', 'Null', 'Null', 'Null', 'openweathermap.org', 'public'),
+    ('OpenMeteo', 'Null', 'Null', 'Null', 'open-meteo.com', 'public'),
+    ('PurpleAir', 'Null', 'Null', 'Null', 'purpleair.com', 'public');
 
 -- Next, insert locations
 INSERT INTO locations (latitude, longitude, city, country, region)
