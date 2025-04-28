@@ -1,4 +1,5 @@
 import { User } from "firebase/auth";
+import api from "./api"; // Import the configured axios instance
 
 // Function to extract organization name from email domain
 export function getOrganizationFromEmail(email: string | null | undefined): string | null {
@@ -63,4 +64,35 @@ export function getUserInitials(user: User | null): string {
   }
   
   return "?";
-} 
+}
+
+// --- New Function: Map Firebase User to Organization via Backend ---
+export async function mapUserToOrganization(user: User): Promise<number | null> {
+  if (!user?.email) {
+    console.error("User email is missing, cannot map to organization.");
+    return null;
+  }
+
+  try {
+    const idToken = await user.getIdToken(true); // Force refresh to get latest claims
+    
+    // Call the backend endpoint to set/verify the custom claim
+    const response = await api.post("/map_user_to_organization", {
+      email: user.email,
+      id_token: idToken,
+    });
+
+    if (response.data.success && response.data.organization_id) {
+      console.log(`User ${user.email} mapped to organization ID: ${response.data.organization_id}`);
+      // The custom claim is set on the backend, 
+      // the frontend will get it next time the token is refreshed.
+      return response.data.organization_id;
+    } else {
+      console.error(`Failed to map user ${user.email} to organization:`, response.data.error);
+      return null;
+    }
+  } catch (error: any) {
+    console.error("Error calling map_user_to_organization endpoint:", error.response?.data || error.message);
+    return null;
+  }
+}

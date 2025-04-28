@@ -6,7 +6,7 @@ psycopg2-binary
 requests_cache
 retry_requests
 fastapi
-uvicorn
+uvicorn[standard]
 sqlalchemy
 python-dotenv==1.0.0
 apache-airflow-providers-postgres
@@ -19,6 +19,7 @@ pydantic
 typing_extensions
 starlette
 # Required for AI forecasting functionality
-tensorflow>=2.10.0
+tensorflow
 scikit-learn>=1.0.0
 numpy>=1.20.0
+firebase-admin
