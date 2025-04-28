@@ -4,7 +4,24 @@ import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.heat';
-import { fetchMapData, MapData } from '@/services/api/dashboardApi';
+
+// Define the expected structure of the data points passed via props
+interface MapDataPoint {
+  latitude: number;
+  longitude: number;
+  intensity?: number | null; // Intensity for heatmap (e.g., AQI normalized 0-1)
+  city?: string;
+  region?: string;
+  pm25?: number | null;
+  pm10?: number | null;
+  o3?: number | null;
+  no2?: number | null;
+  so2?: number | null;
+  co?: number | null;
+  temperature?: number | null;
+  humidity?: number | null;
+  wind_speed?: number | null;
+}
 
 // Fix for default marker icons in Leaflet with Next.js
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -16,9 +33,10 @@ L.Icon.Default.mergeOptions({
 
 interface MapComponentProps {
   className?: string;
+  data: MapDataPoint[]; // Add data prop
 }
 
-const MapComponent = ({ className }: MapComponentProps) => {
+const MapComponent = ({ className, data }: MapComponentProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const heatLayerRef = useRef<any>(null);
@@ -101,8 +119,8 @@ const MapComponent = ({ className }: MapComponentProps) => {
   }, []);
 
   // Function to get marker color based on AQI intensity
-  const getMarkerColor = (intensity: number | null) => {
-    if (intensity === null) return '#808080'; // Gray for no data
+  const getMarkerColor = (intensity: number | null | undefined) => { // Adjusted type to include undefined
+    if (intensity === null || intensity === undefined) return '#808080'; // Gray for no data
     if (intensity <= 0.2) return '#00e400';   // Good
     if (intensity <= 0.4) return '#ffff00';   // Moderate
     if (intensity <= 0.6) return '#ff7e00';   // Unhealthy for Sensitive Groups
@@ -121,66 +139,69 @@ const MapComponent = ({ className }: MapComponentProps) => {
     });
   };
 
-  // Fetch and update map data
+  // Update map data whenever the 'data' prop changes
   useEffect(() => {
-    const updateMapData = async () => {
-      try {
-        const mapData = await fetchMapData();
-        
-        // Update heatmap
-        if (heatLayerRef.current) {
-          const heatmapData = mapData.map(point => [point.latitude, point.longitude, point.intensity || 0]);
-          heatLayerRef.current.setLatLngs(heatmapData);
+    // Ensure map instance and layers are initialized, and data is present
+    if (!mapInstanceRef.current || !data || !heatLayerRef.current || !markersRef.current) {
+      console.log("MapComponent: Skipping update (map instance or data not ready)");
+      return;
+    }
+
+    const map = mapInstanceRef.current;
+
+    try {
+      console.log("MapComponent: Updating map layers with new data", data.length);
+      // Update heatmap
+      const heatmapData = data.map(point => [point.latitude, point.longitude, point.intensity || 0]);
+      heatLayerRef.current.setLatLngs(heatmapData);
+
+      // Update markers
+      markersRef.current.clearLayers();
+      
+      data.forEach((point: MapDataPoint) => {
+        const color = getMarkerColor(point.intensity);
+        const marker = L.marker([point.latitude, point.longitude], {
+          icon: createMarkerIcon(color)
+        });
+
+        // Create popup content (ensure robustness against missing data)
+        const popupContent = `
+          <div style="min-width: 180px; font-family: sans-serif; font-size: 13px;">
+            <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: bold;">${point.city || 'Unknown Location'}${point.region ? `, ${point.region}` : ''}</h3>
+            <div style="display: grid; grid-template-columns: auto 1fr; gap: 4px 8px;">
+              ${point.pm25 !== null && point.pm25 !== undefined ? `<div>PM2.5:</div><div style="font-weight: 500;">${point.pm25.toFixed(1)} µg/m³</div>` : ''}
+              ${point.pm10 !== null && point.pm10 !== undefined ? `<div>PM10:</div><div style="font-weight: 500;">${point.pm10.toFixed(1)} µg/m³</div>` : ''}
+              ${point.o3 !== null && point.o3 !== undefined ? `<div>O3:</div><div style="font-weight: 500;">${point.o3.toFixed(1)} ppb</div>` : ''}
+              ${point.no2 !== null && point.no2 !== undefined ? `<div>NO2:</div><div style="font-weight: 500;">${point.no2.toFixed(1)} ppb</div>` : ''}
+              ${point.so2 !== null && point.so2 !== undefined ? `<div>SO2:</div><div style="font-weight: 500;">${point.so2.toFixed(1)} ppb</div>` : ''}
+              ${point.co !== null && point.co !== undefined ? `<div>CO:</div><div style="font-weight: 500;">${point.co.toFixed(1)} ppm</div>` : ''}
+              ${point.temperature !== null && point.temperature !== undefined ? `<div>Temp:</div><div style="font-weight: 500;">${point.temperature.toFixed(1)}°C</div>` : ''}
+              ${point.humidity !== null && point.humidity !== undefined ? `<div>Humidity:</div><div style="font-weight: 500;">${point.humidity.toFixed(1)}%</div>` : ''}
+              ${point.wind_speed !== null && point.wind_speed !== undefined ? `<div>Wind:</div><div style="font-weight: 500;">${point.wind_speed.toFixed(1)} m/s</div>` : ''}
+            </div>
+          </div>
+        `;
+
+        marker.bindPopup(popupContent);
+        markersRef.current?.addLayer(marker);
+      });
+
+      // Explicitly tell Leaflet to check its size after updates
+      // Use requestAnimationFrame to ensure it runs after the current rendering cycle
+      requestAnimationFrame(() => {
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.invalidateSize();
+          console.log("MapComponent: Map invalidated size");
         }
+      });
 
-        // Update markers
-        if (markersRef.current) {
-          markersRef.current.clearLayers();
-          
-          mapData.forEach((point: MapData) => {
-            const color = getMarkerColor(point.intensity);
-            const marker = L.marker([point.latitude, point.longitude], {
-              icon: createMarkerIcon(color)
-            });
+      setError(null);
+    } catch (err: any) {
+      setError("Failed to update map visualization");
+      console.error('Error updating map visualization:', err);
+    }
 
-            // Create popup content
-            const popupContent = `
-              <div style="min-width: 200px;">
-                <h3 style="margin: 0 0 10px 0;">${point.city}, ${point.region}</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
-                  ${point.pm25 !== null ? `<div>PM2.5:</div><div>${point.pm25.toFixed(1)} µg/m³</div>` : ''}
-                  ${point.pm10 !== null ? `<div>PM10:</div><div>${point.pm10.toFixed(1)} µg/m³</div>` : ''}
-                  ${point.o3 !== null ? `<div>O3:</div><div>${point.o3.toFixed(1)} ppb</div>` : ''}
-                  ${point.no2 !== null ? `<div>NO2:</div><div>${point.no2.toFixed(1)} ppb</div>` : ''}
-                  ${point.so2 !== null ? `<div>SO2:</div><div>${point.so2.toFixed(1)} ppb</div>` : ''}
-                  ${point.co !== null ? `<div>CO:</div><div>${point.co.toFixed(1)} ppm</div>` : ''}
-                  ${point.temperature !== null ? `<div>Temp:</div><div>${point.temperature.toFixed(1)}°C</div>` : ''}
-                  ${point.humidity !== null ? `<div>Humidity:</div><div>${point.humidity.toFixed(1)}%</div>` : ''}
-                  ${point.wind_speed !== null ? `<div>Wind:</div><div>${point.wind_speed.toFixed(1)} m/s</div>` : ''}
-                </div>
-              </div>
-            `;
-
-            marker.bindPopup(popupContent);
-            markersRef.current?.addLayer(marker);
-          });
-        }
-
-        setError(null);
-      } catch (err: any) {
-        setError(err.message);
-        console.error('Error updating map data:', err);
-      }
-    };
-
-    // Initial fetch
-    updateMapData();
-
-    // Set up interval for periodic updates (every 5 minutes)
-    const interval = setInterval(updateMapData, 5 * 60 * 1000);
-
-    return () => clearInterval(interval);
-  }, []);
+  }, [data]); // Re-run this effect when 'data' changes
 
   return (
     <div className="relative">

@@ -1,6 +1,6 @@
 'use client';
 
-import { LoginForm } from '@/components/auth/login-form';
+import { FirebaseLoginForm } from '@/components/auth/firebase-login-form';
 import Link from "next/link";
 import Image from "next/image";
 
@@ -36,8 +36,12 @@ export default function LoginPage() {
           </Link>
         </div>
         <div className="flex flex-1 items-center justify-center">
-          <div className="w-full max-w-xs bg-card/40 p-6 rounded-lg shadow-lg border border-emerald-900/15 backdrop-blur-xl transition-all duration-300 ease-in-out hover:bg-card/50 hover:border-emerald-900/20 hover:shadow-xl hover:scale-[1.01]">
-            <LoginForm />
+          <div className="w-full max-w-md bg-card/40 p-6 rounded-lg shadow-lg border border-emerald-900/15 backdrop-blur-xl transition-all duration-300 ease-in-out hover:bg-card/50 hover:border-emerald-900/20 hover:shadow-xl hover:scale-[1.01]">
+            <div className="mb-6 text-center">
+              <h1 className="text-2xl font-bold">Welcome Back</h1>
+              <p className="text-sm text-muted-foreground mt-1">Sign in to your account</p>
+            </div>
+            <FirebaseLoginForm />
           </div>
         </div>
       </div>

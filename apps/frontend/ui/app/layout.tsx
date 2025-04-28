@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import '@/styles/globals.css'
-import AuthProvider from "@/components/auth/auth-provider";
+import { FirebaseAuthProvider } from "@/components/auth/firebase-auth-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,18 +27,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} font-sans`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>
+          <FirebaseAuthProvider>
             {children}
-          </AuthProvider>
+          </FirebaseAuthProvider>
         </ThemeProvider>
       </body>
     </html>

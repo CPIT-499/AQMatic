@@ -9,7 +9,12 @@ const MapComponentNoSSR = dynamic(
   { ssr: false, loading: () => <div className="flex items-center justify-center h-full">Loading Map...</div> } // Optional loading state
 );
 
-export function MapSection() {
+// Define props type for MapSection
+interface MapSectionProps {
+  data: any[]; // Define a more specific type based on your map data structure
+}
+
+export function MapSection({ data }: MapSectionProps) {
   return (
     <section className="col-span-1 lg:col-span-1 h-full">
       <div className="rounded-lg border bg-card text-card-foreground shadow-sm h-full flex flex-col">
@@ -33,7 +38,7 @@ export function MapSection() {
         </div>
         {/* Map Container */}
         <div className="flex-1 min-h-[500px] w-full">
-          <MapComponentNoSSR className="w-full h-full" />
+          <MapComponentNoSSR className="w-full h-full" data={data} />
         </div>
       </div>
     </section>

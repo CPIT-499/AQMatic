@@ -3,8 +3,11 @@
 // React and Next.js imports
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import type {} from 'react/jsx-runtime';
-import { useSession } from "next-auth/react";
+// Removed unused import: import type {} from \'react/jsx-runtime\';
+// Removed next-auth import: import { useSession } from "next-auth/react";
+
+// Firebase Auth hook
+import { useAuth } from "@/components/auth/firebase-auth-provider";
 
 // Custom hooks imports
 import { useGasSelection } from "@/hooks/FetchDashboardChart";
@@ -47,35 +50,41 @@ const DEFAULT_ORG_ID = 7; // Default organization ID for authenticated users
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { user, loading: authLoading, isOrganizationUser, getOrganizationFromEmail } = useAuth();
 
-  // Get user's organization ID from the session
-  const userOrgId = session?.user?.organizationId || DEFAULT_ORG_ID;
-  
-  // --- State Management ---
+  // --- State Management ---\n
+  // Determine initial mode based on auth state
   const [selectedMode, setSelectedMode] = React.useState<"public" | "organization">("public");
   const [timeRange, setTimeRange] = React.useState<TimeRangeOption>("90d");
   const { selectedGases, toggleGas } = useGasSelection();
 
-  // --- Data Fetching ---
+  // --- Data Fetching ---\n
   const [data, setData] = React.useState<{
     chartData: any[];
     mapData: any[];
     summaryStats: any;
     error: string | null;
   } | null>(null);
-  const [loading, setLoading] = React.useState(true);
+  const [loadingData, setLoadingData] = React.useState(true);
   const [fetchError, setFetchError] = React.useState<string | null>(null);
 
-  React.useEffect(() => {
-    setLoading(true);
-    fetchDashboardData()
-      .then(res => setData(res))
-      .catch(err => setFetchError(err instanceof Error ? err.message : String(err)))
-      .finally(() => setLoading(false));
-  }, [selectedMode]);
+  // Determine the organization ID to fetch data for
+  const organizationIdToFetch = selectedMode === "organization" && user && isOrganizationUser(user.email || "") 
+    ? getOrganizationFromEmail(user.email || "") // Ideally, fetch based on organization ID/name stored in user claims or fetched from backend
+    : PUBLIC_ORG_ID; // Fallback to public data
 
-  // --- Extract and prepare data for hooks ---
+  React.useEffect(() => {
+    // Only fetch data if auth is not loading
+    if (!authLoading) {
+      setLoadingData(true);
+      fetchDashboardData(/* Pass organizationIdToFetch or mode here if API supports it */)
+        .then(res => setData(res))
+        .catch(err => setFetchError(err instanceof Error ? err.message : String(err)))
+        .finally(() => setLoadingData(false));
+    }
+  }, [selectedMode, authLoading, organizationIdToFetch]); // Re-fetch when mode or auth state changes
+
+  // --- Extract and prepare data for hooks ---\n
   const chartData = data?.chartData ?? [];
   const mapData = data?.mapData ?? [];
   const summaryStats = data?.summaryStats ?? FALLBACK_SUMMARY_STATS;
@@ -109,7 +118,7 @@ export default function DashboardPage() {
     ];
   }, [summaryStats]);
 
-  // --- Derived Hooks ---
+  // --- Derived Hooks ---\n
   const filteredData = React.useMemo(
     () => chartData.filter(point => true),
     [chartData, timeRange]
@@ -126,21 +135,41 @@ export default function DashboardPage() {
     [selectedMode]
   );
 
-  if (loading) {
-    return <div className="p-8">Loading dashboard...</div>;
+  // Check if the user is authenticated and belongs to an organization to enable the 'Organization' mode
+  const canSelectOrganizationMode = user && isOrganizationUser(user.email || "");
+
+  // Handle mode selection, ensuring user is allowed to select 'organization'
+  const handleSelectMode = (mode: "public" | "organization") => {
+    if (mode === "organization" && !canSelectOrganizationMode) {
+      // Optionally redirect to login or show a message
+      router.push('/organization'); // Redirect to organization page which handles auth guard
+      return;
+    }
+    setSelectedMode(mode);
+  };
+
+  // Combine auth loading and data loading state
+  const isLoading = authLoading || loadingData;
+
+  if (isLoading) {
+    return <div className="p-8">Loading dashboard...</div>; // Add a more sophisticated loader if needed
   }
   if (fetchError) {
-    return <div className="p-8 text-destructive">Error: {fetchError}</div>;
+    return <div className="p-8 text-destructive">Error fetching data: {fetchError}</div>;
   }
 
-  // --- Render UI ---
+  // --- Render UI ---\n
   return (
     <div className="flex min-h-screen bg-background">
       <div className="flex-1">
         <Navbar />
 
         <main className="p-8 space-y-8 max-w-[1800px] mx-auto">
-          <ModeSelector selectedMode={selectedMode} onSelectMode={setSelectedMode} />
+          <ModeSelector 
+            selectedMode={selectedMode} 
+            onSelectMode={handleSelectMode} 
+            isOrganizationModeAvailable={canSelectOrganizationMode} 
+          />
 
           <SummaryStats stats={statCards} />
 
