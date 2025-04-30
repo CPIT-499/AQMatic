@@ -7,6 +7,8 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import Link from "next/link";
 import { signIn, resetPassword, storeUserInStorage } from "@/lib/firebase-auth";
+import { auth } from "@/lib/firebase";
+import axiosInstance from "@/lib/axios/axiosInstance";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -25,6 +27,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  organizationName: z.string().min(1, { message: "Organization name is required" }),
   rememberMe: z.boolean().default(false),
 });
 
@@ -42,6 +45,7 @@ export function FirebaseLoginForm() {
     defaultValues: {
       email: "",
       password: "",
+      organizationName: "",
       rememberMe: false,
     },
   });
@@ -74,20 +78,50 @@ export function FirebaseLoginForm() {
     setResetSent(false);
     
     try {
-      // Sign in with Firebase
+      // 1. Sign in with Firebase client-side
       const userCredential = await signIn(values.email, values.password);
       const user = userCredential.user;
-      
-      // Store user in storage based on remember me preference
+      console.log('Firebase Login successful', user);
+
+      // 2. Get the Firebase ID token
+      const idToken = await user.getIdToken();
+      if (!idToken) {
+        throw new Error("Could not retrieve Firebase ID token.");
+      }
+
+      // 3. Call backend endpoint to trigger claim setting with organization name
+      console.log("Calling backend to set/verify claims...");
+      try {
+        const response = await axiosInstance.post(
+          '/auth/set-claims-trigger', 
+          { 
+            organization_name: values.organizationName 
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
+          }
+        );
+        console.log("Backend claim trigger response:", response.data);
+        if (!response.data.success) {
+          // Handle organization not found or other errors
+          setError(response.data.error || "Failed to set organization.");
+          setIsLoading(false);
+          return;
+        }
+      } catch (backendError: any) {
+        console.error("Error calling backend claim trigger:", backendError);
+        setError(backendError.response?.data?.detail || backendError.message || "Error contacting server.");
+        setIsLoading(false);
+        return;
+      }
+
+      // 4. Store user in local/session storage
       storeUserInStorage(user, values.rememberMe);
-      
-      console.log('Login successful', user);
-      
-      // Extract organization from email domain
-      const emailDomain = values.email.split('@')[1];
-      console.log('User organization domain:', emailDomain);
-      
-      // Redirect to return URL or dashboard
+            
+      // 5. Redirect (AuthProvider will fetch updated claims on refresh/mount)
+      console.log(`Redirecting to: ${decodeURIComponent(returnUrl)}`);
       router.push(decodeURIComponent(returnUrl));
       
     } catch (err: any) {
@@ -95,7 +129,7 @@ export function FirebaseLoginForm() {
       let errorMessage = "Failed to login. Please try again.";
       
       // Handle specific Firebase errors
-      if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
         errorMessage = "Invalid email or password";
       } else if (err.code === 'auth/too-many-requests') {
         errorMessage = "Too many failed login attempts. Please try again later.";
@@ -106,7 +140,6 @@ export function FirebaseLoginForm() {
       }
       
       setError(errorMessage);
-    } finally {
       setIsLoading(false);
     }
   }
@@ -139,6 +172,25 @@ export function FirebaseLoginForm() {
                   type="email" 
                   {...field} 
                   autoComplete="email"
+                  disabled={isLoading} 
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={form.control}
+          name="organizationName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Organization Name</FormLabel>
+              <FormControl>
+                <Input 
+                  placeholder="Enter your organization name" 
+                  type="text" 
+                  {...field} 
                   disabled={isLoading} 
                 />
               </FormControl>

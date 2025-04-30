@@ -99,12 +99,12 @@ SELECT
     o.role,
     
     -- Raw current measurements
-    MAX(CASE WHEN cd.attribute_name = 'pm2.5' AND cd.rn = 1 THEN cd.value END) as pm25_current,
-    MAX(CASE WHEN cd.attribute_name = 'pm10' AND cd.rn = 1 THEN cd.value END) as pm10_current,
-    MAX(CASE WHEN cd.attribute_name = 'o3' AND cd.rn = 1 THEN cd.value END) as o3_current,
-    MAX(CASE WHEN cd.attribute_name = 'no2' AND cd.rn = 1 THEN cd.value END) as no2_current,
-    MAX(CASE WHEN cd.attribute_name = 'so2' AND cd.rn = 1 THEN cd.value END) as so2_current,
-    MAX(CASE WHEN cd.attribute_name = 'co' AND cd.rn = 1 THEN cd.value END) as co_current,
+    AVG(CASE WHEN cd.attribute_name = 'pm2.5' AND cd.rn = 1 THEN cd.value ELSE NULL END) as pm25_current,
+    AVG(CASE WHEN cd.attribute_name = 'pm10' AND cd.rn = 1 THEN cd.value ELSE NULL END) as pm10_current,
+    AVG(CASE WHEN cd.attribute_name = 'o3' AND cd.rn = 1 THEN cd.value ELSE NULL END) as o3_current,
+    AVG(CASE WHEN cd.attribute_name = 'no2' AND cd.rn = 1 THEN cd.value ELSE NULL END) as no2_current,
+    AVG(CASE WHEN cd.attribute_name = 'so2' AND cd.rn = 1 THEN cd.value ELSE NULL END) as so2_current,
+    AVG(CASE WHEN cd.attribute_name = 'co' AND cd.rn = 1 THEN cd.value ELSE NULL END) as co_current,
     
     -- Raw yesterday measurements (using the best available data)
     AVG(CASE WHEN ybd.attribute_name = 'pm2.5' THEN ybd.value END) as pm25_yesterday,

@@ -34,15 +34,12 @@ def get_hourly_measurement_summary_handler(db: Session, organization_id: Optiona
         try:
             formatted_data = format_hourly_measurement_data(result)
         except Exception as format_error:
-            # If the custom formatting fails, use a simple fallback approach
             print(f"Warning: Error in format_hourly_measurement_data: {str(format_error)}")
             formatted_data = []
             for row in result:
                 data_point = {}
-                # Map all row attributes to the dict, safely
                 for key in row.keys():
                     try:
-                        # Convert values to the appropriate Python types
                         value = getattr(row, key)
                         if isinstance(value, (int, float)):
                             data_point[key] = value
@@ -54,52 +51,32 @@ def get_hourly_measurement_summary_handler(db: Session, organization_id: Optiona
                             data_point[key] = str(value)
                     except Exception:
                         data_point[key] = None
-                
                 formatted_data.append(data_point)
         
         return formatted_data
     except Exception as e:
-        # Log the error for debugging
-        import traceback
         print(f"Error in get_hourly_measurement_summary_handler: {str(e)}")
-        print(traceback.format_exc())
-        
-        # Return empty data instead of raising an exception
         return []
 
 async def get_map_data_handler(db: Session, organization_id: Optional[int] = None):
     """
-    Get map data for visualization.
-    If organization_id is provided, only return data for that organization.
-    If no organization_id is provided, return all public data.
+    Get map data for all locations
+    Filtered by organization_id if provided
     """
     try:
-        # Base query - check if organization_id column exists
-        try:
-            # First check if the column exists in the view
-            check_query = "SELECT column_name FROM information_schema.columns WHERE table_name = 'map_data_view' AND column_name = 'organization_id'"
-            has_org_id = db.execute(text(check_query)).fetchone() is not None
-        except Exception:
-            has_org_id = False
-            print("Warning: Could not verify if organization_id column exists in map_data_view")
-        
-        # Base query
         query = "SELECT * FROM map_data_view"
         params = {}
         
-        # Add organization filter if provided and column exists
-        if organization_id is not None and has_org_id:
+        # Add organization filter if provided
+        if organization_id is not None:
             query += " WHERE organization_id = :organization_id"
             params["organization_id"] = organization_id
-        
-        # Execute query
+            
         result = db.execute(text(query), params)
         rows = result.fetchall()
         
-        # Format the data
         formatted_data = []
         for row in rows:
-            # Create a dict with safe values, checking if columns exist
             data = {
                 "location_id": row.location_id if hasattr(row, 'location_id') else None,
                 "latitude": float(row.latitude) if hasattr(row, 'latitude') and row.latitude is not None else 0.0,
@@ -107,20 +84,16 @@ async def get_map_data_handler(db: Session, organization_id: Optional[int] = Non
                 "city": row.city if hasattr(row, 'city') else "",
                 "region": row.region if hasattr(row, 'region') else "",
                 "country": row.country if hasattr(row, 'country') else "",
-                # Default to None for optional fields
                 "organization_id": row.organization_id if hasattr(row, 'organization_id') else None,
-                # Air Quality Measurements
                 "pm25": float(row.pm25) if hasattr(row, 'pm25') and row.pm25 is not None else None,
                 "pm10": float(row.pm10) if hasattr(row, 'pm10') and row.pm10 is not None else None,
                 "o3": float(row.o3) if hasattr(row, 'o3') and row.o3 is not None else None,
                 "no2": float(row.no2) if hasattr(row, 'no2') and row.no2 is not None else None,
                 "so2": float(row.so2) if hasattr(row, 'so2') and row.so2 is not None else None,
                 "co": float(row.co) if hasattr(row, 'co') and row.co is not None else None,
-                # Weather Measurements
                 "temperature": float(row.temperature) if hasattr(row, 'temperature') and row.temperature is not None else None,
                 "humidity": float(row.humidity) if hasattr(row, 'humidity') and row.humidity is not None else None,
                 "wind_speed": float(row.wind_speed) if hasattr(row, 'wind_speed') and row.wind_speed is not None else None,
-                # Greenhouse Gases
                 "co2": float(row.co2) if hasattr(row, 'co2') and row.co2 is not None else None,
                 "methane": float(row.methane) if hasattr(row, 'methane') and row.methane is not None else None,
                 "nitrous_oxide": float(row.nitrous_oxide) if hasattr(row, 'nitrous_oxide') and row.nitrous_oxide is not None else None,
@@ -131,12 +104,7 @@ async def get_map_data_handler(db: Session, organization_id: Optional[int] = Non
         
         return formatted_data
     except Exception as e:
-        # Log the error for debugging
-        import traceback
         print(f"Error in get_map_data_handler: {str(e)}")
-        print(traceback.format_exc())
-        
-        # Return empty data instead of raising an error
         return []
 
 async def get_location_measurements_handler(location_id: int, db: Session, organization_id: Optional[int] = None):

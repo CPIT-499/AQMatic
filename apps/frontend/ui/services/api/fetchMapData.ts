@@ -1,4 +1,4 @@
-import { getAPI } from '@/lib/api/get';
+import { getAPI } from '@/services/api/get';
 import type { MapData } from './transform';
 
 // Mock data for map when API fails
@@ -60,13 +60,27 @@ const MOCK_MAP_DATA: MapData[] = [
 ];
 
 /**
- * Fetches air quality map data
+ * Fetches air quality map data.
+ * Includes auth token if fetching organization data.
  */
-export async function fetchMapData(): Promise<MapData[]> {
+export async function fetchMapData(mode: 'public' | 'organization', token: string | null): Promise<MapData[]> {
   try {
-    return await getAPI<MapData[]>('/map_data');
+    const endpoint = '/map_data'; // Base endpoint
+    const headers: { [key: string]: string } = {};
+
+    if (mode === 'organization' && token) {
+      headers['Authorization'] = `Bearer ${token}`;
+      console.log("fetchMapData: Using token for organization data.");
+    } else {
+      console.log("fetchMapData: Fetching public data.");
+    }
+
+    // Pass headers to the updated getAPI function
+    return await getAPI<MapData[]>(endpoint, { headers });
+
   } catch (error) {
-    console.warn('Error fetching map data, using mock data:', error);
+    console.warn(`Error fetching ${mode} map data, using mock data:`, error);
+    // Return mock data as a fallback if the API fails
     return MOCK_MAP_DATA;
   }
 }

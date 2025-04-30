@@ -19,7 +19,7 @@ export function AuthGuard({
   redirectTo = "/login",
   organizationOnly = true,
 }: AuthGuardProps) {
-  const { user, loading, isOrganizationUser } = useAuth();
+  const { user, loading, idTokenResult } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
@@ -43,20 +43,26 @@ export function AuthGuard({
 
   // User is authenticated but we need to check if they belong to an organization (if required)
   if (user) {
-    // If organization access is required, check the user's email domain
-    if (organizationOnly && !isOrganizationUser(user.email || "")) {
-      // User doesn't belong to an organization
-      return (
-        <div className="flex h-[50vh] flex-col items-center justify-center gap-4 text-center p-4">
-          <h2 className="text-xl font-semibold">Organization Access Required</h2>
-          <p className="max-w-md text-muted-foreground">
-            This content is only available to users with an organization email. Your account is associated with a personal email domain.
-          </p>
-          <Button onClick={() => router.push('/')}>
-            Return to Dashboard
-          </Button>
-        </div>
-      );
+    // If organization access is required, check for the custom claim
+    if (organizationOnly) {
+      const hasOrgClaim = !!idTokenResult?.claims?.organization_id;
+      console.log("AuthGuard: Checking org claim:", idTokenResult?.claims, "Result:", hasOrgClaim);
+      
+      if (!hasOrgClaim) {
+        // User is logged in but doesn't have the required organization claim
+        return (
+          <div className="flex h-[50vh] flex-col items-center justify-center gap-4 text-center p-4">
+            <h2 className="text-xl font-semibold">Organization Access Required</h2>
+            <p className="max-w-md text-muted-foreground">
+              This content requires an account associated with a registered organization. 
+              Your account does not have the necessary organization details.
+            </p>
+            <Button onClick={() => router.push('/')}>
+              Return to Dashboard
+            </Button>
+          </div>
+        );
+      }
     }
     
     // User is authenticated and has appropriate access
@@ -66,10 +72,12 @@ export function AuthGuard({
   // User is not authenticated
   if (fallback) {
     // Show fallback content instead of redirecting
+    console.log("AuthGuard: User not logged in, showing fallback.");
     return <>{fallback}</>;
   }
 
   // Redirect to login page with return URL
+  console.log("AuthGuard: User not logged in, redirecting to login.");
   const returnUrl = encodeURIComponent(pathname);
   router.push(`${redirectTo}?returnUrl=${returnUrl}`);
   

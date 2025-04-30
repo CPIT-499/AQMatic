@@ -8,6 +8,7 @@ import { useTheme } from "next-themes";
 import { Moon, Sun } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils"; // Make sure this is imported
+import { UserProfile } from "@/components/auth/user-profile"; // Import UserProfile
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -53,59 +54,55 @@ export default function Navbar() {
     : "hover:bg-accent/80 hover:shadow-md"; // Light mode hover effect with shadow
 
   return (
-    <div className="w-full flex justify-center p-9 sticky top-0% z-20">
+    <div className="w-full flex justify-center p-4 md:p-6 sticky top-0 z-20">
       <nav 
         className={cn(
-          "w-full max-w-3xl rounded-full px-7 py-2 flex items-center justify-between transition-all duration-300",
+          "w-full max-w-5xl rounded-full px-4 md:px-7 py-2 flex items-center justify-between transition-all duration-300",
           navClasses,
           hoverClasses // Apply theme-specific hover effects
         )}
       >
-        <div className="flex items-center grid-flow-row gap-3">
-            <Link href="/" className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             {/* Light mode logo */}
             <Image
             src="/PNG_version.png"
-            alt="AQMatic Logo"
-            width={33}
-            height={33}
+            alt="AQMatic Logo Light"
+            width={30}
+            height={30}
             className="dark:hidden"
             />
             {/* Dark mode logo */}
             <Image
             src="/PNG_version_dark.png"
-            alt="AQMatic Logo"
-            width={33}
-            height={33}
+            alt="AQMatic Logo Dark"
+            width={30}
+            height={30}
             className="hidden dark:block"
             />
-            <span className="text-xl">AQMatic</span>
+            <span className="text-lg font-semibold hidden sm:inline">AQMatic</span>
           </Link>
         </div>
-        <div className="hidden md:flex items-center gap-4">
-          <Link 
-            href="/about" 
-            className="px-4 py-2 rounded-full hover:bg-accent hover:backdrop-blur-md transition-colors duration-300"
-          >
-            About
-          </Link>
-          <Link 
-            href="/contact" 
-            className="px-4 py-2 rounded-full hover:bg-accent hover:backdrop-blur-md transition-colors duration-300"
-          >
-            Contact
-          </Link>
-          <Link href="/login">
-            <Button 
-              className="px-6 py-2 rounded-full hover:backdrop-blur-md transition-colors duration-300"
-            >
-              Log in
-            </Button>
-          </Link>
+        
+        {/* Navigation Links - kept simple for now */}
+        <div className="hidden md:flex items-center gap-2">
+          <Button variant="ghost" asChild>
+            <Link href="/about">About</Link>
+          </Button>
+          <Button variant="ghost" asChild>
+             <Link href="/contact">Contact</Link>
+          </Button>
+        </div>
+
+        {/* Right side: User Profile and Theme Toggle */}
+        <div className="flex items-center gap-2">
+          {/* UserProfile component handles login/signup/user info */}
+          {mounted && <UserProfile />} 
+          
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full"
+            className="rounded-full h-9 w-9"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             aria-label="Toggle theme"
           >
@@ -118,6 +115,8 @@ export default function Navbar() {
             <span className="sr-only">Toggle theme</span>
           </Button>
         </div>
+        
+        {/* Mobile Menu Toggle (functionality not implemented here) */}
         <Button 
           variant="ghost" 
           size="icon" 

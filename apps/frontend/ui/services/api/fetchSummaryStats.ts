@@ -20,13 +20,27 @@ const MOCK_SUMMARY_STATS: SummaryStats = {
 };
 
 /**
- * Fetches summary statistics
+ * Fetches summary statistics.
+ * Includes auth token if fetching organization data.
  */
-export async function fetchSummaryStats(): Promise<SummaryStats> {
+export async function fetchSummaryStats(mode: 'public' | 'organization', token: string | null): Promise<SummaryStats> {
   try {
-    return await getAPI<SummaryStats>('/summary_stats');
+    const endpoint = '/summary_stats'; // Base endpoint
+    const headers: { [key: string]: string } = {};
+
+    if (mode === 'organization' && token) {
+      headers['Authorization'] = `Bearer ${token}`;
+      console.log("fetchSummaryStats: Using token for organization data.");
+    } else {
+      console.log("fetchSummaryStats: Fetching public data.");
+    }
+
+    // Pass headers to the updated getAPI function
+    return await getAPI<SummaryStats>(endpoint, { headers });
+
   } catch (error) {
-    console.warn('Error fetching summary stats, using mock data:', error);
+    console.warn(`Error fetching ${mode} summary stats, using mock data:`, error);
+    // Return mock data as a fallback
     return MOCK_SUMMARY_STATS;
   }
 }

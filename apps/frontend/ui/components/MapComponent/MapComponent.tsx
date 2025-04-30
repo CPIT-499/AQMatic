@@ -151,20 +151,15 @@ const MapComponent = ({ className, data }: MapComponentProps) => {
 
     try {
       console.log("MapComponent: Updating map layers with new data", data.length);
-      // Update heatmap
-      const heatmapData = data.map(point => [point.latitude, point.longitude, point.intensity || 0]);
-      heatLayerRef.current.setLatLngs(heatmapData);
-
-      // Update markers
-      markersRef.current.clearLayers();
       
+      // --- Update Markers First ---
+      markersRef.current.clearLayers();
       data.forEach((point: MapDataPoint) => {
         const color = getMarkerColor(point.intensity);
         const marker = L.marker([point.latitude, point.longitude], {
           icon: createMarkerIcon(color)
         });
 
-        // Create popup content (ensure robustness against missing data)
         const popupContent = `
           <div style="min-width: 180px; font-family: sans-serif; font-size: 13px;">
             <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: bold;">${point.city || 'Unknown Location'}${point.region ? `, ${point.region}` : ''}</h3>
@@ -181,17 +176,30 @@ const MapComponent = ({ className, data }: MapComponentProps) => {
             </div>
           </div>
         `;
-
         marker.bindPopup(popupContent);
         markersRef.current?.addLayer(marker);
       });
 
-      // Explicitly tell Leaflet to check its size after updates
-      // Use requestAnimationFrame to ensure it runs after the current rendering cycle
+      // --- Invalidate Size and Delay Heatmap Update ---
       requestAnimationFrame(() => {
-        if (mapInstanceRef.current) {
+        if (mapInstanceRef.current && heatLayerRef.current) {
+          // Invalidate size first
           mapInstanceRef.current.invalidateSize();
           console.log("MapComponent: Map invalidated size");
+
+          // Then, slightly delay setting heatmap data
+          setTimeout(() => {
+            if (heatLayerRef.current && data) { // Re-check refs and data
+              try {
+                const heatmapData = data.map(point => [point.latitude, point.longitude, point.intensity || 0]);
+                heatLayerRef.current.setLatLngs(heatmapData);
+                 console.log("MapComponent: Heatmap data updated after delay");
+              } catch(heatError) {
+                console.error("Error setting heatmap data inside timeout:", heatError);
+                setError("Failed to update heatmap layer.");
+              }
+            }
+          }, 0); // 0ms timeout often sufficient to push after paint
         }
       });
 

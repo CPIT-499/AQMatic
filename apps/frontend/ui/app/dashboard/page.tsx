@@ -43,46 +43,70 @@ import { AlertsSection } from "@/components/Alerts/AlertsSection";
 import { ModeSelector } from "@/components/Dashboard/ModeSelector";
 import { ChartSection } from "@/components/Dashboard/ChartSection";
 import { MapSection } from "@/components/Dashboard/MapSection";
+import { Loader2 } from "lucide-react"; // For loading state
 
 // Define constants for organization IDs
-const PUBLIC_ORG_ID = 1; // Public data organization ID
-const DEFAULT_ORG_ID = 7; // Default organization ID for authenticated users
+// const PUBLIC_ORG_ID = 1; // Public data organization ID
+// const DEFAULT_ORG_ID = 7; // Default organization ID for authenticated users
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, loading: authLoading, isOrganizationUser, getOrganizationFromEmail } = useAuth();
+  const { user, loading: authLoading, idTokenResult, getLatestIdToken } = useAuth();
 
   // --- State Management ---\n
-  // Determine initial mode based on auth state
   const [selectedMode, setSelectedMode] = React.useState<"public" | "organization">("public");
   const [timeRange, setTimeRange] = React.useState<TimeRangeOption>("90d");
   const { selectedGases, toggleGas } = useGasSelection();
 
   // --- Data Fetching ---\n
   const [data, setData] = React.useState<{
-    chartData: any[];
-    mapData: any[];
+    chartData: ChartDataPoint[];
+    mapData: any[]; // Use specific MapDataPoint type if available
     summaryStats: any;
     error: string | null;
   } | null>(null);
   const [loadingData, setLoadingData] = React.useState(true);
   const [fetchError, setFetchError] = React.useState<string | null>(null);
 
-  // Determine the organization ID to fetch data for
-  const organizationIdToFetch = selectedMode === "organization" && user && isOrganizationUser(user.email || "") 
-    ? getOrganizationFromEmail(user.email || "") // Ideally, fetch based on organization ID/name stored in user claims or fetched from backend
-    : PUBLIC_ORG_ID; // Fallback to public data
-
+  // Fetch data based on selected mode and auth state
   React.useEffect(() => {
-    // Only fetch data if auth is not loading
-    if (!authLoading) {
-      setLoadingData(true);
-      fetchDashboardData(/* Pass organizationIdToFetch or mode here if API supports it */)
-        .then(res => setData(res))
-        .catch(err => setFetchError(err instanceof Error ? err.message : String(err)))
-        .finally(() => setLoadingData(false));
+    // Don't fetch until auth state is resolved
+    if (authLoading) {
+      return;
     }
-  }, [selectedMode, authLoading, organizationIdToFetch]); // Re-fetch when mode or auth state changes
+
+    const fetchDataForMode = async () => {
+      setLoadingData(true);
+      setFetchError(null);
+      let token: string | null = null;
+
+      // Get token only if requesting organization data and user is logged in
+      if (selectedMode === "organization" && user) {
+        token = await getLatestIdToken();
+        if (!token) {
+          console.error("Dashboard: Failed to get token for organization mode.");
+          setFetchError("Authentication error. Please try logging in again.");
+          setLoadingData(false);
+          // Optionally sign out or redirect
+          return; 
+        }
+      }
+
+      try {
+        // Pass mode and token to the API fetch function
+        const res = await fetchDashboardData(selectedMode, token);
+        setData(res);
+      } catch (err: any) {
+        console.error(`Error fetching ${selectedMode} dashboard data:`, err);
+        setFetchError(err.message || `Failed to load ${selectedMode} data.`);
+        setData(null); // Clear potentially stale data
+      } finally {
+        setLoadingData(false);
+      }
+    };
+
+    fetchDataForMode();
+  }, [selectedMode, authLoading, user, getLatestIdToken]); // Dependencies for refetching
 
   // --- Extract and prepare data for hooks ---\n
   const chartData = data?.chartData ?? [];
@@ -92,67 +116,81 @@ export default function DashboardPage() {
   // Map raw summaryStats object into array of StatCardProps for SummaryStats
   const statCards = React.useMemo(() => {
     if (Array.isArray(summaryStats)) return summaryStats;
+    // Ensure fallback values if summaryStats is not the expected object
+    const stats = typeof summaryStats === 'object' && summaryStats !== null ? summaryStats : {};
     return [
       {
         title: "Current AQI",
-        value: summaryStats.current_aqi,
-        status: getAQIStatus(summaryStats.current_aqi),
-        trend: { value: formatTrendPercent(summaryStats.aqi_trend_pct), label: "since last period" },
+        value: stats.current_aqi ?? FALLBACK_SUMMARY_STATS[0].value,
+        status: getAQIStatus(stats.current_aqi ?? FALLBACK_SUMMARY_STATS[0].value),
+        trend: { value: formatTrendPercent(stats.aqi_trend_pct), label: "since last period" },
       },
       {
         title: "PM2.5 Level",
-        value: summaryStats.pm25_level,
-        status: getAQIStatus(summaryStats.pm25_level),
-        trend: { value: formatTrendPercent(summaryStats.pm25_trend_pct), label: "since last period" },
+        value: stats.pm25_level ?? FALLBACK_SUMMARY_STATS[1].value,
+        status: getAQIStatus(stats.pm25_level ?? FALLBACK_SUMMARY_STATS[1].value),
+        trend: { value: formatTrendPercent(stats.pm25_trend_pct), label: "since last period" },
       },
       {
         title: "Monitoring Stations",
-        value: summaryStats.monitoring_stations,
-        status: FALLBACK_SUMMARY_STATS[2].status,
+        value: stats.monitoring_stations ?? FALLBACK_SUMMARY_STATS[2].value,
+        status: FALLBACK_SUMMARY_STATS[2].status, // Assuming status is static or derived differently
       },
       {
         title: "Alerts Today",
-        value: summaryStats.alerts_today,
-        status: FALLBACK_SUMMARY_STATS[3].status,
+        value: stats.alerts_today ?? FALLBACK_SUMMARY_STATS[3].value,
+        status: FALLBACK_SUMMARY_STATS[3].status, // Assuming status is static or derived differently
       },
     ];
   }, [summaryStats]);
 
   // --- Derived Hooks ---\n
   const filteredData = React.useMemo(
-    () => chartData.filter(point => true),
+    () => chartData.filter(point => true), // Add filtering based on timeRange if needed
     [chartData, timeRange]
   );
 
   const handleNavigateToAlerts = React.useCallback(() => router.push('/alerts'), [router]);
-  const handleSetTimeRange = React.useCallback((range: any) => setTimeRange(range), []);
+  const handleSetTimeRange = React.useCallback((range: TimeRangeOption) => setTimeRange(range), []);
 
   const filteredAlerts = React.useMemo(() =>
     FALLBACK_ALERTS.map(alert => ({
       ...alert,
       severity: alert.severity as "destructive" | "warning" | "outline"
-    })),
+    })), // Update if alerts should come from fetched data
     [selectedMode]
   );
 
-  // Check if the user is authenticated and belongs to an organization to enable the 'Organization' mode
-  const canSelectOrganizationMode = user && isOrganizationUser(user.email || "");
+  // Check if the user has the organization claim to enable the 'Organization' mode
+  const canSelectOrganizationMode = !!idTokenResult?.claims?.organization_id;
 
-  // Handle mode selection, ensuring user is allowed to select 'organization'
+  // Handle mode selection
   const handleSelectMode = (mode: "public" | "organization") => {
     if (mode === "organization" && !canSelectOrganizationMode) {
-      // Optionally redirect to login or show a message
-      router.push('/organization'); // Redirect to organization page which handles auth guard
+      // Should not happen if button is disabled, but good practice
+      console.warn("Attempted to select organization mode without claim.");
+      // Redirect to organization page which shows login prompt if not authorized
+      router.push('/organization'); 
       return;
     }
     setSelectedMode(mode);
   };
 
-  // Combine auth loading and data loading state
+  // Combine loading states
   const isLoading = authLoading || loadingData;
 
   if (isLoading) {
-    return <div className="p-8">Loading dashboard...</div>; // Add a more sophisticated loader if needed
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Navbar />
+        <div className="flex flex-1 items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Loading dashboard...</p>
+          </div>
+        </div>
+      </div>
+    );
   }
   if (fetchError) {
     return <div className="p-8 text-destructive">Error fetching data: {fetchError}</div>;
@@ -160,36 +198,34 @@ export default function DashboardPage() {
 
   // --- Render UI ---\n
   return (
-    <div className="flex min-h-screen bg-background">
-      <div className="flex-1">
-        <Navbar />
+    <div className="flex min-h-screen flex-col bg-background">
+      <Navbar />
 
-        <main className="p-8 space-y-8 max-w-[1800px] mx-auto">
-          <ModeSelector 
-            selectedMode={selectedMode} 
-            onSelectMode={handleSelectMode} 
-            isOrganizationModeAvailable={canSelectOrganizationMode} 
+      <main className="flex-1 p-4 md:p-8 space-y-8 max-w-[1800px] mx-auto w-full">
+        <ModeSelector 
+          selectedMode={selectedMode} 
+          onSelectMode={handleSelectMode} 
+          isOrganizationModeAvailable={canSelectOrganizationMode} 
+        />
+
+        <SummaryStats stats={statCards} />
+
+        <div className="grid gap-8 grid-cols-1 lg:grid-cols-3 min-h-[600px]">
+          <ChartSection
+            selectedGases={selectedGases}
+            timeRange={timeRange}
+            filteredData={filteredData}
+            forecastData={FORECAST_DATA}
+            gasConfig={GAS_CONFIG}
+            onToggleGas={toggleGas}
+            onSetTimeRange={handleSetTimeRange}
           />
 
-          <SummaryStats stats={statCards} />
+          <MapSection data={mapData} />
+        </div>
 
-          <div className="grid gap-8 grid-cols-1 lg:grid-cols-3 min-h-[600px]">
-            <ChartSection
-              selectedGases={selectedGases}
-              timeRange={timeRange}
-              filteredData={filteredData}
-              forecastData={FORECAST_DATA}
-              gasConfig={GAS_CONFIG}
-              onToggleGas={toggleGas}
-              onSetTimeRange={handleSetTimeRange}
-            />
-
-            <MapSection data={mapData} />
-          </div>
-
-          <AlertsSection alerts={filteredAlerts} onViewAllClick={handleNavigateToAlerts} />
-        </main>
-      </div>
+        <AlertsSection alerts={filteredAlerts} onViewAllClick={handleNavigateToAlerts} />
+      </main>
     </div>
   );
 }

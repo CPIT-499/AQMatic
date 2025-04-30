@@ -4,7 +4,6 @@ import { useAuth } from "./firebase-auth-provider";
 import { 
   getUserDisplayName, 
   getUserInitials,
-  getOrganizationFromEmail
 } from "@/lib/firebase-user";
 import { FirebaseSignOutButton } from "./firebase-signout-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -26,9 +25,11 @@ import {
   Shield
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export function UserProfile() {
-  const { user, loading } = useAuth();
+  const { user, loading, idTokenResult } = useAuth();
+  const router = useRouter();
   
   if (loading) {
     return (
@@ -54,8 +55,10 @@ export function UserProfile() {
   
   const displayName = getUserDisplayName(user);
   const initials = getUserInitials(user);
-  const organization = getOrganizationFromEmail(user.email);
-  
+  const organizationName = idTokenResult?.claims?.organization_name || null; 
+  const organizationId = idTokenResult?.claims?.organization_id || null;
+  const displayOrganization = organizationName || (organizationId ? `Org ID: ${organizationId}` : null);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -68,8 +71,8 @@ export function UserProfile() {
           </Avatar>
           <div className="flex flex-col items-start text-sm">
             <span className="font-medium">{displayName}</span>
-            {organization && (
-              <span className="text-xs text-muted-foreground">{organization}</span>
+            {displayOrganization && (
+              <span className="text-xs text-muted-foreground">{displayOrganization}</span>
             )}
           </div>
           <ChevronDown className="h-4 w-4 text-muted-foreground" />
@@ -80,31 +83,38 @@ export function UserProfile() {
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium">{displayName}</p>
             <p className="text-xs text-muted-foreground">{user.email}</p>
+            {organizationId && (
+              <p className="text-xs text-muted-foreground">Org ID: {organizationId}</p>
+            )}
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/profile" className="flex items-center gap-2 cursor-pointer">
-            <User className="h-4 w-4" />
-            <span>Profile</span>
-          </Link>
+        <DropdownMenuItem 
+          onSelect={() => router.push('/profile')} 
+          className="flex items-center gap-2 cursor-pointer"
+        >
+          <User className="h-4 w-4" />
+          <span>Profile</span>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/organization" className="flex items-center gap-2 cursor-pointer">
-            <Building className="h-4 w-4" />
-            <span>Organization</span>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/dashboard/settings" className="flex items-center gap-2 cursor-pointer">
-            <Settings className="h-4 w-4" />
-            <span>Settings</span>
-          </Link>
+        {organizationId ? (
+          <DropdownMenuItem asChild>
+            <Link href="/organization" className="flex items-center gap-2 cursor-pointer">
+              <Building className="h-4 w-4" />
+              <span>Organization</span>
+            </Link>
+          </DropdownMenuItem>
+        ) : null }
+        <DropdownMenuItem 
+          onSelect={() => router.push('/dashboard/settings')} 
+          className="flex items-center gap-2 cursor-pointer"
+        >
+          <Settings className="h-4 w-4" />
+          <span>Settings</span>
         </DropdownMenuItem>
         {user.emailVerified && (
-          <DropdownMenuItem className="flex items-center gap-2 text-green-600">
+          <DropdownMenuItem className="flex items-center gap-2 text-green-600 cursor-default">
             <Shield className="h-4 w-4" />
-            <span>Verified</span>
+            <span>Verified Account</span>
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
@@ -114,7 +124,7 @@ export function UserProfile() {
               variant="ghost" 
               size="sm" 
               showIcon
-              className="w-full justify-start px-2"
+              className="w-full justify-start px-2 text-red-600 hover:text-red-700"
             />
           </div>
         </DropdownMenuItem>
