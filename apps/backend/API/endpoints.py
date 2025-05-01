@@ -11,9 +11,7 @@ import os
 
 from .database import get_db
 from .utils import format_hourly_measurement_data, measure_aqi, process_dashboard_stats
-from .auth import User, get_current_user
 
-# API endpoint handler functions
 def get_hourly_measurement_summary_handler(db: Session, organization_id: Optional[int] = None):
     """
     Retrieve data from the hourly_measurement_summary_View_graph
@@ -57,6 +55,7 @@ def get_hourly_measurement_summary_handler(db: Session, organization_id: Optiona
     except Exception as e:
         print(f"Error in get_hourly_measurement_summary_handler: {str(e)}")
         return []
+
 
 async def get_map_data_handler(db: Session, organization_id: Optional[int] = None):
     """
@@ -106,6 +105,7 @@ async def get_map_data_handler(db: Session, organization_id: Optional[int] = Non
     except Exception as e:
         print(f"Error in get_map_data_handler: {str(e)}")
         return []
+
 
 async def get_location_measurements_handler(location_id: int, db: Session, organization_id: Optional[int] = None):
     try:
@@ -409,4 +409,44 @@ def get_public_summary_stats_handler(db: Session):
             "monitoring_stations": 0,
             "alerts_today": 0
         }
+
+def get_forecast_summary_handler(db: Session, organization_id: Optional[int] = None):
+    """
+    Retrieve data from the forecast_summary_view_graph
+    Filtered by organization_id if provided
+    """
+    try:
+        query = "SELECT * FROM forecast_summary_view"
+        params = {}
+        
+        # Add organization filter if provided
+        if organization_id is not None:
+            query += " WHERE organization_id = :organization_id"
+            params["organization_id"] = organization_id
+            
+        result = db.execute(text(query), params).fetchall()
+        
+        # Format the data
+        formatted_data = []
+        for row in result:
+            data_point = {}
+            for key in row.keys():
+                try:
+                    value = getattr(row, key)
+                    if isinstance(value, (int, float)):
+                        data_point[key] = value
+                    elif isinstance(value, str):
+                        data_point[key] = value
+                    elif value is None:
+                        data_point[key] = None
+                    else:
+                        data_point[key] = str(value)
+                except Exception:
+                    data_point[key] = None
+            formatted_data.append(data_point)
+        
+        return formatted_data
+    except Exception as e:
+        print(f"Error in get_forecast_summary_handler: {str(e)}")
+        return []
 

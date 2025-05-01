@@ -10,21 +10,14 @@ from sqlalchemy import text
 from firebase_admin import auth
 
 from .database import get_db
-from .auth import (
-    LoginRequest, 
-    LoginResponse, 
-    User, 
-    get_current_user, 
-    login_handler,
-    debug_users_handler
-)
 from .endpoints import (
     get_hourly_measurement_summary_handler,
     get_map_data_handler,
     get_location_measurements_handler,
     get_location_aqi_handler,
     get_org_summary_stats_handler,
-    get_public_summary_stats_handler  # New import
+    get_public_summary_stats_handler,
+    get_forecast_summary_handler# New import
 )
 from .services.firebase_admin import set_organization_claim  # Import the new function
 
@@ -60,6 +53,111 @@ app.add_middleware(
 def read_root():
     return {"Hello": "AQMatic API"}
 
+
+
+# Authentication endpoints
+
+@app.post("/auth/set-claims-trigger")
+async def set_claims_trigger(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    # Get the Authorization header
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or not auth_header.startswith('Bearer '):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="No valid Authorization header found"
+        )
+    
+    # Extract the token
+    token = auth_header.split('Bearer ')[1]
+    
+    try:
+        # Verify the Firebase token
+        decoded_token = auth.verify_id_token(token)
+        email = decoded_token.get('email')
+        uid = decoded_token.get('uid')  # Get the Firebase UID
+        
+        if not email or not uid:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="No email or UID found in token"
+            )
+        
+        # First check if organization name is provided in the request body
+        try:
+            body = await request.json()
+            org_name = body.get('organization_name', '').strip()
+        except:
+            org_name = None
+
+        # If no organization name provided in body, extract from email domain
+        if not org_name:
+            domain = email.split('@')[1]
+            org_name = domain.split('.')[0]
+            
+        print(f"Looking up organization: {org_name}")
+        
+        # Query for organization
+        query = """
+            SELECT organization_id, organization_name 
+            FROM organizations 
+            WHERE LOWER(organization_name) = LOWER(:org_name)
+            LIMIT 1
+        """
+        result = db.execute(text(query), {"org_name": org_name}).fetchone()
+        
+        if not result:
+            return JSONResponse(
+                status_code=status.HTTP_404_NOT_FOUND,
+                content={"success": False, "error": f"Organization '{org_name}' not found"}
+            )
+        
+        # Set custom claim using the Firebase UID
+        organization_id = result[0]
+        organization_name = result[1]
+        
+        try:
+            # Set custom claims
+            custom_claims = {
+                'organization_id': organization_id,
+                'organization_name': organization_name
+            }
+            auth.set_custom_user_claims(uid, custom_claims)
+            
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content={
+                    "success": True,
+                    "organization_id": organization_id,
+                    "organization_name": organization_name
+                }
+            )
+        except Exception as e:
+            print(f"Error setting Firebase claims: {str(e)}")
+            return JSONResponse(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                content={"success": False, "error": f"Failed to set organization claim: {str(e)}"}
+            )
+            
+    except Exception as e:
+        print(f"Error in set-claims-trigger: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e)
+        )
+
+# Generic OPTIONS handler for all routes
+@app.options("/{full_path:path}")
+async def options_route(full_path: str):
+    """
+    Generic OPTIONS handler to handle any preflight request
+    """
+    return JSONResponse(
+        status_code=200,
+        content={}
+    )
 async def get_current_user(request: Request):
     """Get the current user from Firebase token and extract organization claims"""
     auth_header = request.headers.get('Authorization')
@@ -201,113 +299,22 @@ async def get_aqi_data(
         print(f"Error in get_aqi_data: {str(e)}")
         return []
 
-# Authentication endpoints
-@app.post("/auth/login", response_model=LoginResponse)
-async def login(login_data: LoginRequest, db: Session = Depends(get_db)):
-    return await login_handler(login_data, db)
-
-@app.get("/users/me", response_model=User)
-async def read_users_me(current_user: User = Depends(get_current_user)):
-    return current_user
-
-@app.post("/auth/set-claims-trigger")
-async def set_claims_trigger(
+@app.get("/forecast_summary")
+async def get_forecast_summary(
     request: Request,
     db: Session = Depends(get_db)
 ):
-    # Get the Authorization header
-    auth_header = request.headers.get('Authorization')
-    if not auth_header or not auth_header.startswith('Bearer '):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="No valid Authorization header found"
-        )
-    
-    # Extract the token
-    token = auth_header.split('Bearer ')[1]
+    """
+    Get forecast summary data filtered by organization
+    """
+    current_user = await get_current_user(request)
+    organization_id = current_user.get('organization_id') if current_user else None
     
     try:
-        # Verify the Firebase token
-        decoded_token = auth.verify_id_token(token)
-        email = decoded_token.get('email')
-        uid = decoded_token.get('uid')  # Get the Firebase UID
-        
-        if not email or not uid:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="No email or UID found in token"
-            )
-        
-        # First check if organization name is provided in the request body
-        try:
-            body = await request.json()
-            org_name = body.get('organization_name', '').strip()
-        except:
-            org_name = None
-
-        # If no organization name provided in body, extract from email domain
-        if not org_name:
-            domain = email.split('@')[1]
-            org_name = domain.split('.')[0]
-            
-        print(f"Looking up organization: {org_name}")
-        
-        # Query for organization
-        query = """
-            SELECT organization_id, organization_name 
-            FROM organizations 
-            WHERE LOWER(organization_name) = LOWER(:org_name)
-            LIMIT 1
-        """
-        result = db.execute(text(query), {"org_name": org_name}).fetchone()
-        
-        if not result:
-            return JSONResponse(
-                status_code=status.HTTP_404_NOT_FOUND,
-                content={"success": False, "error": f"Organization '{org_name}' not found"}
-            )
-        
-        # Set custom claim using the Firebase UID
-        organization_id = result[0]
-        organization_name = result[1]
-        
-        try:
-            # Set custom claims
-            custom_claims = {
-                'organization_id': organization_id,
-                'organization_name': organization_name
-            }
-            auth.set_custom_user_claims(uid, custom_claims)
-            
-            return JSONResponse(
-                status_code=status.HTTP_200_OK,
-                content={
-                    "success": True,
-                    "organization_id": organization_id,
-                    "organization_name": organization_name
-                }
-            )
-        except Exception as e:
-            print(f"Error setting Firebase claims: {str(e)}")
-            return JSONResponse(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                content={"success": False, "error": f"Failed to set organization claim: {str(e)}"}
-            )
-            
+        return get_forecast_summary_handler(db, organization_id)
     except Exception as e:
-        print(f"Error in set-claims-trigger: {str(e)}")
+        print(f"Error in get_forecast_summary: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(e)
+            detail="Failed to fetch forecast summary"
         )
-
-# Generic OPTIONS handler for all routes
-@app.options("/{full_path:path}")
-async def options_route(full_path: str):
-    """
-    Generic OPTIONS handler to handle any preflight request
-    """
-    return JSONResponse(
-        status_code=200,
-        content={}
-    )

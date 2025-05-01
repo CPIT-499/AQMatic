@@ -44,11 +44,6 @@ import { ModeSelector } from "@/components/Dashboard/ModeSelector";
 import { ChartSection } from "@/components/Dashboard/ChartSection";
 import { MapSection } from "@/components/Dashboard/MapSection";
 import { Loader2 } from "lucide-react"; // For loading state
-
-// Define constants for organization IDs
-// const PUBLIC_ORG_ID = 1; // Public data organization ID
-// const DEFAULT_ORG_ID = 7; // Default organization ID for authenticated users
-
 export default function DashboardPage() {
   const router = useRouter();
   const { user, loading: authLoading, idTokenResult, getLatestIdToken } = useAuth();
@@ -62,6 +57,7 @@ export default function DashboardPage() {
   const [data, setData] = React.useState<{
     chartData: ChartDataPoint[];
     mapData: any[]; // Use specific MapDataPoint type if available
+    forecastData: any[]; // Add this line for forecast data
     summaryStats: any;
     error: string | null;
   } | null>(null);
@@ -108,9 +104,10 @@ export default function DashboardPage() {
     fetchDataForMode();
   }, [selectedMode, authLoading, user, getLatestIdToken]); // Dependencies for refetching
 
-  // --- Extract and prepare data for hooks ---\n
+  // --- Extract and prepare data for hooks ---
   const chartData = data?.chartData ?? [];
   const mapData = data?.mapData ?? [];
+  const forecastData = data?.forecastData ?? []; // Add this line
   const summaryStats = data?.summaryStats ?? FALLBACK_SUMMARY_STATS;
 
   // Map raw summaryStats object into array of StatCardProps for SummaryStats
@@ -215,7 +212,7 @@ export default function DashboardPage() {
             selectedGases={selectedGases}
             timeRange={timeRange}
             filteredData={filteredData}
-            forecastData={FORECAST_DATA}
+            forecastData={forecastData} // Replace FORECAST_DATA with forecastData
             gasConfig={GAS_CONFIG}
             onToggleGas={toggleGas}
             onSetTimeRange={handleSetTimeRange}
