@@ -85,7 +85,6 @@ services:
       - ./API:/app/API
       - ./requirements.txt:/app/requirements.txt
       - ./.env:/app/.env
-      - ./config:/app/API/config    
     ports:
       - "8000:8000"
     networks:

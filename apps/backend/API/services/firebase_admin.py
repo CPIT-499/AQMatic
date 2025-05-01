@@ -15,12 +15,11 @@ def initialize_firebase_admin():
             return True
 
         # Try different paths for the service account key
-        current_dir = os.path.dirname(os.path.abspath(__file__))
         possible_paths = [
             os.getenv('FIREBASE_SERVICE_ACCOUNT_KEY_PATH'),  # From environment variable
-            os.path.join(current_dir, '..', 'config', 'firebase.json'),  # In config directory
-            os.path.join(current_dir, '..', '..', 'serviceAccountKey.json'),  # Backend root
-            'serviceAccountKey.json'  # Current directory
+            '/app/API/config/firebase.json', # Use absolute path based on WORKDIR and volume mount
+            '/app/serviceAccountKey.json', # Absolute path for potential backend root location
+            'serviceAccountKey.json'  # Relative to current directory (likely /app)
         ]
 
         # Filter out None values
@@ -71,18 +70,6 @@ def initialize_firebase_admin():
         print(f"Unexpected error during Firebase Admin SDK initialization: {str(e)}")
         return False
 
-# Initialize Firebase Admin SDK
-firebase_initialized = initialize_firebase_admin()
-
-if not firebase_initialized:
-    print("""
-Firebase Admin SDK initialization failed!
-Please ensure you have:
-1. Generated a service account key from Firebase Console
-2. Saved it as 'firebase.json' in the apps/backend/API/config directory
-3. Or set FIREBASE_SERVICE_ACCOUNT_KEY_PATH environment variable
-""")
-
 # --- Custom Claims Function ---
 
 def set_organization_claim(user_uid: str, organization_id: int, organization_name: Union[str, None] = None) -> bool:
@@ -90,7 +77,8 @@ def set_organization_claim(user_uid: str, organization_id: int, organization_nam
     Sets the organization_id and optionally organization_name as custom claims 
     for a given user UID. Returns True on success, False on failure.
     """
-    if not firebase_initialized:
+    # Check initialization status directly using firebase_admin._apps
+    if not firebase_admin._apps: 
         print("Error: Firebase Admin SDK not initialized. Cannot set claims.")
         return False
         
@@ -125,7 +113,8 @@ def verify_firebase_token(id_token: str) -> Union[Dict[str, any], None]:
     Verifies the Firebase ID token and returns the decoded claims.
     Returns None if verification fails.
     """
-    if not firebase_initialized:
+    # Check initialization status directly using firebase_admin._apps
+    if not firebase_admin._apps:
         print("Error: Firebase Admin SDK not initialized. Cannot verify token.")
         return None
         

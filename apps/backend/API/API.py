@@ -19,7 +19,15 @@ from .endpoints import (
     get_public_summary_stats_handler,
     get_forecast_summary_handler# New import
 )
-from .services.firebase_admin import set_organization_claim  # Import the new function
+from .services.firebase_admin import initialize_firebase_admin, set_organization_claim  # Import the initialization function
+
+# --- Initialize Firebase Admin SDK ---
+# Explicitly call initialization here to ensure it runs when the app starts.
+if not initialize_firebase_admin():
+    # Log a critical error if initialization fails.
+    # The application might still run but Firebase-dependent features will fail.
+    raise RuntimeError("CRITICAL ERROR: Firebase Admin SDK failed to initialize! Application cannot start.")
+
 
 # Create FastAPI app
 app = FastAPI(
