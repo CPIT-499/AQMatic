@@ -1,11 +1,7 @@
 "use client";
-
 // React and Next.js imports
 import * as React from "react";
 import { useRouter } from "next/navigation";
-// Removed unused import: import type {} from \'react/jsx-runtime\';
-// Removed next-auth import: import { useSession } from "next-auth/react";
-
 // Firebase Auth hook
 import { useAuth } from "@/components/auth/firebase-auth-provider";
 

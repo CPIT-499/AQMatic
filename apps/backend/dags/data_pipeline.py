@@ -134,8 +134,7 @@ with dag:
             task_id='run_api_unit_tests',
             python_callable=run_api_tests,
             do_xcom_push=True,  # Push test success status to XCom
-            doc_md="""#### Task Documentation
-            Runs the API unit tests to verify API functionality
+            doc_md="""####  unit tests to verify API functionality
             """,
         )
         
@@ -179,9 +178,13 @@ with dag:
             forecast_task = PythonOperator(
                 task_id=f"forecast_{attr_config['name']}_org6",
                 python_callable=forecast_next_week_and_store,
-                op_kwargs={'org_id': 6, 'attr_id': attr_config['attr_id']},
+                op_kwargs={
+                    'org_id': 6, 
+                    'attr_id': attr_config['attr_id'],
+                    'use_saved_model': True  # Enable model loading instead of retraining
+                },
                 doc_md=f"""#### Task Documentation
-                Forecasts {attr_config['name']} levels for organization 6 for the next 7 days
+                Forecasts {attr_config['name']} levels for organization 6 for the next 7 days using saved model when available
                 """,
             )
             forecasting_tasks.append(forecast_task)
@@ -198,4 +201,3 @@ with dag:
 
     # Define the complete workflow with conditional branching
     start_pipeline >> [meteo_group, openweather_group] >> db_view_group >> api_test_group >> ai_forecast_group >> create_forecast_view_task >> end_pipeline
-    

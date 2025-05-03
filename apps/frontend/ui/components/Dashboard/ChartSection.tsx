@@ -41,10 +41,31 @@ type PayloadItem = {
 // Custom Tooltip Content Component (optional extraction for clarity)
 const CustomTooltip = ({ active, payload, label, gasConfig }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
-    // Assuming selectedGases is implicitly handled by the Area components rendered
+    // Format the date in the tooltip for better readability
+    let formattedDate = label;
+    if (typeof label === 'string' && label.includes(' ')) {
+      const [month, day] = label.split(' ');
+      const currentDate = new Date();
+      // Current date is May 3, 2025
+      const year = currentDate.getFullYear();
+      
+      const monthMap: {[key: string]: number} = {
+        'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+        'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+      };
+      
+      const date = new Date(year, monthMap[month], parseInt(day));
+      formattedDate = date.toLocaleDateString('en-US', { 
+        weekday: 'short',
+        month: 'short', 
+        day: 'numeric',
+        year: '2-digit'
+      });
+    }
+    
     return (
       <div className="rounded-lg border bg-background p-2 shadow-md">
-        <div className="font-medium">{label}</div>
+        <div className="font-medium">{formattedDate}</div>
         {payload.map((entry: PayloadItem, index: number) => (
           <div key={`item-${index}`} className="flex items-center gap-2 text-sm">
             <div
@@ -91,56 +112,43 @@ export function ChartSection({
     
     if (!dataToFilter.length) return dataToFilter;
     
-    // For our testing purposes, let's just return all data if no filtering is needed
-    if (timeRange === '90d') return dataToFilter;
+    // Get reference date (today)
+    const referenceDate = new Date(); // May 3, 2025
     
-    // Get current date to compare with
-    const currentDate = new Date('April 26, 2025'); // Using a fixed reference date that matches our data
-    
-    // Create a map of month abbreviations to their numeric values
-    const monthMap: {[key: string]: number} = {
-      'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
-      'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
-    };
-    
-    // Function to parse our simple date format (e.g., "Apr 2")
-    const parseSimpleDate = (dateStr: string): Date => {
-      const [month, day] = dateStr.split(' ');
-      const date = new Date(currentDate);
-      date.setMonth(monthMap[month]);
-      date.setDate(parseInt(day));
-      
-      // If the resulting date is in the future (compared to our reference date)
-      // it means this date is from the previous year
-      if (date > currentDate && !showForecast) {
-        date.setFullYear(date.getFullYear() - 1);
-      }
-      
-      return date;
-    };
-    
-    // Calculate cutoff date based on timeRange
-    let cutoffDate: Date;
-    switch (timeRange) {
-      case '7d':
-        cutoffDate = new Date(currentDate);
-        cutoffDate.setDate(cutoffDate.getDate() - 7);
-        break;
-      case '30d':
-        cutoffDate = new Date(currentDate);
-        cutoffDate.setDate(cutoffDate.getDate() - 30);
-        break;
-      case '90d':
-      default:
-        cutoffDate = new Date(currentDate);
-        cutoffDate.setDate(cutoffDate.getDate() - 90);
-    }
-    
-    // Filter the data
+    // Following the example code's approach for consistent filtering
     return dataToFilter.filter(dataPoint => {
       try {
-        const dataDate = parseSimpleDate(dataPoint.date);
-        return dataDate >= cutoffDate;
+        // Parse the date from the format in your data (e.g., "Apr 2")
+        const [month, day] = dataPoint.date.split(' ');
+        
+        const monthMap: {[key: string]: number} = {
+          'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+          'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+        };
+        
+        // Create a date object for the datapoint
+        const dataDate = new Date(referenceDate.getFullYear(), monthMap[month], parseInt(day));
+        
+        // If the resulting date is in the future (compared to our reference date)
+        // it means this date is from the previous year
+        if (dataDate > referenceDate && !showForecast) {
+          dataDate.setFullYear(dataDate.getFullYear() - 1);
+        }
+        
+        // Calculate days to subtract based on time range
+        let daysToSubtract = 90;
+        if (timeRange === '30d') {
+          daysToSubtract = 30;
+        } else if (timeRange === '7d') {
+          daysToSubtract = 7;
+        }
+        
+        // Calculate the start date by subtracting days from reference date
+        const startDate = new Date(referenceDate);
+        startDate.setDate(startDate.getDate() - daysToSubtract);
+        
+        // Return data points that are newer than or equal to the start date
+        return dataDate >= startDate;
       } catch (e) {
         console.error(`Error parsing date: ${dataPoint.date}`, e);
         return false;
@@ -250,7 +258,38 @@ export function ChartSection({
                   ))}
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
-                <XAxis dataKey="date" tick={{ fontSize: 12 }} />
+                <XAxis 
+                  dataKey="date" 
+                  tick={{ fontSize: 12 }} 
+                  tickFormatter={(value) => {
+                    // Parse the simple date format (e.g., "Apr 2")
+                    if (typeof value === 'string') {
+                      const [month, day] = value.split(' ');
+                      const currentDate = new Date();
+                      // Current date is May 3, 2025
+                      const year = currentDate.getFullYear();
+                      
+                      // Create a proper date object for formatting
+                      const monthMap: {[key: string]: number} = {
+                        'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+                        'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+                      };
+                      
+                      const date = new Date(year, monthMap[month], parseInt(day));
+                      
+                      // Format based on timeRange to avoid overcrowding
+                      if (timeRange === '7d') {
+                        // For last week, show the day of week with date for better context
+                        return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                      } else if (timeRange === '30d') {
+                        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                      } else {
+                        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' });
+                      }
+                    }
+                    return value;
+                  }}
+                />
                 <YAxis 
                   tick={{ fontSize: 12 }} 
                   tickCount={20} 

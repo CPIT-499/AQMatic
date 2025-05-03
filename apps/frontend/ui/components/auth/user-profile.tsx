@@ -18,10 +18,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { 
   ChevronDown, 
-  User, 
-  Settings, 
-  LogOut, 
-  Building,
   Shield
 } from "lucide-react";
 import Link from "next/link";
@@ -89,28 +85,6 @@ export function UserProfile() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem 
-          onSelect={() => router.push('/profile')} 
-          className="flex items-center gap-2 cursor-pointer"
-        >
-          <User className="h-4 w-4" />
-          <span>Profile</span>
-        </DropdownMenuItem>
-        {organizationId ? (
-          <DropdownMenuItem asChild>
-            <Link href="/organization" className="flex items-center gap-2 cursor-pointer">
-              <Building className="h-4 w-4" />
-              <span>Organization</span>
-            </Link>
-          </DropdownMenuItem>
-        ) : null }
-        <DropdownMenuItem 
-          onSelect={() => router.push('/dashboard/settings')} 
-          className="flex items-center gap-2 cursor-pointer"
-        >
-          <Settings className="h-4 w-4" />
-          <span>Settings</span>
-        </DropdownMenuItem>
         {user.emailVerified && (
           <DropdownMenuItem className="flex items-center gap-2 text-green-600 cursor-default">
             <Shield className="h-4 w-4" />
@@ -131,4 +105,4 @@ export function UserProfile() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-} 
+}

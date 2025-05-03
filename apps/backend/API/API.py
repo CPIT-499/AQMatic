@@ -13,8 +13,6 @@ from .database import get_db
 from .endpoints import (
     get_hourly_measurement_summary_handler,
     get_map_data_handler,
-    get_location_measurements_handler,
-    get_location_aqi_handler,
     get_org_summary_stats_handler,
     get_public_summary_stats_handler,
     get_forecast_summary_handler# New import
@@ -184,6 +182,11 @@ async def get_current_user(request: Request):
     except:
         return None
 
+
+
+
+
+####### data retrieval endpoints ########
 @app.get("/hourly_measurement_summary_View_graph")
 async def get_hourly_measurement_summary(
     request: Request,
@@ -246,23 +249,6 @@ async def get_summary_stats(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to fetch summary statistics"
         )
-
-# Location measurements route
-@app.get("/location_measurements/{location_id}")
-async def get_location_measurements(
-    location_id: int,
-    organization_id: Optional[int] = None,
-    db: Session = Depends(get_db)
-):
-    """
-    Get measurements for a specific location
-    Filtered by organization_id if provided
-    """
-    try:
-        return get_location_measurements_handler(db, location_id, organization_id)
-    except Exception as e:
-        print(f"Error in get_location_measurements: {str(e)}")
-        return []
 
 # Location-specific AQI data route
 @app.get("/aqi_data/{location_id}")

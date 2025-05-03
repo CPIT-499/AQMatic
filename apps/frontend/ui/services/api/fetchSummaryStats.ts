@@ -7,6 +7,7 @@ export interface SummaryStats {
   pm25_trend_pct: number;
   monitoring_stations: number;
   alerts_today: number;
+  hours_since_previous: number;
 }
 
 // Mock data to use when API call fails
@@ -16,7 +17,8 @@ const MOCK_SUMMARY_STATS: SummaryStats = {
   aqi_trend_pct: 5.2,
   pm25_trend_pct: -3.8,
   monitoring_stations: 12,
-  alerts_today: 3
+  alerts_today: 3,
+  hours_since_previous: 24
 };
 
 /**

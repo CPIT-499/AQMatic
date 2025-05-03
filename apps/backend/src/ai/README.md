@@ -1,29 +1,35 @@
-# Air Quality Forecasting System
+# AI Module for AQMatic
 
-## Overview
-This module provides a 7-day air quality forecasting system for AQMatic. It uses historical measurement data to predict future air quality values for various attributes (PM2.5, NO2, etc.) using a Long Short-Term Memory (LSTM) neural network. The system retrieves historical data, trains the model, generates predictions, validates them for reasonableness, and stores them in the database.
+## Preprocessing Methods
 
-## Why LSTM?
-We use LSTM (Long Short-Term Memory) neural networks for the following reasons:
+1. **Data Normalization (RobustScaler)**: 
+   - Reduces the impact of outliers which are common in air quality data
+   - Makes training more stable and efficient by bringing values to similar scale
+   - RobustScaler specifically uses median and quantiles instead of mean/std, making it resistant to outliers
 
-1. **Temporal Pattern Recognition**: LSTMs excel at capturing time-dependent patterns in air quality data, including daily and weekly cycles.
-2. **Memory Capability**: Unlike simple models, LSTMs can "remember" important patterns from days or weeks ago.
-3. **Noise Resistance**: Air quality data often contains noise and outliers; LSTMs can learn to distinguish meaningful signals from anomalies.
-4. **Multi-step Forecasting**: Our implementation directly predicts all 7 future days in one operation, maintaining temporal coherence.
-5. **Non-linear Relationships**: Air quality depends on complex, non-linear factors that LSTMs can model effectively.
+2. **Time Series Resampling**:
+   - Ensures consistent daily frequency despite irregular measurement intervals
+   - Fills gaps in the data stream for more reliable predictions
 
-## Key Functions
+3. **Missing Value Interpolation**:
+   - Uses time-based interpolation to handle gaps in measurements
+   - Preserves temporal patterns instead of simple averaging
 
-- `forecast_next_week_and_store(org_id, attr_id, T_in=7)`: Main function that orchestrates the entire forecasting pipeline from data retrieval to storage.
-- `make_windows(arr, T_in, Tout=7)`: Creates sliding windows for LSTM training from time series data.
-- `build_lstm_model(T_in)`: Constructs the neural network architecture with LSTM layers.
-- `create_forecast_rows(preds, last_date, org_id, attr_id)`: Formats predictions for database storage.
-- `validate_forecast_reasonability(forecasts, df, attr_id)`: Ensures predictions fall within reasonable bounds based on historical patterns.
-- `display_forecasts(forecasts, org_id, attr_id)`: Formats and displays prediction results.
+## Training Methods
 
-The forecasting system stores its predictions in the database with:
-- `forecast_time`: When the prediction was generated
-- `target_time`: The future date being predicted
-- `predicted_value`: The expected air quality value
+1. **LSTM Architecture**:
+   - Long Short-Term Memory networks excel at capturing temporal dependencies
+   - Two-layer design with dropout for regularization helps prevent overfitting
+   - Well-suited for time series forecasting with seasonal patterns
 
-Predictions are automatically updated daily to provide the most accurate 7-day forecast window.
+2. **Sliding Window Approach**:
+   - Creates input-output pairs from continuous time series
+   - Uses T_in days of history to predict next 7 days
+   - Maximizes use of available training data
+
+3. **Model Persistence**:
+   - Saves trained models for reuse without retraining
+   - Allows for incremental learning as new data arrives
+   - Reduces computational overhead in production
+
+The combined approach enables accurate 7-day air quality forecasts while efficiently handling the challenges of environmental time series data.

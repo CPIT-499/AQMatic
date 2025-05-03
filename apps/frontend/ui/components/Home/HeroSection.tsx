@@ -72,36 +72,11 @@ export function HeroSection({ onGetStartedClick, onSeePlansClick }: HeroSectionP
           data-driven decisions.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <Button
-            size="lg"
-            className="px-6 py-5 rounded-full bg-gradient-to-r from-green-600 to-emerald-800 dark:from-green-400 dark:to-emerald-700 hover:opacity-90 transition-all shadow-md hover:shadow-lg hover:scale-105"
-            onClick={onGetStartedClick}
-          >
-            Get started for free
-          </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            className="px-6 py-5 rounded-full border-2 hover:bg-accent/50 transition-all group"
-            onClick={onSeePlansClick}
-          >
-            See our plans{" "}
-            <span className="ml-2 group-hover:translate-x-1 transition-transform">
-              →
-            </span>
-          </Button>
-        </div>
+
 
         {/* Feature Section - Compact */}
         <div className="mb-8 mt-60">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl font-semibold mb-4">
-              Built for Scaling Teams
-            </h2>
-            <p className="text-base mb-6">
-              Empower your team with workflows that adapt to your needs.
-            </p>
 
             <div className="relative rounded-xl overflow-hidden mb-8">
               <Image

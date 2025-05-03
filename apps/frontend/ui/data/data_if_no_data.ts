@@ -183,7 +183,7 @@ export const FORECAST_DATA: ChartDataPoint[] = [
 export const FALLBACK_SUMMARY_STATS: SummaryStat[] = [
     {
       title: "Current AQI",
-      value: 17,
+      value: 0,
       status: { label: "Moderate", color: { bg: "bg-yellow-100", text: "text-yellow-800", border: "border-yellow-200" } },
       trend: { value: "+5%", label: "from yesterday" }
     },

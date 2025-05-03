@@ -22,61 +22,7 @@ def insert_measurements(conn, sensor_id, organization_id, measurement_time, loca
             print(f"Attribute '{attr}' not found in database.")
     conn.commit()
 
-    
-# this method only going to use it if the insert was coming from the user on the website however we are not going to use it we are going to insert it manually in the database
-# def insert_location(conn, latitude, longitude, altitude=None, city=None, region=None, country=None):
-#     """
-#     Inserts a new location into the locations table.
-#     """
-#
-#     cursor = conn.cursor()
-#     cursor.execute(
-#         "INSERT INTO locations (latitude, longitude, altitude, city, region, country) VALUES (?, ?, ?, ?, ?, ?)",
-#         (latitude, longitude, altitude, city, region, country)
-#     )
-#     conn.commit()
-#     return cursor.lastrowid
 
-def insert_organization(conn, organization_name, contact_email=None, contact_phone=None, address=None, website=None, role='Private'):
-    """
-    Inserts a new organization into the organizations table.
-    """
-    cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO organizations (organization_name, contact_email, contact_phone, address, website, role) VALUES (?, ?, ?, ?, ?, ?)",
-        (organization_name, contact_email, contact_phone, address, website, role)
-    )
-    conn.commit()
-    return cursor.lastrowid
-
-def insert_user(conn, organization_id, username, password_hash, api_key=None, email=None, role=None):
-    """
-    Inserts a new user into the users table.
-    """
-    cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO users (organization_id, username, api_key, password_hash, email, role) VALUES (?, ?, ?, ?, ?, ?)",
-        (organization_id, username, api_key, password_hash, email, role)
-    )
-    conn.commit()
-    return cursor.lastrowid
-
-
-
-def insert_sensor(conn, organization_id, sensor_type, model=None, deployment_date=None, default_location_id=None,
-                  vehicle_id=None, drone_model=None, station_name=None, operator_name=None, additional_info=None):
-    """
-    Inserts a new sensor into the sensors table.
-    """
-    cursor = conn.cursor()
-    cursor.execute(
-        """INSERT INTO sensors 
-           (organization_id, sensor_type, model, deployment_date, default_location_id, vehicle_id, drone_model, station_name, operator_name, additional_info)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-        (organization_id, sensor_type, model, deployment_date, default_location_id, vehicle_id, drone_model, station_name, operator_name, additional_info)
-    )
-    conn.commit()
-    return cursor.lastrowid
 
 def insert_measurement_attribute(conn, attribute_name, unit):
     """

@@ -154,11 +154,12 @@ def get_org_summary_stats_handler(organization_id: int, db: Session):
     """
     try:
         # Get summary stats for the specified organization
-        # Select the same columns as in the public stats handler
+        # Updated column names from _yesterday to _previous to match the view changes
         query = """
             SELECT
                 pm25_current, pm10_current, o3_current, no2_current, so2_current, co_current,
-                pm25_yesterday, pm10_yesterday, o3_yesterday, no2_yesterday, so2_yesterday, co_yesterday,
+                pm25_previous, pm10_previous, o3_previous, no2_previous, so2_previous, co_previous,
+                pm25_hours_diff, pm10_hours_diff, o3_hours_diff, no2_hours_diff, so2_hours_diff, co_hours_diff,
                 monitoring_stations, alerts_today
             FROM dashboard_summary_stats_view
             WHERE organization_id = :organization_id
@@ -174,7 +175,8 @@ def get_org_summary_stats_handler(organization_id: int, db: Session):
                 "aqi_trend_pct": 0,
                 "pm25_trend_pct": 0,
                 "monitoring_stations": 0,
-                "alerts_today": 0
+                "alerts_today": 0,
+                "hours_since_previous": 0
             }
 
         # Unlike the public stats, we're dealing with one organization,
@@ -193,43 +195,53 @@ def get_org_summary_stats_handler(organization_id: int, db: Session):
         current_aqi_value = 0
         if valid_current_pollutants:
             aqi_result = measure_aqi(valid_current_pollutants)
-            current_aqi_value = aqi_result.get("AQI", 0)
+            current_aqi_value = round(aqi_result.get("AQI", 0), 2)
 
         # Get current PM2.5
-        current_pm25 = row.pm25_current or 0
+        current_pm25 = round(row.pm25_current or 0, 2)
 
         # --- Calculate Trends ---
-        yesterday_pollutants = {
-            "pm2.5": row.pm25_yesterday, "pm10": row.pm10_yesterday,
-            "o3": row.o3_yesterday, "no2": row.no2_yesterday,
-            "so2": row.so2_yesterday, "co": row.co_yesterday
+        # Updated variable names to reflect the view change from yesterday to previous
+        previous_pollutants = {
+            "pm2.5": row.pm25_previous, "pm10": row.pm10_previous,
+            "o3": row.o3_previous, "no2": row.no2_previous,
+            "so2": row.so2_previous, "co": row.co_previous
         }
         
-        valid_yesterday_pollutants = {k: v for k, v in yesterday_pollutants.items() if v is not None}
-        yesterday_aqi_value = 0
-        if valid_yesterday_pollutants:
-            aqi_yesterday_result = measure_aqi(valid_yesterday_pollutants)
-            yesterday_aqi_value = aqi_yesterday_result.get("AQI", 0)
+        valid_previous_pollutants = {k: v for k, v in previous_pollutants.items() if v is not None}
+        previous_aqi_value = 0
+        if valid_previous_pollutants:
+            aqi_previous_result = measure_aqi(valid_previous_pollutants)
+            previous_aqi_value = aqi_previous_result.get("AQI", 0)
 
-        yesterday_pm25 = row.pm25_yesterday or 0
+        previous_pm25 = row.pm25_previous or 0
 
         # Calculate percentage change for AQI and PM2.5
         aqi_trend_pct = 0
-        if yesterday_aqi_value != 0:
-            aqi_trend_pct = round(((current_aqi_value - yesterday_aqi_value) / yesterday_aqi_value) * 100, 1)
+        if previous_aqi_value != 0:
+            aqi_trend_pct = round(((current_aqi_value - previous_aqi_value) / previous_aqi_value) * 100, 1)
 
         pm25_trend_pct = 0
-        if yesterday_pm25 != 0:
-            pm25_trend_pct = round(((current_pm25 - yesterday_pm25) / yesterday_pm25) * 100, 1)
+        if previous_pm25 != 0:
+            pm25_trend_pct = round(((current_pm25 - previous_pm25) / previous_pm25) * 100, 1)
+            
+        # Get the average hours difference across all available pollutants
+        hours_diffs = [
+            row.pm25_hours_diff, row.pm10_hours_diff, row.o3_hours_diff,
+            row.no2_hours_diff, row.so2_hours_diff, row.co_hours_diff
+        ]
+        valid_hours = [h for h in hours_diffs if h is not None]
+        avg_hours_diff = round(sum(valid_hours) / len(valid_hours), 1) if valid_hours else 0
 
-        # Return the organization stats
+        # Return the organization stats with hours since previous measurement
         return {
             "current_aqi": current_aqi_value,
             "pm25_level": current_pm25,
             "aqi_trend_pct": aqi_trend_pct,
             "pm25_trend_pct": pm25_trend_pct,
             "monitoring_stations": row.monitoring_stations or 0,
-            "alerts_today": row.alerts_today or 0
+            "alerts_today": row.alerts_today or 0,
+            "hours_since_previous": avg_hours_diff
         }
 
     except Exception as e:
@@ -244,7 +256,8 @@ def get_org_summary_stats_handler(organization_id: int, db: Session):
             "aqi_trend_pct": 0,
             "pm25_trend_pct": 0,
             "monitoring_stations": 0,
-            "alerts_today": 0
+            "alerts_today": 0,
+            "hours_since_previous": 0
         }
 
 def get_public_summary_stats_handler(db: Session):
