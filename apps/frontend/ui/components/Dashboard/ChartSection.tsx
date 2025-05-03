@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ChartDataPoint, GasConfig, TimeRangeOption, TIME_RANGE_OPTIONS } from "@/data/dashboardData"; // Adjust path
+import { ChartDataPoint, GasConfig, TimeRangeOption, TIME_RANGE_OPTIONS } from "@/data/data_if_no_data"; // Adjust path
 
 interface ChartSectionProps {
   selectedGases: string[];
@@ -238,7 +238,7 @@ export function ChartSection({
           <div className="h-full min-h-[500px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
-                data={reversedData}
+                data={showForecast ? forecastData : reversedData}
                 margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
               >
                 <defs>

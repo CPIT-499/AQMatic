@@ -259,20 +259,7 @@ async def get_location_measurements(
     Filtered by organization_id if provided
     """
     try:
-        query = """
-            SELECT m.*, l.organization_id
-            FROM measurements m
-            JOIN locations l ON m.location_id = l.id
-            WHERE m.location_id = :location_id
-        """
-        params = {"location_id": location_id}
-        
-        if organization_id is not None:
-            query += " AND l.organization_id = :organization_id"
-            params["organization_id"] = organization_id
-            
-        result = db.execute(text(query), params).fetchall()
-        return [dict(row) for row in result]
+        return get_location_measurements_handler(db, location_id, organization_id)
     except Exception as e:
         print(f"Error in get_location_measurements: {str(e)}")
         return []

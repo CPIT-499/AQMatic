@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta, date
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import RobustScaler
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dropout, Dense
 from src.db.select_data import get_measurements, get_recent_forecasts
@@ -11,22 +11,30 @@ from src.db.insert_data import insert_forecasts
 def forecast_next_week_and_store(org_id: int, attr_id: int, T_in: int = 7, **kwargs):
     """
     Forecast the next 7 days of air quality using LSTM and store results.
-    
     Args:
         org_id: Organization ID
         attr_id: Attribute ID to forecast
         T_in: Input time window for the LSTM model (default: 7 days)
     """
+    print(f"Starting forecast for org_id={org_id}, attr_id={attr_id}, T_in={T_in}")
+    
+    ########### GET DATA ###########
     # Get historical measurements and prepare data
     rows = get_measurements(org_id, attr_id)
     if not rows:
         print(f"No data found for organization {org_id} and attribute {attr_id}")
         return
+    
+    print(f"Retrieved {len(rows)} raw measurements")
         
     # Convert to DataFrame and prepare
     df = pd.DataFrame(rows, columns=["dt", "value"])
+    print(f"Raw DataFrame shape: {df.shape}")
+    print(f"Raw DataFrame head:\n{df.head().to_string()}")
+    
     df['value'] = pd.to_numeric(df['value'], errors='coerce')
     df = df.dropna(subset=['value'])
+    print(f"After numeric conversion and NA drop: {df.shape}")
     
     if df.empty:
         print(f"No valid numeric data found for organization {org_id} and attribute {attr_id}")
@@ -35,37 +43,73 @@ def forecast_next_week_and_store(org_id: int, attr_id: int, T_in: int = 7, **kwa
     df['dt'] = pd.to_datetime(df['dt'])
     df = df.set_index("dt")
     
-    # Resample to daily data
-    df = df.astype({'value': 'float64'})
-    df = df.resample("D").first().interpolate(method="time").ffill().bfill()
+    df = df.astype({'value': 'float64'})  # Ensure 'value' is float
+    print(f"DataFrame after datetime conversion:\n{df.head().to_string()}")
+    print(f"Data types: {df.dtypes}")
     
-    # Validate data for training
+    ######## PREPROCESSING ########
+    
+    # Check if we need daily resampling (if data is not already daily)
+    needs_resampling = df.index.to_series().diff().dt.days.mean() > 1 or df.index.has_duplicates
+    print(f"Average days between samples: {df.index.to_series().diff().dt.days.mean():.2f}")
+    print(f"Has duplicates: {df.index.has_duplicates}")
+    print(f"Needs resampling: {needs_resampling}")
+    
+    if needs_resampling:
+        # Resample to daily frequency since data is irregular or has duplicates
+        df = df.resample("D").first()
+        print(f"After resampling: {df.shape}")
+        print(f"DataFrame after resampling:\n{df.head().to_string()}")
+    
+    # Only interpolate if there are missing values
+    missing_values = df['value'].isna().sum()
+    print(f"Missing values: {missing_values}")
+    
+    if missing_values > 0:
+        df = df.interpolate(method="time").ffill().bfill()
+        print(f"After interpolation: {df.shape}")
+        print(f"Missing values after interpolation: {df['value'].isna().sum()}")
+    
+    # Validate at least  7 days of data
     series = df["value"].values.reshape(-1,1)
+    print(f"Series shape after reshape: {series.shape}")
+    
     if len(series) < T_in + 7:
         print(f"Insufficient data for forecasting. Need {T_in + 7} days, have {len(series)}")
         return
-
-    # Scale data for LSTM
-    scaler = MinMaxScaler()
+   
+    # Normalize the data 
+    scaler = RobustScaler()  # RobustScaler is less sensitive to outliers
     scaled = scaler.fit_transform(series)
+    print(f"Data range before scaling: [{series.min():.2f}, {series.max():.2f}]")
+    print(f"Data range after scaling: [{scaled.min():.2f}, {scaled.max():.2f}]")
 
     # Create windows for training
     X, y = make_windows(scaled, T_in)
+    print(f"Training data shapes: X={X.shape}, y={y.shape}")
     
     # Build & train LSTM model
     model = build_lstm_model(T_in)
-    model.fit(X, y.reshape(y.shape[0], 7), epochs=10, batch_size=8, verbose=0)
+    print(f"Starting model training with {len(X)} examples")
+    history = model.fit(X, y.reshape(y.shape[0], 7), epochs=10, batch_size=8, verbose=0)
+    print(f"Model training complete. Final loss: {history.history['loss'][-1]:.4f}")
     
     # Make predictions
     last_window = X[-1:]
+    print(f"Predicting with last window shape: {last_window.shape}")
     preds_scaled = model.predict(last_window)
     preds = scaler.inverse_transform(preds_scaled.reshape(-1,1)).flatten()
+    print(f"Predictions (unscaled): {preds}")
     
     # Prepare forecast rows
     forecast_rows = create_forecast_rows(preds, df.index[-1], org_id, attr_id)
+    print(f"Created {len(forecast_rows)} forecast rows")
     
     # Store and display results
-    if insert_forecasts(forecast_rows):
+    insert_success = insert_forecasts(forecast_rows)
+    print(f"Forecast insertion {'successful' if insert_success else 'failed'}")
+    
+    if insert_success:
         forecasts = get_recent_forecasts(org_id, attr_id)
         display_forecasts(forecasts, org_id, attr_id)
 

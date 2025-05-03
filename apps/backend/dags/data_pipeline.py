@@ -152,14 +152,7 @@ with dag:
 
     # Weekly schedule check for AI forecasting
     # This will only run once per week (every 7 days)
-    is_weekly_run = PythonOperator(
-        task_id='check_if_weekly_run',
-        python_callable=lambda **kwargs: datetime.now().weekday() == 0,  # Run on Monday
-        # Alternatively: datetime.now().day % 7 == 0  # Run every 7 days
-        doc_md="""#### Task Documentation
-        Checks if today is the day for weekly AI forecasting run
-        """,
-    )
+
     
     # AI Forecasting Task Group - Only runs weekly
     with TaskGroup(group_id='ai_forecast_operations') as ai_forecast_group:
@@ -204,10 +197,5 @@ with dag:
     )
 
     # Define the complete workflow with conditional branching
-    start_pipeline >> [meteo_group, openweather_group] >> db_view_group >> api_test_group >> is_weekly_run
+    start_pipeline >> [meteo_group, openweather_group] >> db_view_group >> api_test_group >> ai_forecast_group >> create_forecast_view_task >> end_pipeline
     
-    # Weekly tasks only run when is_weekly_run resolves to True
-    is_weekly_run >> ai_forecast_group >> create_forecast_view_task >> end_pipeline
-    
-    # Skip AI tasks when not the weekly run day
-    is_weekly_run >> end_pipeline

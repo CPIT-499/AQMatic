@@ -5,7 +5,7 @@ import {
   GAS_CONFIG,
   TimeRangeOption,
   ChartDataPoint
-} from "@/data/dashboardData";
+} from "@/data/data_if_no_data";
 import { api } from "@/services/api";
 
 // --- useDashboardData ---

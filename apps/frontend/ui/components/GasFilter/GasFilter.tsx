@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Filter } from "lucide-react"
-import { chartData } from "@/data/dashboardData" // Import the data directly
+import { chartData } from "@/data/data_if_no_data" // Import the data directly
 
 export type GasFilterOption = "all" | "pm25" | "pm10" | "o3" | "no2"
 export type TimeRangeOption = "90d" | "30d" | "7d"

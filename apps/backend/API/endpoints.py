@@ -10,7 +10,7 @@ from pydantic import BaseModel
 import os
 
 from .database import get_db
-from .utils import format_hourly_measurement_data, measure_aqi, process_dashboard_stats
+from .utils import format_hourly_measurement_data, measure_aqi, process_dashboard_stats, format_forecast_data
 
 def get_hourly_measurement_summary_handler(db: Session, organization_id: Optional[int] = None):
     """
@@ -107,67 +107,37 @@ async def get_map_data_handler(db: Session, organization_id: Optional[int] = Non
         return []
 
 
-async def get_location_measurements_handler(location_id: int, db: Session, organization_id: Optional[int] = None):
-    try:
-        # Get the latest measurements for each attribute at this location
-        query = """
-        WITH latest_measurements AS (
-            SELECT 
-                m.location_id,
-                m.attribute_id,
-                m.value,
-                m.measurement_time,
-                ma.attribute_name,
-                ma.unit,
-                l.organization_id,
-                ROW_NUMBER() OVER (PARTITION BY m.attribute_id ORDER BY m.measurement_time DESC) as rn
-            FROM measurements m
-            JOIN measurement_attributes ma ON m.attribute_id = ma.attribute_id
-            JOIN locations l ON m.location_id = l.location_id
-            WHERE m.location_id = :location_id
-            AND m.measurement_time >= CURRENT_TIMESTAMP - INTERVAL '24 hours'
-        )
-        SELECT 
-            location_id,
-            attribute_name,
-            value,
-            unit,
-            measurement_time,
-            organization_id
-        FROM latest_measurements
-        WHERE rn = 1
-        """
+def get_location_measurements_handler(db: Session, location_id: int, organization_id: Optional[int] = None):
+    """
+    Get measurements for a specific location
+    Filtered by organization_id if provided
+    
+    Args:
+        db: Database session
+        location_id: ID of the location to fetch measurements for
+        organization_id: Optional organization ID to filter results
         
+    Returns:
+        List of measurement dictionaries
+    """
+    try:
+        query = """
+            SELECT m.*, l.organization_id
+            FROM measurements m
+            JOIN locations l ON m.location_id = l.id
+            WHERE m.location_id = :location_id
+        """
         params = {"location_id": location_id}
         
-        # Add organization filter if provided
         if organization_id is not None:
-            query += " AND organization_id = :organization_id"
+            query += " AND l.organization_id = :organization_id"
             params["organization_id"] = organization_id
             
-        query += " ORDER BY attribute_name;"
-        
-        result = db.execute(text(query), params)
-        measurements = result.fetchall()
-        
-        if not measurements:
-            return {"location_id": location_id, "measurements": []}
-            
-        return {
-            "location_id": location_id,
-            "measurements": [
-                {
-                    "attribute_name": row.attribute_name,
-                    "value": float(row.value),
-                    "unit": row.unit,
-                    "measurement_time": row.measurement_time.isoformat()
-                }
-                for row in measurements
-            ]
-        }
+        result = db.execute(text(query), params).fetchall()
+        return [dict(row) for row in result]
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
+        print(f"Error in get_location_measurements_handler: {str(e)}")
+        return []
 
 
 def get_location_aqi_handler(location_id: int, db: Session, organization_id: Optional[int] = None):
@@ -412,7 +382,7 @@ def get_public_summary_stats_handler(db: Session):
 
 def get_forecast_summary_handler(db: Session, organization_id: Optional[int] = None):
     """
-    Retrieve data from the forecast_summary_view_graph
+    Retrieve data from the forecast_summary_view
     Filtered by organization_id if provided
     """
     try:
@@ -426,24 +396,38 @@ def get_forecast_summary_handler(db: Session, organization_id: Optional[int] = N
             
         result = db.execute(text(query), params).fetchall()
         
-        # Format the data
-        formatted_data = []
-        for row in result:
-            data_point = {}
-            for key in row.keys():
-                try:
-                    value = getattr(row, key)
-                    if isinstance(value, (int, float)):
-                        data_point[key] = value
-                    elif isinstance(value, str):
-                        data_point[key] = value
-                    elif value is None:
+        # Use format_forecast_data to format the data like hourly_measurement_data
+        try:
+            formatted_data = format_forecast_data(result)
+        except Exception as format_error:
+            print(f"Warning: Error in format_forecast_data: {str(format_error)}")
+            # Fallback formatting if the custom formatter fails
+            formatted_data = []
+            for row in result:
+                data_point = {}
+                for key in row.keys():
+                    try:
+                        value = getattr(row, key)
+                        if key == "target_time":
+                            # Extract date part if it's a string with timestamp format
+                            if isinstance(value, str):
+                                date_str = value.split()[0]  # Get "2025-05-02" from the timestamp
+                                data_point[key] = format_forecast_date(date_str)
+                            elif value:  # If it's a datetime object
+                                data_point[key] = value.strftime("%B %d").replace(" 0", " ")
+                            else:
+                                data_point[key] = None
+                        elif isinstance(value, (int, float)):
+                            data_point[key] = value
+                        elif isinstance(value, str):
+                            data_point[key] = value
+                        elif value is None:
+                            data_point[key] = None
+                        else:
+                            data_point[key] = str(value)
+                    except Exception:
                         data_point[key] = None
-                    else:
-                        data_point[key] = str(value)
-                except Exception:
-                    data_point[key] = None
-            formatted_data.append(data_point)
+                formatted_data.append(data_point)
         
         return formatted_data
     except Exception as e:

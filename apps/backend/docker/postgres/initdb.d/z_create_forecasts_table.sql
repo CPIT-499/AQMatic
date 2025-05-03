@@ -1,4 +1,3 @@
--- This file has been renamed to z_create_forecasts_table.sql to ensure it runs after db_dump.sql
 
 -- Create forecasts table for air quality predictions
 CREATE TABLE IF NOT EXISTS forecasts (

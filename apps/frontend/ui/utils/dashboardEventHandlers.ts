@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { useRouter } from "next/navigation";
-import { GAS_CONFIG, TimeRangeOption } from '@/data/dashboardData';
+import { GAS_CONFIG, TimeRangeOption } from '@/data/data_if_no_data';
 
 interface DashboardEventHandlersProps {
   selectedGases: string[];

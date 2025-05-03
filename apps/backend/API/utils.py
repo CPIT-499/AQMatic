@@ -37,6 +37,87 @@ def format_hourly_measurement_data(data):
     formatted_data = list(time_grouped_data.values())
     return formatted_data
 
+def format_forecast_date(date_string):
+    """
+    Convert date string from 'YYYY-MM-DD' format to 'Month DD' format.
+    
+    Args:
+        date_string: String date in format '2025-05-02'
+        
+    Returns:
+        String date in format 'May 02'
+        
+    Example:
+        '2025-05-02' -> 'May 02'
+    """
+    try:
+        # Parse the input date string
+        date_obj = datetime.strptime(date_string, '%Y-%m-%d')
+        
+        # Format to 'Month DD' format
+        # %b gives abbreviated month name, %d gives zero-padded day
+        formatted_date = date_obj.strftime('%b %d')
+        
+        # To get full month name instead of abbreviated, use:
+        formatted_date = date_obj.strftime('%B %d')
+        
+        # Remove leading zero from day number if present
+        if formatted_date[formatted_date.rfind(' ')+1] == '0':
+            formatted_date = formatted_date[:formatted_date.rfind(' ')+1] + formatted_date[formatted_date.rfind(' ')+2:]
+            
+        return formatted_date
+    except Exception as e:
+        print(f"Error formatting date '{date_string}': {str(e)}")
+        return date_string  # Return original string if there's an error
+
+def format_forecast_data(data):
+    formatted_data = []
+    
+    # Group forecasts by time to consolidate readings from the same timestamp
+    time_grouped_data = {}
+    
+    for row in data:
+        # Extract relevant data from the database row
+        target_time = row.target_time
+        attribute_name = row.attribute_name
+        value = row.value
+        
+        if value is None:
+            continue  # Skip null values
+        
+        # Handle timestamp format "2025-05-02 00:00:00+00:00"
+        if isinstance(target_time, str):
+            # Extract just the date part and format it
+            date_str = target_time.split()[0]  # Get "2025-05-02" from the timestamp
+            time_key = format_forecast_date(date_str)
+        else:
+            # If it's already a datetime object
+            time_key = target_time.strftime("%B %d")
+            # Remove leading zero from day number if present
+            if time_key[time_key.rfind(' ')+1] == '0':
+                time_key = time_key[:time_key.rfind(' ')+1] + time_key[time_key.rfind(' ')+2:]
+        
+        if not time_key:
+            continue  # Skip entries with invalid time
+            
+        # Initialize the dictionary for this timestamp if not exists
+        if time_key not in time_grouped_data:
+            time_grouped_data[time_key] = {"date": time_key}
+            
+        # Only add non-null values
+        if value is not None:
+            try:
+                # Convert to float if possible
+                float_value = float(value)
+                time_grouped_data[time_key][attribute_name] = f"{float_value:.2f}"
+            except (ValueError, TypeError):
+                # If conversion fails, use the original value
+                time_grouped_data[time_key][attribute_name] = value
+    
+    # Convert dictionary to list
+    formatted_data = list(time_grouped_data.values())
+    return formatted_data
+
 AQI_BREAKPOINTS = {
     "pm2.5": [
         (0.0, 12.0, 0, 50),

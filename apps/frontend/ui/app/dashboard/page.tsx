@@ -34,7 +34,7 @@ import {
   getAQIStatus,
   formatTrendPercent,
   ChartDataPoint
-} from "@/data/dashboardData";
+} from "@/data/data_if_no_data";
 
 // UI Components imports
 import Navbar from "@/components/Navbar/navbar";

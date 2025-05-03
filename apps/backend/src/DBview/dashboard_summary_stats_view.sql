@@ -88,9 +88,9 @@ stations_data AS (
     FROM sensors s
     JOIN organizations o ON s.organization_id = o.organization_id
     WHERE EXISTS (
-        SELECT 1 FROM measurements m 
+        SELECT 1 FROM measurements m -- only include sensors with recent measurements
         WHERE m.sensor_id = s.sensor_id 
-        AND m.measurement_time >= CURRENT_DATE - INTERVAL '1 day'
+        AND m.measurement_time >= CURRENT_DATE - INTERVAL '1 day' -- within the last day
     )
     GROUP BY o.organization_id, o.role
 )

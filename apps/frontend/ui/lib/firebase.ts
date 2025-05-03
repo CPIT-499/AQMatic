@@ -36,4 +36,4 @@ if (process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_USE_FIREBA
   connectAuthEmulator(auth, 'http://localhost:9099');
 }
 
-export { auth, firebaseApp, analytics }; 
+export { auth, firebaseApp, analytics };

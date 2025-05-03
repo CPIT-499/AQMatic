@@ -1,7 +1,7 @@
 CREATE OR REPLACE VIEW forecast_summary_view AS
 WITH forecast_data AS (
     SELECT 
-        f.target_time,
+        DATE_TRUNC('day', f.target_time) as target_time,
         ma.attribute_name,
         f.predicted_value as value,
         ma.unit,

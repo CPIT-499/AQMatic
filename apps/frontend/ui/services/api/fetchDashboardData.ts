@@ -1,7 +1,7 @@
 import { fetchHourlyMeasurementData } from './fetchHourlyMeasurementData';
 import { fetchMapData } from './fetchMapData';
 import { fetchSummaryStats } from './fetchSummaryStats';
-import { fetchForecastSummaryData } from './fetchForecastSummaryData'; // Add this import
+import { fetchForecastSummaryData } from './fetchForecastSummaryData'; 
 
 /**
  * Fetches all dashboard data (chart, map, summary, forecast)
@@ -10,8 +10,7 @@ import { fetchForecastSummaryData } from './fetchForecastSummaryData'; // Add th
 export async function fetchDashboardData(mode: 'public' | 'organization', token: string | null) {
   console.log(`fetchDashboardData called with mode: ${mode}, token present: ${!!token}`);
   try {
-    // Fetch all data in parallel, passing mode and token to each underlying fetcher
-    // Now including forecast data
+    // Fetch all data in parallel, 
     const [chartData, mapData, summaryStats, forecastData] = await Promise.all([
       fetchHourlyMeasurementData(mode, token),
       fetchMapData(mode, token),
@@ -23,7 +22,7 @@ export async function fetchDashboardData(mode: 'public' | 'organization', token:
   } catch (error: any) {
     console.error(`Error fetching ${mode} dashboard data:`, error);
     
-    // Propagate the error to be handled by the component
+    // when an error occurs
     return {
       chartData: [],
       mapData: [],

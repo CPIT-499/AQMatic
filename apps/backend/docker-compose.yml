@@ -1,12 +1,13 @@
 services:
 #this is for the database service postgres
   db:
-    image: postgres:latest
+    build:
+      context: ./docker/postgres
+      dockerfile: Dockerfile
     container_name: postgres
     env_file: .env  # Load variables from .env
     volumes:
       - my_postgres_data:/var/lib/postgresql/data
-      - ./docker/postgres/initdb.d:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     networks:
@@ -23,6 +24,7 @@ services:
     environment:
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
       - PYTHONPATH=/opt/airflow
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_SCHEMA=public  # Use public schema to match scheduler
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
@@ -34,8 +36,7 @@ services:
       - my_network
     depends_on:
       - db
-      - airflow-scheduler
-    command: bash -c "airflow db init && airflow users create --username $AIRFLOW_ADMIN_USER --firstname Admin --lastname User --role Admin --email admin@example.com --password $AIRFLOW_ADMIN_PASSWORD && airflow webserver"
+    command: bash -c "airflow webserver"
 
 #======================================================================================================
 #this is for the airflow scheduler service
@@ -47,6 +48,7 @@ services:
     env_file: .env  # Share the same .env variables
     environment:
       - PYTHONPATH=/opt/airflow
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_SCHEMA=public  # Force using public schema for now
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
@@ -56,7 +58,13 @@ services:
       - my_network
     depends_on:
       - db
-    command: bash -c "airflow db init && airflow scheduler"
+    command: >
+      bash -c "
+      sleep 15 &&
+      airflow db init &&
+      airflow users create -r Admin -u admin -p admin -f Admin -l User -e admin@example.com &&
+      airflow connections create-default-connections -v &&
+      airflow scheduler"
 
 #======================================================================================================
 #this is for the python app service 
@@ -78,9 +86,8 @@ services:
 #this is for the fastapi service
   fastapi:
     build:
-      context: .
+      context: . 
       dockerfile: ./docker/fastapi/Dockerfile
-    container_name: fastapi  # Add this line
     volumes:
       - ./API:/app/API
       - ./requirements.txt:/app/requirements.txt
