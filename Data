@@ -1,0 +1,108 @@
+00:43:16.526 -> {"timestamp":382,"temperature":30.49,"humidity":25.78,"aqi":1,"tvoc":36,"eco2":427,"latitude":21.499802,"longitude":39.239182}
+00:43:17.804 -> {"timestamp":384,"temperature":30.53,"humidity":25.91,"aqi":1,"tvoc":64,"eco2":486,"latitude":21.499792,"longitude":39.239243}
+00:43:19.069 -> {"timestamp":385,"temperature":30.53,"humidity":25.86,"aqi":2,"tvoc":112,"eco2":569,"latitude":21.499783,"longitude":39.239311}
+00:43:20.324 -> {"timestamp":386,"temperature":30.57,"humidity":25.85,"aqi":2,"tvoc":83,"eco2":520,"latitude":21.499783,"longitude":39.239311}
+00:43:21.579 -> {"timestamp":387,"temperature":30.60,"humidity":25.82,"aqi":1,"tvoc":55,"eco2":467,"latitude":21.499817,"longitude":39.239433}
+00:43:22.862 -> {"timestamp":389,"temperature":30.61,"humidity":25.75,"aqi":1,"tvoc":37,"eco2":430,"latitude":21.499809,"longitude":39.239494}
+00:43:24.114 -> {"timestamp":390,"temperature":30.65,"humidity":25.73,"aqi":1,"tvoc":37,"eco2":430,"latitude":21.499809,"longitude":39.239494}
+00:43:25.399 -> {"timestamp":391,"temperature":30.64,"humidity":25.63,"aqi":1,"tvoc":32,"eco2":418,"latitude":21.499868,"longitude":39.239540}
+00:43:26.654 -> {"timestamp":393,"temperature":30.64,"humidity":25.58,"aqi":1,"tvoc":32,"eco2":419,"latitude":21.499907,"longitude":39.239555}
+00:43:27.907 -> {"timestamp":394,"temperature":30.65,"humidity":25.55,"aqi":1,"tvoc":24,"eco2":400,"latitude":21.499966,"longitude":39.239559}
+00:43:29.192 -> {"timestamp":395,"temperature":30.69,"humidity":25.56,"aqi":1,"tvoc":38,"eco2":431,"latitude":21.500032,"longitude":39.239555}
+00:43:30.440 -> {"timestamp":396,"temperature":30.71,"humidity":25.63,"aqi":1,"tvoc":42,"eco2":440,"latitude":21.500147,"longitude":39.239567}
+00:43:31.697 -> {"timestamp":398,"temperature":30.72,"humidity":25.55,"aqi":1,"tvoc":29,"eco2":412,"latitude":21.500214,"longitude":39.239578}
+00:43:32.949 -> {"timestamp":399,"temperature":30.61,"humidity":25.43,"aqi":1,"tvoc":19,"eco2":400,"latitude":21.500395,"longitude":39.239586}
+00:43:34.236 -> {"timestamp":400,"temperature":30.54,"humidity":25.38,"aqi":1,"tvoc":22,"eco2":400,"latitude":21.500395,"longitude":39.239586}
+00:43:35.490 -> {"timestamp":401,"temperature":30.59,"humidity":25.35,"aqi":1,"tvoc":20,"eco2":400,"latitude":21.500597,"longitude":39.239582}
+00:43:36.742 -> {"timestamp":403,"temperature":30.64,"humidity":25.34,"aqi":1,"tvoc":21,"eco2":400,"latitude":21.500711,"longitude":39.239578}
+00:43:38.023 -> {"timestamp":404,"temperature":30.66,"humidity":25.32,"aqi":1,"tvoc":14,"eco2":400,"latitude":21.500937,"longitude":39.239582}
+00:43:39.273 -> {"timestamp":405,"temperature":30.68,"humidity":25.33,"aqi":1,"tvoc":21,"eco2":400,"latitude":21.500937,"longitude":39.239582}
+00:43:40.522 -> {"timestamp":406,"temperature":30.67,"humidity":25.30,"aqi":1,"tvoc":19,"eco2":400,"latitude":21.501181,"longitude":39.239590}
+00:43:41.808 -> {"timestamp":408,"temperature":30.68,"humidity":25.28,"aqi":1,"tvoc":24,"eco2":401,"latitude":21.501299,"longitude":39.239590}
+00:43:43.061 -> {"timestamp":409,"temperature":30.70,"humidity":25.28,"aqi":1,"tvoc":26,"eco2":405,"latitude":21.501417,"longitude":39.239590}
+00:43:44.330 -> {"timestamp":410,"temperature":30.71,"humidity":25.32,"aqi":1,"tvoc":31,"eco2":416,"latitude":21.501417,"longitude":39.239590}
+00:43:45.609 -> {"timestamp":411,"temperature":30.77,"humidity":25.30,"aqi":1,"tvoc":31,"eco2":416,"latitude":21.501749,"longitude":39.239586}
+00:43:46.868 -> {"timestamp":413,"temperature":30.80,"humidity":25.41,"aqi":1,"tvoc":32,"eco2":418,"latitude":21.501951,"longitude":39.239590}
+00:43:48.123 -> {"timestamp":414,"temperature":30.81,"humidity":25.44,"aqi":2,"tvoc":79,"eco2":512,"latitude":21.501951,"longitude":39.239590}
+00:43:49.376 -> {"timestamp":415,"temperature":30.81,"humidity":25.47,"aqi":1,"tvoc":64,"eco2":485,"latitude":21.502136,"longitude":39.239594}
+00:43:50.629 -> {"timestamp":417,"temperature":30.78,"humidity":25.45,"aqi":1,"tvoc":62,"eco2":482,"latitude":21.502214,"longitude":39.239594}
+00:43:51.917 -> {"timestamp":418,"temperature":30.75,"humidity":25.39,"aqi":2,"tvoc":74,"eco2":504,"latitude":21.502253,"longitude":39.239590}
+00:43:53.171 -> {"timestamp":419,"temperature":30.72,"humidity":25.37,"aqi":1,"tvoc":61,"eco2":478,"latitude":21.502253,"longitude":39.239590}
+00:43:54.420 -> {"timestamp":420,"temperature":30.75,"humidity":25.45,"aqi":2,"tvoc":99,"eco2":548,"latitude":21.502375,"longitude":39.239590}
+00:43:55.676 -> {"timestamp":422,"temperature":30.75,"humidity":25.43,"aqi":2,"tvoc":135,"eco2":605,"latitude":21.502441,"longitude":39.239594}
+00:43:56.963 -> {"timestamp":423,"temperature":30.75,"humidity":25.41,"aqi":2,"tvoc":146,"eco2":621,"latitude":21.502602,"longitude":39.239601}
+00:43:58.220 -> {"timestamp":424,"temperature":30.77,"humidity":25.49,"aqi":2,"tvoc":131,"eco2":599,"latitude":21.502602,"longitude":39.239601}
+00:43:59.474 -> {"timestamp":425,"temperature":30.78,"humidity":25.52,"aqi":2,"tvoc":122,"eco2":585,"latitude":21.502789,"longitude":39.239628}
+00:44:00.761 -> {"timestamp":427,"temperature":30.80,"humidity":25.42,"aqi":2,"tvoc":105,"eco2":557,"latitude":21.502888,"longitude":39.239635}
+00:44:02.013 -> {"timestamp":428,"temperature":30.78,"humidity":25.50,"aqi":2,"tvoc":119,"eco2":580,"latitude":21.502987,"longitude":39.239639}
+00:44:03.268 -> {"timestamp":429,"temperature":30.80,"humidity":25.54,"aqi":2,"tvoc":136,"eco2":606,"latitude":21.502987,"longitude":39.239639}
+00:44:04.554 -> {"timestamp":430,"temperature":30.77,"humidity":25.51,"aqi":2,"tvoc":148,"eco2":624,"latitude":21.503292,"longitude":39.239639}
+00:44:05.808 -> {"timestamp":432,"temperature":30.74,"humidity":25.51,"aqi":2,"tvoc":129,"eco2":596,"latitude":21.503401,"longitude":39.239647}
+00:44:07.093 -> {"timestamp":433,"temperature":30.65,"humidity":25.40,"aqi":2,"tvoc":94,"eco2":539,"latitude":21.503511,"longitude":39.239647}
+00:44:08.346 -> {"timestamp":434,"temperature":30.67,"humidity":25.44,"aqi":2,"tvoc":92,"eco2":535,"latitude":21.503511,"longitude":39.239647}
+00:44:09.601 -> {"timestamp":435,"temperature":30.72,"humidity":25.57,"aqi":2,"tvoc":108,"eco2":562,"latitude":21.503853,"longitude":39.239666}
+00:44:10.853 -> {"timestamp":437,"temperature":30.72,"humidity":25.53,"aqi":2,"tvoc":138,"eco2":609,"latitude":21.504089,"longitude":39.239666}
+00:44:12.139 -> {"timestamp":438,"temperature":30.70,"humidity":25.54,"aqi":2,"tvoc":122,"eco2":585,"latitude":21.504089,"longitude":39.239666}
+00:44:13.394 -> {"timestamp":439,"temperature":30.71,"humidity":25.59,"aqi":2,"tvoc":152,"eco2":630,"latitude":21.504343,"longitude":39.239666}
+
+
+
+
+00:46:51.378 -> {"timestamp":597,"temperature":30.39,"humidity":25.10,"aqi":1,"tvoc":35,"eco2":426,"latitude":21.504681,"longitude":39.246983}
+00:46:52.632 -> {"timestamp":598,"temperature":30.46,"humidity":25.17,"aqi":2,"tvoc":67,"eco2":491,"latitude":21.504644,"longitude":39.246796}
+00:46:53.886 -> {"timestamp":600,"temperature":30.48,"humidity":25.17,"aqi":2,"tvoc":70,"eco2":497,"latitude":21.504635,"longitude":39.246643}
+00:46:55.172 -> {"timestamp":601,"temperature":30.51,"humidity":25.21,"aqi":2,"tvoc":91,"eco2":534,"latitude":21.504635,"longitude":39.246643}
+00:46:56.433 -> {"timestamp":602,"temperature":30.52,"humidity":25.21,"aqi":2,"tvoc":98,"eco2":545,"latitude":21.504629,"longitude":39.246452}
+00:46:57.686 -> {"timestamp":604,"temperature":30.55,"humidity":25.28,"aqi":2,"tvoc":74,"eco2":503,"latitude":21.504625,"longitude":39.246365}
+00:46:58.939 -> {"timestamp":605,"temperature":30.43,"humidity":25.18,"aqi":2,"tvoc":79,"eco2":513,"latitude":21.504627,"longitude":39.246273}
+00:47:00.226 -> {"timestamp":606,"temperature":30.42,"humidity":25.14,"aqi":2,"tvoc":80,"eco2":515,"latitude":21.504620,"longitude":39.246181}
+00:47:01.480 -> {"timestamp":607,"temperature":30.45,"humidity":25.19,"aqi":2,"tvoc":74,"eco2":504,"latitude":21.504610,"longitude":39.245998}
+00:47:02.733 -> {"timestamp":609,"temperature":30.49,"humidity":25.20,"aqi":2,"tvoc":79,"eco2":514,"latitude":21.504604,"longitude":39.245914}
+00:47:04.019 -> {"timestamp":610,"temperature":30.54,"humidity":25.24,"aqi":2,"tvoc":86,"eco2":525,"latitude":21.504614,"longitude":39.245758}
+00:47:05.271 -> {"timestamp":611,"temperature":30.58,"humidity":25.36,"aqi":2,"tvoc":90,"eco2":532,"latitude":21.504614,"longitude":39.245758}
+00:47:06.525 -> {"timestamp":612,"temperature":30.59,"humidity":25.32,"aqi":2,"tvoc":140,"eco2":612,"latitude":21.504606,"longitude":39.245644}
+00:47:07.812 -> {"timestamp":614,"temperature":30.63,"humidity":25.32,"aqi":2,"tvoc":101,"eco2":552,"latitude":21.504604,"longitude":39.245602}
+00:47:09.068 -> {"timestamp":615,"temperature":30.67,"humidity":25.36,"aqi":2,"tvoc":88,"eco2":529,"latitude":21.504597,"longitude":39.245586}
+00:47:10.321 -> {"timestamp":616,"temperature":30.68,"humidity":25.36,"aqi":2,"tvoc":103,"eco2":554,"latitude":21.504597,"longitude":39.245586}
+00:47:11.606 -> {"timestamp":617,"temperature":30.71,"humidity":25.40,"aqi":2,"tvoc":83,"eco2":520,"latitude":21.504574,"longitude":39.245586}
+00:47:12.858 -> {"timestamp":619,"temperature":30.75,"humidity":25.46,"aqi":2,"tvoc":113,"eco2":571,"latitude":21.504581,"longitude":39.245598}
+00:47:14.109 -> {"timestamp":620,"temperature":30.78,"humidity":25.37,"aqi":2,"tvoc":136,"eco2":606,"latitude":21.504581,"longitude":39.245598}
+00:47:15.397 -> {"timestamp":621,"temperature":30.79,"humidity":25.33,"aqi":2,"tvoc":88,"eco2":529,"latitude":21.504576,"longitude":39.245613}
+00:47:16.650 -> {"timestamp":623,"temperature":30.82,"humidity":25.22,"aqi":2,"tvoc":76,"eco2":508,"latitude":21.504578,"longitude":39.245625}
+00:47:17.901 -> {"timestamp":624,"temperature":30.81,"humidity":25.17,"aqi":1,"tvoc":63,"eco2":484,"latitude":21.504576,"longitude":39.245625}
+00:47:19.187 -> {"timestamp":625,"temperature":30.82,"humidity":25.09,"aqi":1,"tvoc":51,"eco2":459,"latitude":21.504576,"longitude":39.245625}
+00:47:20.441 -> {"timestamp":626,"temperature":30.88,"humidity":25.09,"aqi":1,"tvoc":54,"eco2":466,"latitude":21.504576,"longitude":39.245678}
+00:47:21.724 -> {"timestamp":628,"temperature":30.90,"humidity":25.09,"aqi":1,"tvoc":38,"eco2":431,"latitude":21.504576,"longitude":39.245701}
+00:47:22.979 -> {"timestamp":629,"temperature":30.92,"humidity":25.03,"aqi":1,"tvoc":52,"eco2":460,"latitude":21.504576,"longitude":39.245712}
+00:47:24.233 -> {"timestamp":630,"temperature":30.93,"humidity":24.97,"aqi":1,"tvoc":36,"eco2":428,"latitude":21.504576,"longitude":39.245712}
+00:47:25.485 -> {"timestamp":631,"temperature":30.98,"humidity":24.98,"aqi":1,"tvoc":54,"eco2":465,"latitude":21.504543,"longitude":39.245708}
+00:47:26.772 -> {"timestamp":633,"temperature":31.01,"humidity":25.00,"aqi":1,"tvoc":57,"eco2":471,"latitude":21.504539,"longitude":39.245716}
+00:47:28.025 -> {"timestamp":634,"temperature":31.06,"humidity":25.02,"aqi":1,"tvoc":60,"eco2":477,"latitude":21.504538,"longitude":39.245716}
+00:47:29.313 -> {"timestamp":635,"temperature":31.06,"humidity":24.98,"aqi":1,"tvoc":50,"eco2":457,"latitude":21.504538,"longitude":39.245716}
+00:47:30.568 -> {"timestamp":636,"temperature":31.06,"humidity":24.93,"aqi":1,"tvoc":26,"eco2":405,"latitude":21.504530,"longitude":39.245712}
+00:47:31.823 -> {"timestamp":638,"temperature":31.10,"humidity":24.93,"aqi":1,"tvoc":25,"eco2":402,"latitude":21.504536,"longitude":39.245712}
+00:47:33.111 -> {"timestamp":639,"temperature":31.14,"humidity":24.94,"aqi":1,"tvoc":32,"eco2":418,"latitude":21.504534,"longitude":39.245712}
+00:47:34.363 -> {"timestamp":640,"temperature":31.17,"humidity":24.95,"aqi":1,"tvoc":43,"eco2":442,"latitude":21.504545,"longitude":39.245708}
+00:47:35.616 -> {"timestamp":641,"temperature":31.16,"humidity":24.90,"aqi":1,"tvoc":46,"eco2":449,"latitude":21.504557,"longitude":39.245701}
+00:47:36.868 -> {"timestamp":643,"temperature":31.08,"humidity":24.77,"aqi":1,"tvoc":11,"eco2":400,"latitude":21.504564,"longitude":39.245689}
+00:47:38.156 -> {"timestamp":644,"temperature":31.09,"humidity":24.72,"aqi":1,"tvoc":1,"eco2":400,"latitude":21.504564,"longitude":39.245689}
+00:47:39.411 -> {"timestamp":645,"temperature":31.13,"humidity":24.71,"aqi":1,"tvoc":1,"eco2":400,"latitude":21.504568,"longitude":39.245678}
+00:47:40.664 -> {"timestamp":647,"temperature":31.14,"humidity":24.66,"aqi":1,"tvoc":4,"eco2":400,"latitude":21.504580,"longitude":39.245670}
+00:47:41.919 -> {"timestamp":648,"temperature":31.15,"humidity":24.62,"aqi":1,"tvoc":6,"eco2":400,"latitude":21.504599,"longitude":39.245663}
+00:47:43.210 -> {"timestamp":649,"temperature":31.15,"humidity":24.60,"aqi":1,"tvoc":13,"eco2":400,"latitude":21.504599,"longitude":39.245663}
+00:47:44.462 -> {"timestamp":650,"temperature":31.21,"humidity":24.66,"aqi":1,"tvoc":22,"eco2":400,"latitude":21.504622,"longitude":39.245663}
+00:47:45.710 -> {"timestamp":652,"temperature":31.26,"humidity":24.79,"aqi":1,"tvoc":46,"eco2":450,"latitude":21.504635,"longitude":39.245659}
+00:47:46.993 -> {"timestamp":653,"temperature":31.29,"humidity":24.93,"aqi":2,"tvoc":76,"eco2":507,"latitude":21.504641,"longitude":39.245659}
+00:47:48.255 -> {"timestamp":654,"temperature":31.34,"humidity":25.06,"aqi":2,"tvoc":125,"eco2":589,"latitude":21.504641,"longitude":39.245659}
+00:47:49.507 -> {"timestamp":655,"temperature":31.36,"humidity":25.15,"aqi":2,"tvoc":205,"eco2":700,"latitude":21.504637,"longitude":39.245655}
+00:47:50.762 -> {"timestamp":657,"temperature":31.41,"humidity":25.26,"aqi":3,"tvoc":220,"eco2":718,"latitude":21.504646,"longitude":39.245655}
+00:47:52.037 -> {"timestamp":658,"temperature":31.42,"humidity":25.33,"aqi":3,"tvoc":235,"eco2":735,"latitude":21.504650,"longitude":39.245655}
+00:47:53.291 -> {"timestamp":659,"temperature":31.46,"humidity":25.36,"aqi":3,"tvoc":240,"eco2":741,"latitude":21.504650,"longitude":39.245655}
+
+
+
+
+
+
+
+
