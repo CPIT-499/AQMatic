@@ -3,6 +3,9 @@ from fastapi.testclient import TestClient
 from .API import app
 import time
 
+
+
+# to run this test, use the command: docker exec -it backend-fastapi-1 python -m unittest API.test_api
 class TestAQMaticAPI(unittest.TestCase):
     """Simple test cases for the AQMatic API"""
 
