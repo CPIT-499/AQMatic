@@ -13,8 +13,7 @@ from .database import get_db
 from .endpoints import (
     get_hourly_measurement_summary_handler,
     get_map_data_handler,
-    get_org_summary_stats_handler,
-    get_public_summary_stats_handler,
+    get_summary_stats_handler,
     get_forecast_summary_handler# New import
 )
 from .services.firebase_admin import initialize_firebase_admin, set_organization_claim  # Import the initialization function
@@ -184,8 +183,6 @@ async def get_current_user(request: Request):
 
 
 
-
-
 ####### data retrieval endpoints ########
 @app.get("/hourly_measurement_summary_View_graph")
 async def get_hourly_measurement_summary(
@@ -239,10 +236,7 @@ async def get_summary_stats(
     organization_id = current_user.get('organization_id') if current_user else None
     
     try:
-        if organization_id:
-            return get_org_summary_stats_handler(organization_id, db)
-        else:
-            return get_public_summary_stats_handler(db)
+        return get_summary_stats_handler(db, organization_id)
     except Exception as e:
         print(f"Error in get_summary_stats: {str(e)}")
         raise HTTPException(
@@ -250,35 +244,6 @@ async def get_summary_stats(
             detail="Failed to fetch summary statistics"
         )
 
-# Location-specific AQI data route
-@app.get("/aqi_data/{location_id}")
-async def get_aqi_data(
-    location_id: int,
-    organization_id: Optional[int] = None,
-    db: Session = Depends(get_db)
-):
-    """
-    Get AQI data for a specific location
-    Filtered by organization_id if provided
-    """
-    try:
-        query = """
-            SELECT a.*, l.organization_id
-            FROM aqi_data a
-            JOIN locations l ON a.location_id = l.id
-            WHERE a.location_id = :location_id
-        """
-        params = {"location_id": location_id}
-        
-        if organization_id is not None:
-            query += " AND l.organization_id = :organization_id"
-            params["organization_id"] = organization_id
-            
-        result = db.execute(text(query), params).fetchall()
-        return [dict(row) for row in result]
-    except Exception as e:
-        print(f"Error in get_aqi_data: {str(e)}")
-        return []
 
 @app.get("/forecast_summary")
 async def get_forecast_summary(
