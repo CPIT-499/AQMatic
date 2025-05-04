@@ -1,0 +1,42 @@
+#include <SPIFFS.h>
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+  Serial.println("\n🔧 Starting SPIFFS file dump loop...");
+
+  if (!SPIFFS.begin(true)) {
+    Serial.println("❌ SPIFFS Mount Failed!");
+    while (true);  // halt forever
+  }
+}
+
+void loop() {
+  unsigned long currentTimeSec = millis() / 1000;
+  Serial.printf("\n⏰ [%lu sec] Starting file dump...\n", currentTimeSec);
+
+  File file = SPIFFS.open("/data.csv", FILE_READ);
+  if (!file) {
+    Serial.println("❌ Failed to open /data.csv for reading");
+    delay(5000);  // wait 5 sec, then try again
+    return;
+  }
+
+  int lineCount = 0;
+
+  while (file.available()) {
+    String line = file.readStringUntil('\n');
+    Serial.println(line);
+    lineCount++;
+
+    if (lineCount % 2 == 0) {
+      unsigned long batchTimeSec = millis() / 1000;
+      Serial.printf("\n\n", batchTimeSec);
+      delay(3000);
+    }
+  }
+
+  file.close();
+  Serial.printf("\n✅ [%lu sec] Done dumping file. Restarting in 5 seconds...\n\n", millis() / 1000);
+  delay(5000);  // wait 5 sec before re-dumping
+}
