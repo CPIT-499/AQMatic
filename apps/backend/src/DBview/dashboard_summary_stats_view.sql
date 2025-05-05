@@ -30,17 +30,14 @@ previous_data AS (
     AND ma.attribute_name IN ('pm2.5', 'pm10', 'o3', 'no2', 'so2', 'co')
 ),
 stations AS (
-    --  station count
+    -- station count
     SELECT 
         o.organization_id,
-        COUNT(DISTINCT s.sensor_id) as station_count
-    FROM sensors s
-    JOIN organizations o ON s.organization_id = o.organization_id
-    WHERE EXISTS (
-        SELECT 1 FROM measurements m
-        WHERE m.sensor_id = s.sensor_id 
-        AND m.measurement_time >= (CURRENT_DATE - INTERVAL '1 day')::TIMESTAMP
-    )
+        COUNT(DISTINCT l.location_id) as station_count
+    FROM locations l
+    JOIN measurements m ON l.location_id = m.location_id
+    JOIN organizations o ON m.organization_id = o.organization_id
+    WHERE m.measurement_time >= (CURRENT_DATE - INTERVAL '1 day')::TIMESTAMP
     GROUP BY o.organization_id
 )
 SELECT 
@@ -48,12 +45,12 @@ SELECT
     o.role,
     
     -- Current pollutant values
-    MAX(CASE WHEN cd.attribute_name = 'pm2.5' AND cd.rn = 1 THEN cd.value END) as pm25_current,
-    MAX(CASE WHEN cd.attribute_name = 'pm10' AND cd.rn = 1 THEN cd.value END) as pm10_current,
-    MAX(CASE WHEN cd.attribute_name = 'o3' AND cd.rn = 1 THEN cd.value END) as o3_current,
-    MAX(CASE WHEN cd.attribute_name = 'no2' AND cd.rn = 1 THEN cd.value END) as no2_current,
-    MAX(CASE WHEN cd.attribute_name = 'so2' AND cd.rn = 1 THEN cd.value END) as so2_current,
-    MAX(CASE WHEN cd.attribute_name = 'co' AND cd.rn = 1 THEN cd.value END) as co_current,
+    AVG(CASE WHEN cd.attribute_name = 'pm2.5' AND cd.rn = 1 THEN cd.value END) as pm25_current,
+    AVG(CASE WHEN cd.attribute_name = 'pm10' AND cd.rn = 1 THEN cd.value END) as pm10_current,
+    AVG(CASE WHEN cd.attribute_name = 'o3' AND cd.rn = 1 THEN cd.value END) as o3_current,
+    AVG(CASE WHEN cd.attribute_name = 'no2' AND cd.rn = 1 THEN cd.value END) as no2_current,
+    AVG(CASE WHEN cd.attribute_name = 'so2' AND cd.rn = 1 THEN cd.value END) as so2_current,
+    AVG(CASE WHEN cd.attribute_name = 'co' AND cd.rn = 1 THEN cd.value END) as co_current,
     
     -- Previous day values (for trend calculation)
     (SELECT AVG(pd.value) FROM previous_data pd 

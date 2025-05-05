@@ -3,6 +3,9 @@ from datetime import datetime
 def format_hourly_measurement_data(data):
     formatted_data = []
     
+
+    # Data is list
+
     # Group measurements by time to consolidate readings from the same timestamp
     time_grouped_data = {}
     
@@ -12,10 +15,11 @@ def format_hourly_measurement_data(data):
         attribute_name = row.attribute_name
         value = row.value
         
-        if value is None:
+        if value is None or value == 0:
             continue  # Skip null values
             
         time_key = measurement_time.strftime("%b %d") if measurement_time else None
+        # Time key: something like -> Apr 09
         if not time_key:
             continue  # Skip entries with invalid time
             
@@ -36,6 +40,54 @@ def format_hourly_measurement_data(data):
     # Convert dictionary to list
     formatted_data = list(time_grouped_data.values())
     return formatted_data
+
+
+def format_map_data(rows):
+    """
+    Format map data for visualization, excluding fields with zero values.
+    """
+    formatted_data = []
+
+    for row in rows:
+        data = {
+            "location_id": row.location_id,
+            "latitude": float(row.latitude or 0.0),
+            "longitude": float(row.longitude or 0.0),
+            "city": row.city or "",
+            "region": row.region or "",
+            "country": row.country or "",
+            "organization_id": row.organization_id,
+        }
+
+        # Add only non-zero values
+        gas_fields = {
+            "pm25": float(row.pm25 or 0.0),
+            "pm10": float(row.pm10 or 0.0),
+            "o3": float(row.o3 or 0.0),
+            "no2": float(row.no2 or 0.0),
+            "so2": float(row.so2 or 0.0),
+            "co": float(row.co or 0.0),
+            "temperature": float(row.temperature or 0.0),
+            "humidity": float(row.humidity or 0.0),
+            "wind_speed": float(row.wind_speed or 0.0),
+            "co2": float(row.co2 or 0.0),
+            "methane": float(row.methane or 0.0),
+            "nitrous_oxide": float(row.nitrous_oxide or 0.0),
+            "fluorinated_gases": float(row.fluorinated_gases or 0.0),
+            "intensity": float(row.intensity or 0.0),
+        }
+
+        # Include only fields with non-zero values
+        for key, value in gas_fields.items():
+            if value != 0.0:
+                data[key] = value
+
+        formatted_data.append(data)
+
+    return formatted_data
+
+
+
 
 def format_forecast_date(date_string):
     """
@@ -118,6 +170,11 @@ def format_forecast_data(data):
     formatted_data = list(time_grouped_data.values())
     return formatted_data
 
+
+
+
+# ==================================== this is the AQI calculation part ====================================
+# source: https://github.com/HardjunoIndracahya/aqi-calculator
 AQI_BREAKPOINTS = {
     "pm2.5": [
         (0.0, 12.0, 0, 50),
@@ -216,195 +273,7 @@ def measure_aqi(pollutant_data):
 
     aqi_results["AQI"] = max_aqi if max_aqi > 0 else None # Return None if no valid AQI calculated
     return aqi_results
+# ==================================== this is the AQI calculation part ====================================
 
-def get_aqi_category(aqi):
-    """
-    Get AQI category and color based on AQI value.
-    
-    Parameters:
-        aqi: Air Quality Index value
-        
-    Returns:
-        dict with category name and color information
-    """
-    if aqi <= 50:
-        return {
-            "category": "Good",
-            "color": {"bg": "bg-green-100", "text": "text-green-800", "border": "border-green-200"}
-        }
-    elif aqi <= 100:
-        return {
-            "category": "Moderate",
-            "color": {"bg": "bg-yellow-100", "text": "text-yellow-800", "border": "border-yellow-200"}
-        }
-    elif aqi <= 150:
-        return {
-            "category": "Unhealthy for Sensitive Groups",
-            "color": {"bg": "bg-orange-100", "text": "text-orange-800", "border": "border-orange-200"}
-        }
-    elif aqi <= 200:
-        return {
-            "category": "Unhealthy", 
-            "color": {"bg": "bg-red-100", "text": "text-red-800", "border": "border-red-200"}
-        }
-    elif aqi <= 300:
-        return {
-            "category": "Very Unhealthy",
-            "color": {"bg": "bg-purple-100", "text": "text-purple-800", "border": "border-purple-200"}
-        }
-    else:
-        return {
-            "category": "Hazardous",
-            "color": {"bg": "bg-red-100", "text": "text-red-800", "border": "border-red-200"}
-        }
 
-def get_pm25_category(pm25):
-    """
-    Get PM2.5 category and color based on concentration value.
-    
-    Parameters:
-        pm25: PM2.5 concentration in μg/m³
-        
-    Returns:
-        dict with category name and color information
-    """
-    if pm25 <= 12:
-        return {
-            "category": "Good",
-            "color": {"bg": "bg-green-100", "text": "text-green-800", "border": "border-green-200"}
-        }
-    elif pm25 <= 35.4:
-        return {
-            "category": "Moderate",
-            "color": {"bg": "bg-yellow-100", "text": "text-yellow-800", "border": "border-yellow-200"}
-        }
-    elif pm25 <= 55.4:
-        return {
-            "category": "Unhealthy for Sensitive Groups",
-            "color": {"bg": "bg-orange-100", "text": "text-orange-800", "border": "border-orange-200"}
-        }
-    elif pm25 <= 150.4:
-        return {
-            "category": "Unhealthy",
-            "color": {"bg": "bg-red-100", "text": "text-red-800", "border": "border-red-200"}
-        }
-    elif pm25 <= 250.4:
-        return {
-            "category": "Very Unhealthy",
-            "color": {"bg": "bg-purple-100", "text": "text-purple-800", "border": "border-purple-200"}
-        }
-    else:
-        return {
-            "category": "Hazardous",
-            "color": {"bg": "bg-red-100", "text": "text-red-800", "border": "border-red-200"}
-        }
 
-def calculate_percent_change(current, previous):
-    """
-    Calculate percent change between two values.
-    
-    Parameters:
-        current: Current value
-        previous: Previous value
-        
-    Returns:
-        Percent change as a float, or 0 if previous value is 0
-    """
-    if previous is None or current is None:
-        return 0
-    
-    if previous == 0:
-        return 0 if current == 0 else 100  # Handle division by zero
-    
-    return ((current - previous) / previous) * 100
-
-def process_dashboard_stats(raw_data):
-    """
-    Process raw measurement data from dashboard_summary_stats_view into formatted stats.
-    
-    Parameters:
-        raw_data: Raw data from the SQL view with current and yesterday measurements
-        
-    Returns:
-        Processed dashboard statistics with AQI calculations and trends
-    """
-    # Initialize response dictionary
-    result = {}
-    
-    for row in raw_data:
-        # Create pollutant data dictionary for AQI calculation
-        pollutant_data = {
-            "pm2.5": row.pm25_current,
-            "pm10": row.pm10_current,
-            "o3": row.o3_current,
-            "no2": row.no2_current,
-            "so2": row.so2_current,
-            "co": row.co_current
-        }
-        
-        # Calculate AQI using existing measure_aqi function
-        aqi_result = measure_aqi(pollutant_data)
-        current_aqi = aqi_result.get("AQI", 0) or 0
-        
-        # Calculate yesterday's AQI for trend
-        yesterday_data = {
-            "pm2.5": row.pm25_yesterday,
-            "pm10": row.pm10_yesterday,
-            "o3": row.o3_yesterday,
-            "no2": row.no2_yesterday,
-            "so2": row.so2_yesterday,
-            "co": row.co_yesterday
-        }
-        yesterday_aqi = measure_aqi(yesterday_data).get("AQI", 0) or 0
-        
-        # Calculate trends
-        aqi_trend_pct = calculate_percent_change(current_aqi, yesterday_aqi)
-        pm25_trend_pct = calculate_percent_change(row.pm25_current, row.pm25_yesterday)
-        
-        # Get category information
-        aqi_category = get_aqi_category(current_aqi)
-        pm25_category = get_pm25_category(row.pm25_current or 0)
-        
-        # Build the response object
-        org_id = row.organization_id
-        result[org_id] = {
-            "role": row.role,
-            "current_aqi": {
-                "value": current_aqi,
-                "category": aqi_category["category"],
-                "color": aqi_category["color"],
-                "trend": {
-                    "value": f"{'+' if aqi_trend_pct > 0 else ''}{aqi_trend_pct:.1f}%",
-                    "label": "from yesterday"
-                }
-            },
-            "pm25_level": {
-                "value": round(row.pm25_current, 1) if row.pm25_current else 0,
-                "category": pm25_category["category"],
-                "color": pm25_category["color"],
-                "trend": {
-                    "value": f"{'+' if pm25_trend_pct > 0 else ''}{pm25_trend_pct:.1f}%",
-                    "label": "from yesterday"
-                }
-            },
-            "monitoring_stations": {
-                "value": row.monitoring_stations,
-                "category": "All Online" if row.monitoring_stations > 0 else "Offline",
-                "color": {"bg": "bg-green-100", "text": "text-green-800", "border": "border-green-200"},
-                "trend": {
-                    "value": "100%",
-                    "label": "uptime"
-                }
-            },
-            "alerts_today": {
-                "value": row.alerts_today,
-                "category": "Attention Needed" if row.alerts_today > 0 else "No Alerts",
-                "color": {"bg": "bg-red-100", "text": "text-red-800", "border": "border-red-200"} if row.alerts_today > 0 else {"bg": "bg-green-100", "text": "text-green-800", "border": "border-green-200"},
-                "trend": {
-                    "value": "",
-                    "label": "View details"
-                }
-            }
-        }
-    
-    return result

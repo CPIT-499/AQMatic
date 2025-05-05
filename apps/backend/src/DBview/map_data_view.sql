@@ -19,6 +19,7 @@ SELECT
     l.region,
     l.country,
     lm.organization_id,
+    o.role as organization_role,  -- Added organization role
     -- Air quality measurements
     AVG(CASE WHEN lm.attribute_name = 'pm2.5' THEN lm.value ELSE NULL END) as pm25,
     AVG(CASE WHEN lm.attribute_name = 'pm10' THEN lm.value ELSE NULL END) as pm10,
@@ -45,4 +46,13 @@ SELECT
     ) as intensity
 FROM locations l
 LEFT JOIN latest_measurements lm ON l.location_id = lm.location_id AND lm.rn = 1
-GROUP BY l.location_id, l.latitude, l.longitude, l.city, l.region, l.country, lm.organization_id;
+LEFT JOIN organizations o ON lm.organization_id = o.organization_id  -- Added join with organizations table
+GROUP BY 
+    l.location_id, 
+    l.latitude, 
+    l.longitude, 
+    l.city, 
+    l.region, 
+    l.country, 
+    lm.organization_id,
+    o.role;  -- Added to GROUP BY clause

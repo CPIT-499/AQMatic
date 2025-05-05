@@ -10,7 +10,7 @@ from pydantic import BaseModel
 import os
 
 from .database import get_db
-from .utils import format_hourly_measurement_data, measure_aqi, process_dashboard_stats, format_forecast_data
+from .utils import format_hourly_measurement_data, measure_aqi, format_forecast_data,format_map_data
 
 def get_hourly_measurement_summary_handler(db: Session, organization_id: Optional[int] = None):
     """
@@ -25,6 +25,9 @@ def get_hourly_measurement_summary_handler(db: Session, organization_id: Optiona
         if organization_id is not None:
             query += " WHERE organization_id = :organization_id"
             params["organization_id"] = organization_id
+        else:
+            # If no organization_id is provided, filter by public organizations
+            query += " WHERE role = 'public'"
             
         result = db.execute(text(query), params).fetchall()
         
@@ -33,23 +36,7 @@ def get_hourly_measurement_summary_handler(db: Session, organization_id: Optiona
             formatted_data = format_hourly_measurement_data(result)
         except Exception as format_error:
             print(f"Warning: Error in format_hourly_measurement_data: {str(format_error)}")
-            formatted_data = []
-            for row in result:
-                data_point = {}
-                for key in row.keys():
-                    try:
-                        value = getattr(row, key)
-                        if isinstance(value, (int, float)):
-                            data_point[key] = value
-                        elif isinstance(value, str):
-                            data_point[key] = value
-                        elif value is None:
-                            data_point[key] = None
-                        else:
-                            data_point[key] = str(value)
-                    except Exception:
-                        data_point[key] = None
-                formatted_data.append(data_point)
+        
         
         return formatted_data
     except Exception as e:
@@ -70,38 +57,16 @@ async def get_map_data_handler(db: Session, organization_id: Optional[int] = Non
         if organization_id is not None:
             query += " WHERE organization_id = :organization_id"
             params["organization_id"] = organization_id
+        else:
+            # If no organization_id is provided, filter by public organizations
+            query += " WHERE organization_role = 'public'"
             
         result = db.execute(text(query), params)
         rows = result.fetchall()
         
         formatted_data = []
-        for row in rows:
-            data = {
-                "location_id": row.location_id if hasattr(row, 'location_id') else None,
-                "latitude": float(row.latitude) if hasattr(row, 'latitude') and row.latitude is not None else 0.0,
-                "longitude": float(row.longitude) if hasattr(row, 'longitude') and row.longitude is not None else 0.0,
-                "city": row.city if hasattr(row, 'city') else "",
-                "region": row.region if hasattr(row, 'region') else "",
-                "country": row.country if hasattr(row, 'country') else "",
-                "organization_id": row.organization_id if hasattr(row, 'organization_id') else None,
-                "pm25": float(row.pm25) if hasattr(row, 'pm25') and row.pm25 is not None else None,
-                "pm10": float(row.pm10) if hasattr(row, 'pm10') and row.pm10 is not None else None,
-                "o3": float(row.o3) if hasattr(row, 'o3') and row.o3 is not None else None,
-                "no2": float(row.no2) if hasattr(row, 'no2') and row.no2 is not None else None,
-                "so2": float(row.so2) if hasattr(row, 'so2') and row.so2 is not None else None,
-                "co": float(row.co) if hasattr(row, 'co') and row.co is not None else None,
-                "temperature": float(row.temperature) if hasattr(row, 'temperature') and row.temperature is not None else None,
-                "humidity": float(row.humidity) if hasattr(row, 'humidity') and row.humidity is not None else None,
-                "wind_speed": float(row.wind_speed) if hasattr(row, 'wind_speed') and row.wind_speed is not None else None,
-                "co2": float(row.co2) if hasattr(row, 'co2') and row.co2 is not None else None,
-                "methane": float(row.methane) if hasattr(row, 'methane') and row.methane is not None else None,
-                "nitrous_oxide": float(row.nitrous_oxide) if hasattr(row, 'nitrous_oxide') and row.nitrous_oxide is not None else None,
-                "fluorinated_gases": float(row.fluorinated_gases) if hasattr(row, 'fluorinated_gases') and row.fluorinated_gases is not None else None,
-                "intensity": float(row.intensity) if hasattr(row, 'intensity') and row.intensity is not None else None
-            }
-            formatted_data.append(data)
+        return format_map_data(rows)
         
-        return formatted_data
     except Exception as e:
         print(f"Error in get_map_data_handler: {str(e)}")
         return []
@@ -196,7 +161,7 @@ def get_summary_stats_handler(db: Session, organization_id: Optional[int] = None
         
         # Calculate PM2.5 average and trend
         if pm25_current_values:
-            avg_pm25 = round(sum(pm25_current_values) / len(pm25_current_values), 1)
+            avg_pm25 = round(sum(pm25_current_values) / len(pm25_current_values), 1) # will be rounded to one decimal place.
         else:
             avg_pm25 = 0
         
@@ -218,10 +183,12 @@ def get_summary_stats_handler(db: Session, organization_id: Optional[int] = None
         
         if current_pollutants_avg:
             aqi_result = measure_aqi(current_pollutants_avg)
+            print(f"aqi_result AQI result: {aqi_result}")
             current_aqi = round(aqi_result.get("AQI", 0))
         
         if previous_pollutants_avg:
             previous_aqi_result = measure_aqi(previous_pollutants_avg)
+            print(f"Previous AQI result: {previous_aqi_result}")
             previous_aqi = previous_aqi_result.get("AQI", 0)
         
         # Calculate trends
@@ -247,9 +214,7 @@ def get_summary_stats_handler(db: Session, organization_id: Optional[int] = None
         }
         
     except Exception as e:
-        import traceback
         print(f"Error in get_summary_stats_handler: {str(e)}")
-        print(traceback.format_exc())
         
         # Return default values in case of error
         return {
@@ -275,6 +240,9 @@ def get_forecast_summary_handler(db: Session, organization_id: Optional[int] = N
         if organization_id is not None:
             query += " WHERE organization_id = :organization_id"
             params["organization_id"] = organization_id
+        else:
+            # If no organization_id is provided, filter by public organizations
+            query += " WHERE role = 'public'"
             
         result = db.execute(text(query), params).fetchall()
         
