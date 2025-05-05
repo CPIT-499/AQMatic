@@ -107,31 +107,27 @@ async def get_map_data_handler(db: Session, organization_id: Optional[int] = Non
         return []
 
 
-
 def get_summary_stats_handler(db: Session, organization_id: Optional[int] = None):
     """
-    Unified function to retrieve air quality summary statistics.
+    Simplified function to retrieve air quality summary statistics for dashboard.
     If organization_id is provided, returns stats for that organization.
     Otherwise returns aggregated stats for all public organizations.
     """
     try:
+        # Build the query based on whether we're filtering by organization
         if organization_id is not None:
-            # Get stats for specific organization
             query = """
-                SELECT
+                SELECT 
                     pm25_current, pm10_current, o3_current, no2_current, so2_current, co_current,
                     pm25_previous, pm10_previous, o3_previous, no2_previous, so2_previous, co_previous,
-                    pm25_hours_diff, pm10_hours_diff, o3_hours_diff, no2_hours_diff, so2_hours_diff, co_hours_diff,
                     monitoring_stations, alerts_today
                 FROM dashboard_summary_stats_view
                 WHERE organization_id = :organization_id
             """
             params = {"organization_id": organization_id}
-            previous_field_name = "previous"
         else:
-            # Get stats for all public organizations
             query = """
-                SELECT
+                SELECT 
                     pm25_current, pm10_current, o3_current, no2_current, so2_current, co_current,
                     pm25_previous, pm10_previous, o3_previous, no2_previous, so2_previous, co_previous,
                     monitoring_stations, alerts_today
@@ -139,104 +135,116 @@ def get_summary_stats_handler(db: Session, organization_id: Optional[int] = None
                 WHERE role = 'public'
             """
             params = {}
-            previous_field_name = "previous"
         
+        # Execute query
         result = db.execute(text(query), params).fetchall()
         
         if not result:
             # Return default values if no data found
             return {
-                "current_aqi": 0, "pm25_level": 0, "aqi_trend_pct": 0, "pm25_trend_pct": 0,
-                "monitoring_stations": 0, "alerts_today": 0,
-                **({"hours_since_previous": 0} if organization_id else {})
+                "current_aqi": 0,
+                "pm25_level": 0, 
+                "aqi_trend_pct": 0,
+                "pm25_trend_pct": 0,
+                "monitoring_stations": 0, 
+                "alerts_today": 0
             }
         
-        # Initialize variables
-        totals = {
-            "current_aqi": 0, "current_pm25": 0, "previous_aqi": 0, "previous_pm25": 0,
-            "stations": 0, "alerts": 0, "hours_diff": 0
+        # Process the results directly
+        pm25_current_values = []
+        pm25_previous_values = []
+        current_pollutants_dict = {
+            "pm2.5": [], "pm10": [], "o3": [], "no2": [], "so2": [], "co": []
         }
-        counts = {"rows": 0, "trends": 0, "hours": 0}
+        previous_pollutants_dict = {
+            "pm2.5": [], "pm10": [], "o3": [], "no2": [], "so2": [], "co": []
+        }
+        total_stations = 0
+        total_alerts = 0
         
-        # Process rows
         for row in result:
-            counts["rows"] += 1
-            totals["stations"] += row.monitoring_stations or 0
-            totals["alerts"] += row.alerts_today or 0
+            # Collect stations and alerts
+            total_stations += row.monitoring_stations or 0
+            total_alerts += row.alerts_today or 0
             
-            # Calculate current AQI
-            current_pollutants = {
-                "pm2.5": row.pm25_current, "pm10": row.pm10_current, "o3": row.o3_current,
-                "no2": row.no2_current, "so2": row.so2_current, "co": row.co_current
+            # Collect PM2.5 values for direct display
+            if row.pm25_current is not None:
+                pm25_current_values.append(row.pm25_current)
+            if row.pm25_previous is not None:
+                pm25_previous_values.append(row.pm25_previous)
+            
+            # Collect all pollutants for AQI calculation
+            pollutant_map = {
+                "pm2.5": row.pm25_current, "pm10": row.pm10_current, 
+                "o3": row.o3_current, "no2": row.no2_current, 
+                "so2": row.so2_current, "co": row.co_current
             }
-            valid_current = {k: v for k, v in current_pollutants.items() if v is not None}
             
-            current_aqi = 0
-            if valid_current:
-                aqi_result = measure_aqi(valid_current)
-                current_aqi = aqi_result.get("AQI", 0)
-                totals["current_aqi"] += current_aqi
-            
-            current_pm25 = row.pm25_current or 0
-            totals["current_pm25"] += current_pm25
-            
-            # Calculate previous values for trend
-            previous_pollutants = {
-                "pm2.5": row.pm25_previous, "pm10": row.pm10_previous, "o3": row.o3_previous,
-                "no2": row.no2_previous, "so2": row.so2_previous, "co": row.co_previous
+            previous_pollutant_map = {
+                "pm2.5": row.pm25_previous, "pm10": row.pm10_previous, 
+                "o3": row.o3_previous, "no2": row.no2_previous, 
+                "so2": row.so2_previous, "co": row.co_previous
             }
-            valid_previous = {k: v for k, v in previous_pollutants.items() if v is not None}
             
-            if valid_previous:
-                previous_aqi = measure_aqi(valid_previous).get("AQI", 0)
-                previous_pm25 = row.pm25_previous or 0
-                
-                if current_aqi > 0 and previous_aqi > 0:
-                    totals["previous_aqi"] += previous_aqi
-                    totals["previous_pm25"] += previous_pm25
-                    counts["trends"] += 1
+            for pollutant, value in pollutant_map.items():
+                if value is not None:
+                    current_pollutants_dict[pollutant].append(value)
             
-            # For org-specific case, calculate hours difference
-            if organization_id is not None:
-                hours_fields = [row.pm25_hours_diff, row.pm10_hours_diff, row.o3_hours_diff,
-                               row.no2_hours_diff, row.so2_hours_diff, row.co_hours_diff]
-                valid_hours = [h for h in hours_fields if h is not None]
-                if valid_hours:
-                    totals["hours_diff"] += sum(valid_hours)
-                    counts["hours"] += len(valid_hours)
+            for pollutant, value in previous_pollutant_map.items():
+                if value is not None:
+                    previous_pollutants_dict[pollutant].append(value)
         
-        # Calculate averages and trends
-        avg_current_aqi = round(totals["current_aqi"] / counts["rows"], 1) if counts["rows"] > 0 else 0
-        avg_pm25 = round(totals["current_pm25"] / counts["rows"], 1) if counts["rows"] > 0 else 0
+        # Calculate PM2.5 average and trend
+        if pm25_current_values:
+            avg_pm25 = round(sum(pm25_current_values) / len(pm25_current_values), 1)
+        else:
+            avg_pm25 = 0
         
-        # Calculate trend percentages
+        # Calculate average for each pollutant for AQI calculation
+        current_pollutants_avg = {}
+        previous_pollutants_avg = {}
+        
+        for pollutant, values in current_pollutants_dict.items():
+            if values:
+                current_pollutants_avg[pollutant] = sum(values) / len(values)
+        
+        for pollutant, values in previous_pollutants_dict.items():
+            if values:
+                previous_pollutants_avg[pollutant] = sum(values) / len(values)
+        
+        # Calculate AQI from averages
+        current_aqi = 0
+        previous_aqi = 0
+        
+        if current_pollutants_avg:
+            aqi_result = measure_aqi(current_pollutants_avg)
+            current_aqi = round(aqi_result.get("AQI", 0))
+        
+        if previous_pollutants_avg:
+            previous_aqi_result = measure_aqi(previous_pollutants_avg)
+            previous_aqi = previous_aqi_result.get("AQI", 0)
+        
+        # Calculate trends
         aqi_trend_pct = 0
         pm25_trend_pct = 0
-        if counts["trends"] > 0:
-            avg_previous_aqi = totals["previous_aqi"] / counts["trends"]
-            avg_previous_pm25 = totals["previous_pm25"] / counts["trends"]
-            
-            if avg_previous_aqi != 0:
-                aqi_trend_pct = round(((avg_current_aqi - avg_previous_aqi) / avg_previous_aqi) * 100, 1)
-            if avg_previous_pm25 != 0:
-                pm25_trend_pct = round(((avg_pm25 - avg_previous_pm25) / avg_previous_pm25) * 100, 1)
         
-        # Prepare result
-        result = {
-            "current_aqi": avg_current_aqi,
+        if previous_aqi > 0:
+            aqi_trend_pct = round(((current_aqi - previous_aqi) / previous_aqi) * 100, 1)
+        
+        if pm25_previous_values:
+            avg_pm25_previous = sum(pm25_previous_values) / len(pm25_previous_values)
+            if avg_pm25_previous > 0:
+                pm25_trend_pct = round(((avg_pm25 - avg_pm25_previous) / avg_pm25_previous) * 100, 1)
+        
+        # Return the dashboard data
+        return {
+            "current_aqi": current_aqi,
             "pm25_level": avg_pm25,
             "aqi_trend_pct": aqi_trend_pct,
             "pm25_trend_pct": pm25_trend_pct,
-            "monitoring_stations": totals["stations"],
-            "alerts_today": totals["alerts"]
+            "monitoring_stations": total_stations,
+            "alerts_today": total_alerts
         }
-        
-        # Add hours_since_previous for organization-specific case
-        if organization_id is not None:
-            avg_hours = round(totals["hours_diff"] / counts["hours"], 1) if counts["hours"] > 0 else 0
-            result["hours_since_previous"] = avg_hours
-        
-        return result
         
     except Exception as e:
         import traceback
@@ -244,13 +252,15 @@ def get_summary_stats_handler(db: Session, organization_id: Optional[int] = None
         print(traceback.format_exc())
         
         # Return default values in case of error
-        default = {
-            "current_aqi": 0, "pm25_level": 0, "aqi_trend_pct": 0, "pm25_trend_pct": 0,
-            "monitoring_stations": 0, "alerts_today": 0
+        return {
+            "current_aqi": 0,
+            "pm25_level": 0, 
+            "aqi_trend_pct": 0,
+            "pm25_trend_pct": 0,
+            "monitoring_stations": 0, 
+            "alerts_today": 0
         }
-        if organization_id is not None:
-            default["hours_since_previous"] = 0
-        return default
+
 
 def get_forecast_summary_handler(db: Session, organization_id: Optional[int] = None):
     """
