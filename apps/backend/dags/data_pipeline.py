@@ -15,36 +15,8 @@ import pendulum
 from src.api_client.openmeteo import get_weather_and_air_quality, insert_measurements_meto
 from src.api_client.openweathermap_API import collect_measurements, insert_measurements_openweathermap
 from operators.db_operations import create_hourly_summary_view, create_map_data_view, create_dashboard_summary_stats_view, create_forecast_summary_view
-from src.ai.forecast import forecast_next_week_and_store
-
-# Define the API testing function
-def run_api_tests(**kwargs):
-    """
-    Function to run API unit tests and return the results
-    Returns success status as boolean
-    """
-    try:
-        # Using subprocess to run the tests in the right environment
-        result = subprocess.run(
-            ["python", "-m", "unittest", "API.test_api"],
-            capture_output=True,
-            text=True,
-            check=False  # Don't raise exception on test failure
-        )
-        
-        # Log the test output
-        print("API Test Output:")
-        print(result.stdout)
-        
-        if result.stderr:
-            print("API Test Errors:")
-            print(result.stderr)
-        
-        # Return True if tests succeeded (exit code 0), False otherwise
-        return result.returncode == 0
-    except Exception as e:
-        print(f"Error running API tests: {str(e)}")
-        return False
+from operators.ApiTest import run_api_tests
+from src.ai.forecast import forecast_and_store_results
 
 # Define default arguments
 default_args = {
@@ -177,14 +149,14 @@ with dag:
         for attr_config in attribute_configs:
             forecast_task = PythonOperator(
                 task_id=f"forecast_{attr_config['name']}_org6",
-                python_callable=forecast_next_week_and_store,
+                python_callable=forecast_and_store_results,
                 op_kwargs={
-                    'org_id': 6, 
-                    'attr_id': attr_config['attr_id'],
-                    'use_saved_model': True  # Enable model loading instead of retraining
+                    'org_id': 6,
+                    'attr_id': attr_config['attr_id']
                 },
                 doc_md=f"""#### Task Documentation
-                Forecasts {attr_config['name']} levels for organization 6 for the next 7 days using saved model when available
+                Forecasts {attr_config['name']} levels for organization 6
+                for the next 7 days using saved model
                 """,
             )
             forecasting_tasks.append(forecast_task)
