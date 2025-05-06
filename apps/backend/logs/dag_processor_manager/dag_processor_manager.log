@@ -44220,3 +44220,178 @@ File Path                                  PID    Runtime      # DAGs    # Error
 /opt/airflow/dags/model_retraining_dag.py                           1           0  2.11s           2025-05-05T12:46:54
 ================================================================================
 [2025-05-05T12:47:12.500+0000] {manager.py:470} INFO - Exiting gracefully upon receiving signal 15
+[2025-05-06T00:23:56.994+0000] {manager.py:488} INFO - Processing files using up to 2 processes at a time 
+[2025-05-06T00:23:56.995+0000] {manager.py:489} INFO - Process each file at most once every 30 seconds
+[2025-05-06T00:23:56.995+0000] {manager.py:490} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2025-05-06T00:23:56.996+0000] {manager.py:760} INFO - Searching for files in /opt/airflow/dags
+[2025-05-06T00:23:57.138+0000] {manager.py:763} INFO - There are 2 files in /opt/airflow/dags
+[2025-05-06T00:23:57.275+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  ----------
+/opt/airflow/dags/data_pipeline.py            57  0.06s             0           0
+/opt/airflow/dags/model_retraining_dag.py     56  0.08s             0           0
+================================================================================
+[2025-05-06T00:24:26.522+0000] {manager.py:470} INFO - Exiting gracefully upon receiving signal 15
+[2025-05-06T00:25:11.282+0000] {manager.py:488} INFO - Processing files using up to 2 processes at a time 
+[2025-05-06T00:25:11.283+0000] {manager.py:489} INFO - Process each file at most once every 30 seconds
+[2025-05-06T00:25:11.283+0000] {manager.py:490} INFO - Checking for new files in /opt/airflow/dags every 300 seconds
+[2025-05-06T00:25:11.284+0000] {manager.py:760} INFO - Searching for files in /opt/airflow/dags
+[2025-05-06T00:25:11.403+0000] {manager.py:763} INFO - There are 2 files in /opt/airflow/dags
+[2025-05-06T00:25:11.508+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  ----------
+/opt/airflow/dags/data_pipeline.py            59  0.04s             0           0
+/opt/airflow/dags/model_retraining_dag.py     57  0.06s             0           0
+================================================================================
+[2025-05-06T00:25:41.832+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/data_pipeline.py                                  1           0  4.68s           2025-05-06T00:25:37
+/opt/airflow/dags/model_retraining_dag.py                           1           0  5.52s           2025-05-06T00:25:16
+================================================================================
+[2025-05-06T00:26:12.384+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/data_pipeline.py                                  1           0  4.95s           2025-05-06T00:26:07
+/opt/airflow/dags/model_retraining_dag.py                           1           0  4.06s           2025-05-06T00:25:51
+================================================================================
+[2025-05-06T00:26:42.679+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/data_pipeline.py          1376  5.05s             1           0  4.95s           2025-05-06T00:26:07
+/opt/airflow/dags/model_retraining_dag.py                           1           0  6.08s           2025-05-06T00:26:27
+================================================================================
+[2025-05-06T00:27:13.107+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/data_pipeline.py          1775  0.00s             1           0  5.31s           2025-05-06T00:26:42
+/opt/airflow/dags/model_retraining_dag.py                           1           0  4.24s           2025-05-06T00:27:02
+================================================================================
+[2025-05-06T00:27:43.562+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/data_pipeline.py                                  1           0  6.03s           2025-05-06T00:27:19
+/opt/airflow/dags/model_retraining_dag.py                           1           0  3.77s           2025-05-06T00:27:35
+================================================================================
+[2025-05-06T00:28:13.728+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/data_pipeline.py                                  1           0  3.97s           2025-05-06T00:27:53
+/opt/airflow/dags/model_retraining_dag.py                           1           0  3.64s           2025-05-06T00:28:09
+================================================================================
+[2025-05-06T00:28:43.753+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/data_pipeline.py                                  1           0  4.82s           2025-05-06T00:28:28
+/opt/airflow/dags/model_retraining_dag.py   2015  3.69s             1           0  3.64s           2025-05-06T00:28:09
+================================================================================
+[2025-05-06T00:29:14.348+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/data_pipeline.py                                  1           0  5.12s           2025-05-06T00:29:04
+/opt/airflow/dags/model_retraining_dag.py   2108  0.00s             1           0  4.20s           2025-05-06T00:28:44
+================================================================================
+[2025-05-06T00:29:44.547+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/data_pipeline.py                                  1           0  3.96s           2025-05-06T00:29:38
+/opt/airflow/dags/model_retraining_dag.py                           1           0  4.45s           2025-05-06T00:29:18
+================================================================================
+[2025-05-06T00:30:11.541+0000] {manager.py:760} INFO - Searching for files in /opt/airflow/dags
+[2025-05-06T00:30:11.657+0000] {manager.py:763} INFO - There are 2 files in /opt/airflow/dags
+[2025-05-06T00:30:14.671+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/data_pipeline.py                                  1           0  4.13s           2025-05-06T00:30:12
+/opt/airflow/dags/model_retraining_dag.py                           1           0  4.35s           2025-05-06T00:29:53
+================================================================================
+[2025-05-06T00:30:44.688+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/data_pipeline.py          2507  2.02s             1           0  4.13s           2025-05-06T00:30:12
+/opt/airflow/dags/model_retraining_dag.py                           1           0  5.83s           2025-05-06T00:30:29
+================================================================================
+[2025-05-06T00:31:14.906+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/data_pipeline.py                                  1           0  3.52s           2025-05-06T00:30:46
+/opt/airflow/dags/model_retraining_dag.py                           1           0  4.23s           2025-05-06T00:31:04
+================================================================================
+[2025-05-06T00:31:45.231+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/data_pipeline.py                                  1           0  4.13s           2025-05-06T00:31:21
+/opt/airflow/dags/model_retraining_dag.py                           1           0  4.15s           2025-05-06T00:31:38
+================================================================================
+[2025-05-06T00:32:15.491+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                  PID    Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/data_pipeline.py                                  1           0  4.06s           2025-05-06T00:31:55
+/opt/airflow/dags/model_retraining_dag.py                           1           0  3.95s           2025-05-06T00:32:12
+================================================================================
+[2025-05-06T00:32:45.769+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/data_pipeline.py                                  1           0  4.60s           2025-05-06T00:32:30
+/opt/airflow/dags/model_retraining_dag.py   2977  3.02s             1           0  3.95s           2025-05-06T00:32:12
+================================================================================
+[2025-05-06T00:33:16.004+0000] {manager.py:888} INFO - 
+================================================================================
+DAG File Processing Stats
+
+File Path                                    PID  Runtime      # DAGs    # Errors  Last Runtime    Last Run
+-----------------------------------------  -----  ---------  --------  ----------  --------------  -------------------
+/opt/airflow/dags/data_pipeline.py                                  1           0  4.03s           2025-05-06T00:33:04
+/opt/airflow/dags/model_retraining_dag.py   3170  0.00s             1           0  3.12s           2025-05-06T00:32:45
+================================================================================

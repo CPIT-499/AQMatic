@@ -36,7 +36,6 @@ dag = DAG(
     tags=['weather', 'api'],
 )
 
-# Create task groups for better organization
 with dag:
     start_pipeline = EmptyOperator(
         task_id='start_pipeline'
@@ -47,7 +46,7 @@ with dag:
         meteo_collect = PythonOperator(
             task_id='collect_meteo_data',
             python_callable=get_weather_and_air_quality,
-            do_xcom_push=True,  # Ensure the return value is pushed to XCom
+            do_xcom_push=True,  
             doc_md="""#### Task Documentation
             Collects weather data from Meteo API and pushes to XCom
             """,
@@ -99,8 +98,7 @@ with dag:
         )
         
         create_hourly_view_task >> create_map_view_task >> create_dashboard_summary_stats_view_task
-
-    # Add API Testing Task Group
+    # API testing group
     with TaskGroup(group_id='api_testing') as api_test_group:
         run_api_tests_task = PythonOperator(
             task_id='run_api_unit_tests',

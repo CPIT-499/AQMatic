@@ -1,4 +1,3 @@
-
 import os
 from tensorflow.keras.models import load_model
 from src.db.insert_data import insert_forecasts
@@ -36,7 +35,15 @@ def forecast_and_store_results(org_id: int, attr_id: int):
     # Preprocess data
     df, scaled, scaler = preprocess_data(org_id, attr_id)
     
+    # Check if preprocessing was successful
+    if df is None or scaled is None or scaler is None:
+        print(f"Cannot generate forecast: insufficient data for org_id={org_id}, attr_id={attr_id}")
+        return False
     
+    # Check if we have enough data for prediction window
+    if len(scaled) < window_size:
+        print(f"Not enough data for forecasting. Need at least {window_size} days, have {len(scaled)}")
+        return False
     
     # Make predictions
     last_window_data = scaled[-window_size:].reshape(1, window_size, 1) # Reshape for LSTM input
@@ -45,36 +52,42 @@ def forecast_and_store_results(org_id: int, attr_id: int):
     # result is 7 days of scaled data preds 
     preds = scaler.inverse_transform(preds_scaled.reshape(-1,1)).flatten()  # result is 7 days of scaled data preds 
     
-    
-    
     # Create and store forecast rows
     forecast_rows = create_forecast_rows(preds, df.index[-1], org_id, attr_id)
 
     return insert_forecasts(forecast_rows)
+
+
 
 def preprocess_data(org_id, attr_id):
     """Preprocess historical measurements data for forecasting."""
     # Get data from the database
     rows = get_measurements(org_id, attr_id)
     
-    
-    
-    
+    # Check if we have data
+    if not rows:
+        print(f"No data found for org_id={org_id}, attr_id={attr_id}")
+        return None, None, None
     
     # Create DataFrame and clean
     df = pd.DataFrame(rows, columns=["dt", "value"])
     df['value'] = pd.to_numeric(df['value'], errors='coerce')
     df = df.dropna(subset=['value'])
+    # Check if we still have data after cleaning
+    if len(df) == 0:
+        print(f"No valid data remains after cleaning for org_id={org_id}, attr_id={attr_id}")
+        return None, None, None
     
-    
+
+
     # to insure data is sorted by date
-    
     df['dt'] = pd.to_datetime(df['dt'])
     df = df.set_index("dt")
     df = df.resample("D").first()  # Resample data to daily frequency
     
-    # Interpolate missing values
+    # 
     df['value'] = df['value'].interpolate(method="time")
+
 
 
     # Scale data
