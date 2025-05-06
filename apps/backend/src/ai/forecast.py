@@ -19,7 +19,10 @@ def load_model_from_path(org_id: int, attr_id: int):
     os.makedirs(model_base_dir, exist_ok=True)
     model_path = os.path.join(model_base_dir, f"lstm_org{org_id}_attr{attr_id}.h5")
     
-    
+    # Check if model file exists
+    if not os.path.exists(model_path):
+        print(f"Model file not found: {model_path}")
+        return None
     
     # Load and return model
     print(f"Loading saved model from {model_path}")
@@ -29,6 +32,11 @@ def forecast_and_store_results(org_id: int, attr_id: int):
 
     # Load the saved model
     model = load_model_from_path(org_id, attr_id)
+    
+    # Check if model was loaded successfully
+    if model is None:
+        print(f"Cannot generate forecast: no model available for org_id={org_id}, attr_id={attr_id}")
+        return False
     
     # Fixed window size
     window_size = 14
