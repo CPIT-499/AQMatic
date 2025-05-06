@@ -11,7 +11,7 @@ from airflow.utils.task_group import TaskGroup
 from datetime import datetime
 
 import pendulum
-from src.ai.forecast import forecast_next_week_and_store
+from src.ai.Traning import train_lstm_model
 
 # Define default arguments for the DAG
 default_args = {
@@ -57,15 +57,13 @@ with dag:
         for attr_config in attribute_configs:
             PythonOperator(
                 task_id=f"retrain_{attr_config['name']}_org6",
-                python_callable=forecast_next_week_and_store,
+                python_callable=train_lstm_model,
                 op_kwargs={
-                    'org_id': 6, 
+                    'org_id': 6,
                     'attr_id': attr_config['attr_id'],
-                    'use_saved_model': False,  # Force model retraining
-                    'T_in': 14,  # Use a longer input window for monthly retraining
-                    'epochs': 20,  # More epochs for better training
                 },
                 doc_md=f"""#### Task Documentation
-                Retrains LSTM model for {attr_config['name']} (org 6) using all available historical data
+                Retrains LSTM model for {attr_config['name']} (org 6)
+                using all available historical data
                 """,
             )
