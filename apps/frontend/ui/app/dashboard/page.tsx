@@ -10,6 +10,7 @@ import { useGasSelection } from "@/hooks/FetchDashboardChart";
 
 // Services imports
 import { fetchDashboardData } from "@/services/api/fetchDashboardData";
+import { fetchDataForExport, convertDataToCsv } from "@/services/api/exportDataAsCsv";
 
 // Types and interfaces
 export interface Alert {
@@ -142,9 +143,49 @@ export default function DashboardPage() {
     () => chartData.filter(point => true), // Add filtering based on timeRange if needed
     [chartData, timeRange]
   );
-
   const handleNavigateToAlerts = React.useCallback(() => router.push('/alerts'), [router]);
   const handleSetTimeRange = React.useCallback((range: TimeRangeOption) => setTimeRange(range), []);
+  
+  // State for download button loading
+  const [downloadingData, setDownloadingData] = React.useState(false);
+    // Handle data download from API
+  const handleDownloadData = React.useCallback(async () => {
+    try {
+      setDownloadingData(true);
+      
+      // Get token if in organization mode
+      let token: string | null = null;
+      if (selectedMode === "organization" && user) {
+        token = await getLatestIdToken();
+      }
+      
+      // Fetch data using our service
+      const exportData = await fetchDataForExport(selectedMode, timeRange, token);
+      
+      // Convert data to CSV format in the frontend
+      const csvContent = convertDataToCsv(exportData, selectedGases);
+      
+      // Create blob and trigger download
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      
+      // Create filename with date and time range
+      const filename = `air-quality-data-${selectedMode}-${timeRange}-${new Date().toISOString().slice(0,10)}.csv`;
+      link.setAttribute("download", filename);
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url); // Clean up to avoid memory leaks
+    } catch (error) {
+      console.error("Error downloading data:", error);
+      // You might want to show an error toast/notification here
+    } finally {
+      setDownloadingData(false);
+    }
+  }, [timeRange, selectedMode, user, getLatestIdToken, selectedGases]);
 
   const filteredAlerts = React.useMemo(() =>
     FALLBACK_ALERTS.map(alert => ({
@@ -201,9 +242,7 @@ export default function DashboardPage() {
           isOrganizationModeAvailable={canSelectOrganizationMode} 
         />
 
-        <SummaryStats stats={statCards} />
-
-        <div className="grid gap-8 grid-cols-1 lg:grid-cols-3 min-h-[600px]">
+        <SummaryStats stats={statCards} />        <div className="grid gap-8 grid-cols-1 lg:grid-cols-3 min-h-[600px]">
           <ChartSection
             selectedGases={selectedGases}
             timeRange={timeRange}
@@ -212,6 +251,8 @@ export default function DashboardPage() {
             gasConfig={GAS_CONFIG}
             onToggleGas={toggleGas}
             onSetTimeRange={handleSetTimeRange}
+            onDownload={handleDownloadData}
+            isDownloading={downloadingData}
           />
 
           <MapSection data={mapData} />

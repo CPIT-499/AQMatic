@@ -1,6 +1,6 @@
 import * as React from "react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
-import { ChevronDown, BarChart, LineChart } from "lucide-react";
+import { ChevronDown, BarChart, LineChart, Download, Loader2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -20,6 +20,8 @@ interface ChartSectionProps {
   gasConfig: GasConfig;
   onToggleGas: (gas: string) => void;
   onSetTimeRange: (timeRange: TimeRangeOption) => void;
+  onDownload?: () => void;
+  isDownloading?: boolean;
 }
 
 interface CustomTooltipProps {
@@ -92,6 +94,8 @@ export function ChartSection({
   gasConfig,
   onToggleGas,
   onSetTimeRange,
+  onDownload,
+  isDownloading = false,
 }: ChartSectionProps) {
   const allGases = Object.keys(gasConfig);
   const allSelected = selectedGases.length === allGases.length;
@@ -173,8 +177,42 @@ export function ChartSection({
             <p className="text-sm text-muted-foreground mt-2">
               Showing {showForecast ? "AI forecast" : "historical data"} for the {timeRangeLabel.toLowerCase()}
             </p>
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
+          </div>          <div className="flex items-center gap-2 flex-shrink-0">
+            
+            {/* Download Button */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  disabled={isDownloading || !onDownload}
+                  className="flex items-center gap-1 h-8 px-3"
+                >
+                  {isDownloading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                      <span>Downloading...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4 mr-1" />
+                      <span>Export</span>
+                      <ChevronDown className="h-4 w-4 ml-1" />
+                    </>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Export Options</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuCheckboxItem
+                  checked={true}
+                  onCheckedChange={onDownload}
+                >
+                  Download CSV
+                </DropdownMenuCheckboxItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             
             {/* Forecast Toggle Button */}
             <Button
