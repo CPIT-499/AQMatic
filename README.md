@@ -10,7 +10,7 @@
 
 ## Introduction
 
-AQMatic is a comprehensive air quality monitoring system developed as a graduation project, funded by APSCO and supported by the Center of Excellence in Intelligent Engineering Systems (CEIES). The system collects, processes, and visualizes environmental data from both fixed and mobile sensors across Saudi Arabia. Built using a full-stack architecture — including FastAPI, PostgreSQL, Apache Airflow, and a Next.js frontend — AQMatic ensures real-time data flow and insightful visualizations.
+AQMatic is a comprehensive air quality monitoring system developed as a graduation project, funded by APSCO and supported by the Center of Excellence in Intelligent Engineering Systems (CEIES). The system collects, processes, and visualizes environmental data from both fixed and mobile sensors across Saudi Arabia. Built using a full-stack architecture including FastAPI, PostgreSQL, Apache Airflow, and a Next.js frontend AQMatic ensures real-time data flow and insightful visualizations.
 
 The project is designed for scalability and future enhancement. It can easily integrate additional data sources such as satellite feeds, and the mobile sensing units can be upgraded into a distributed sensor network. Each node in the network can transmit data to a central processor (Raspberry Pi) which then pushes the data to the cloud. This modular and extensible design allows AQMatic to grow into a robust national-scale air quality intelligence platform.
 
