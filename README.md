@@ -19,7 +19,7 @@ The project is designed for scalability and future enhancement. It can easily in
 ## 🚀 Features
 
 - 📡 **Sensor Network**: Fixed and mobile sensors send real-time environmental data.
-- 🔄 **Data Pipeline (Airflow)**: Cleans, processes, and stores data into PostgreSQL.
+- 🔄 **Data Pipeline **: Cleans, processes, and stores data into PostgreSQL.
 - 🧠 **AI Forecasting**: Predicts future AQI and many gasses using trained models.
 - 🌐 **FastAPI Backend**: Exposes data through secure RESTful endpoints.
 - 📊 **Next.js Dashboard**: Visualizes live and historical air quality data.
