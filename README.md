@@ -18,6 +18,11 @@ AQMatic is an innovative Environmental Monitoring Platform for Saudi Arabia that
 
 This initiative supports Vision 2030's environmental goals by enhancing public health, ensuring regulatory compliance, and promoting sustainability across the Kingdom. 
 
+Home Page
+<img width="1198" alt="Screenshot 1446-12-08 at 4 59 24 AM" src="https://github.com/user-attachments/assets/abab7376-d45c-430c-8fbe-01f0c53194ef" />
+---
+Dashboard
+<img width="1198" alt="Screenshot 1446-12-08 at 4 59 06 AM" src="https://github.com/user-attachments/assets/63da0934-a697-4b14-a4a7-e47ea96be3a3" />
 ---
 
 ## Contact
