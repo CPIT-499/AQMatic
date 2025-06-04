@@ -22,7 +22,7 @@ Home Page
 <img width="1198" alt="Screenshot 1446-12-08 at 4 59 24 AM" src="https://github.com/user-attachments/assets/abab7376-d45c-430c-8fbe-01f0c53194ef" />
 ---
 Dashboard
-<img width="1191" alt="Screenshot 1446-12-08 at 5 02 17 AM" src="https://github.com/user-attachments/assets/3a644d0e-18ba-4eb2-876e-afac05f70900" />
+<img width="1193" alt="Screenshot 1446-12-08 at 5 03 05 AM" src="https://github.com/user-attachments/assets/460394c8-8763-4834-a954-2bb63c7f36bb" />
 ---
 
 ## Contact
