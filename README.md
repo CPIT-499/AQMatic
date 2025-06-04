@@ -35,6 +35,10 @@ The project is designed for scalability and future enhancement. It can easily in
 - Frontend: Next.js + React + TailwindCSS
 - DevOps: Docker + Docker Compose
 ---
+## Demo
+
+https://www.youtube.com/watch?v=5nLZ-Puiw4M
+---
 ## Screenshots
 ### Landing Page
 <img width="1198" alt="Screenshot 1446-12-08 at 4 59 24 AM" src="https://github.com/user-attachments/assets/abab7376-d45c-430c-8fbe-01f0c53194ef" />
