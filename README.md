@@ -38,12 +38,13 @@ The project is designed for scalability and future enhancement. It can easily in
 ## 🖼 Screenshots
 ### 📍 Landing Page
 <img width="1198" alt="Screenshot 1446-12-08 at 4 59 24 AM" src="https://github.com/user-attachments/assets/abab7376-d45c-430c-8fbe-01f0c53194ef" />
----
+
 ### 📈 Dashboard
 <img width="1193" alt="Screenshot 1446-12-08 at 5 03 05 AM" src="https://github.com/user-attachments/assets/460394c8-8763-4834-a954-2bb63c7f36bb" />
----
+
 ### 🚗 Mobile Sensor Prototype
 ![Untitled-2025-01-27-1507](https://github.com/user-attachments/assets/95bd49db-a61b-4bdd-b600-9d4209fd0ba0)
+
 ---
 ## 📂 Project Structure
 
