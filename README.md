@@ -16,18 +16,18 @@ The project is designed for scalability and future enhancement. It can easily in
 
 ---
 
-## 🚀 Features
+## Features
 
-- 📡 **Sensor Network**: Fixed and mobile sensors send real-time environmental data.
-- 🔄 **Data Pipeline**: Cleans, processes, and stores data into PostgreSQL.
-- 🧠 **AI Forecasting**: Predicts future AQI and many gasses using trained models.
-- 🌐 **FastAPI Backend**: Exposes data through secure RESTful endpoints.
-- 📊 **Next.js Dashboard**: Visualizes live and historical air quality data.
-- 🐳 **Dockerized Setup**: Run everything using Docker Compose.
+-  **Sensor Network**: Fixed and mobile sensors send real-time environmental data.
+-  **Data Pipeline**: Cleans, processes, and stores data into PostgreSQL.
+-  **AI Forecasting**: Predicts future AQI and many gasses using trained models.
+-  **FastAPI Backend**: Exposes data through secure RESTful endpoints.
+-  **Next.js Dashboard**: Visualizes live and historical air quality data.
+-  **Dockerized Setup**: Run everything using Docker Compose.
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 - Backend: FastAPI + SQLAlchemy
 - Database: PostgreSQL
@@ -35,15 +35,19 @@ The project is designed for scalability and future enhancement. It can easily in
 - Frontend: Next.js + React + TailwindCSS
 - DevOps: Docker + Docker Compose
 ---
-## 🖼 Screenshots
-### 📍 Landing Page
+## Screenshots
+### Landing Page
 <img width="1198" alt="Screenshot 1446-12-08 at 4 59 24 AM" src="https://github.com/user-attachments/assets/abab7376-d45c-430c-8fbe-01f0c53194ef" />
 
-### 📈 Dashboard
+### Dashboard
 <img width="1193" alt="Screenshot 1446-12-08 at 5 03 05 AM" src="https://github.com/user-attachments/assets/460394c8-8763-4834-a954-2bb63c7f36bb" />
 
-### 🚗 Mobile Sensor Prototype
+### Mobile Sensor Prototype
 ![Untitled-2025-01-27-1507](https://github.com/user-attachments/assets/95bd49db-a61b-4bdd-b600-9d4209fd0ba0)
+
+### Current workflow
+<img width="1131" alt="Screenshot at Dhuʻl-H  08 05-36-12" src="https://github.com/user-attachments/assets/3b99f9cc-bdbe-41f7-b6f4-e9016fb8af41" />
+
 
 ---
 ## 📂 Project Structure
@@ -60,11 +64,11 @@ AQMatic/
 
 ---
 
-## 🧑‍💻 Getting Started
+## Getting Started
 
 1. **Clone the repo**
 ```bash
-git clone https://github.com/<your-org>/AQMatic.git
+git clone https://github.com/CPIT-499/AQMatic.git
 cd AQMatic
 ```
 
@@ -85,20 +89,13 @@ docker-compose up --build
 
 ---
 
-## 📊 API Endpoints
-
-- `GET /sensors` – List all sensors
-- `POST /readings` – Submit a new reading
-- `GET /forecast` – Get AQI forecast
----
-
-## 👥 Contributors
+## Contributors
 
 - Abdulmohsen Ahmed Almutlaq – 2135011@kau.edu.sa
 - Osama Yasser Alghamdi – osamayalghamdi@gmail.com
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License.
