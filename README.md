@@ -36,8 +36,8 @@ The project is designed for scalability and future enhancement. It can easily in
 - DevOps: Docker + Docker Compose
 ---
 ## Demo
-
 [![Watch the Demo](https://img.youtube.com/vi/5nLZ-Puiw4M/0.jpg)](https://www.youtube.com/watch?v=5nLZ-Puiw4M)
+
 ---
 ## Screenshots
 ### Landing Page
