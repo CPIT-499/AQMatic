@@ -36,9 +36,7 @@ The project is designed for scalability and future enhancement. It can easily in
 - DevOps: Docker + Docker Compose
 ---
 ## Demo
-
-[![Demo GIF](./assets/demo.gif)](https://www.youtube.com/watch?v=5nLZ-Puiw4M)
----
+[![Watch the Demo](https://img.youtube.com/vi/5nLZ-Puiw4M/0.jpg)](https://www.youtube.com/watch?v=5nLZ-Puiw4M)
 ## Screenshots
 ### Landing Page
 <img width="1198" alt="Screenshot 1446-12-08 at 4 59 24 AM" src="https://github.com/user-attachments/assets/abab7376-d45c-430c-8fbe-01f0c53194ef" />
